@@ -1,0 +1,21 @@
+# Config for executing queries.
+REST: '10.0.0.36:2049' 
+OPERATOR: # Nodes containing data 
+   - '10.0.0.194:2048'
+   - '10.0.0.36:2048' 
+   - '10.0.0.23:2048'
+   - '10.0.0.199:2048'
+   - '10.0.0.167:2048' 
+DB: 'power_grid' # database to query against 
+TABLE: 'meter_data' # table to query against 
+TABLE COLUMNS: # Columns in table to be  used for testing 
+   - bank_customer: 'string'
+   - aphase: 'numeric'
+   - bphase: 'numeric' 
+   - cphase: 'numeric'
+   - mp_id: "numeric" 
+   - region: "string"
+   - substation: "string" 
+# For WHERE conditions, the minimum and maxium number of days back 
+MIN DAYS BACK: 1 
+MAX DAYS BACK: 10
