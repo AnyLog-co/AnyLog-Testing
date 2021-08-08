@@ -5,12 +5,11 @@ import pytest
 import sys
 import time
 
-support_dir = os.path.expandvars(os.path.expanduser('$HOME/AnyLog-API/support'))
+support_dir = os.path.expandvars(os.path.expanduser('$HOME/testing/support')
 sys.path.insert(0, support_dir)
 
 from support.config import read_config
 from support.put_data import put_data
-from support.rest_query import rest_query
 
 CONFIG_FILE = 'config.ini' # Config file - located in AnyLog-API directory 
 
