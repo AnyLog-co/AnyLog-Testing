@@ -25,9 +25,9 @@ class TestBaseQueries:
         - SELECT MIN(value) FROM ping_sensor
         - SELECT AVG(value) FROM ping_sensor
         - SELECT MAX(value) FROM ping_sensor
-        - SELECT MIN(timestamp) FROM ping_sensor
+        - SELECT timestamp, value FROM ping_sensor ORDER BY timestamp LIMIT 1
         - SELECT timestamp, value FROM ping_sensor ORDER BY timestamp ASC LIMIT 1
-        - SELECT timestamp, value FROM ping_sensor ORDER BY timestamp DESC LIMIT 1
+            - SELECT MIN(timestamp) FROM ping_sensor
     """
     def setup_class(self): 
         """
@@ -97,6 +97,7 @@ class TestBaseQueries:
         """
         Validate row count 
         :param: 
+            query:str - query to execute
             output - result from request 
         :assert: 
             row count 
@@ -111,6 +112,7 @@ class TestBaseQueries:
         """
         Validate min(value)
         :param: 
+            query:str - query to execute
             output - result from request 
         :assert: 
             min value
@@ -139,6 +141,7 @@ class TestBaseQueries:
         """
         Validate max(value)
         :param: 
+            query:str - query to execute
             output - result from request 
         :assert: 
             max value
@@ -149,3 +152,63 @@ class TestBaseQueries:
 
         assert float(output[0]['max(value)']) == 48.0
 
+    # ORDER BY 
+    def test_order_by(self): 
+        """
+        Validate ORDER BY with no conditions
+        :parrams: 
+            query:str - query to execute
+            output - result from request 
+        :assert:
+           ORDER BY without condition
+        """
+        query = 'SELECT timestamp, value FROM ping_sensor ORDER BY timestamp LIMIT 1' 
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        
+        assert output[0]['timestamp'] == '2021-07-21 22:16:24.652293'  
+        assert float(output[0]['value']) == 2.0
+
+    def test_order_by_asc(self): 
+        """
+        Validate ORDER BY with ASC 
+        :parrams: 
+            query:str - query to execute
+            min_ts:int - min timestamp
+            output - result from request 
+        :assert:
+           ORDER BY ASC 
+        """
+        query = 'SELECT MIN(timestamp) FROM ping_sensor;' 
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        min_ts = output[0]['min(timestamp)']  
+
+        query = 'SELECT timestamp, value FROM ping_sensor ORDER BY timestamp ASC LIMIT 1' 
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        
+        assert output[0]['timestamp'] == min_ts
+        assert float(output[0]['value']) == 2.0
+
+    def test_order_by_desc(self): 
+        """
+        Validate ORDER BY with DESC
+        :parrams: 
+            query:str - query to execute
+            max_ts:int - max timestamp
+            output - result from request 
+        :assert:
+           ORDER BY DESC
+        """
+        query = 'SELECT MAX(timestamp) FROM ping_sensor;' 
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        max_ts = output[0]['max(timestamp)']  
+
+        query = 'SELECT timestamp, value FROM ping_sensor ORDER BY timestamp DESC LIMIT 1' 
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        
+        assert output[0]['timestamp'] == max_ts
+        assert float(output[0]['value']) == 34.0
