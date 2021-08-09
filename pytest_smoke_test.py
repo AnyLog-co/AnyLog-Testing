@@ -222,7 +222,7 @@ class TestBaseQueries:
         query = "SELECT timestamp, value FROM ping_sensor WHERE timestamp >= '2021-07-22T13:00:00Z' AND timestamp <= '2021-07-22T16:00:00Z' ORDER BY timestamp"
         output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                 auth=self.config['auth'], timeout=self.config['timeout']) 
-        assert len(output) == row_count, 'Failed Query: %s' % self.cmd % query, 'Failed Query: %s' % self.cmd % query 
+        assert len(output) == row_count, 'Failed Query: %s' % self.cmd % query
 
         if len(output) == row_count: 
             file_name = 'base_queries_test_where_mid_day.json' 
@@ -246,7 +246,7 @@ class TestBaseQueries:
         query = "SELECT timestamp, value FROM ping_sensor WHERE timestamp >= '2021-07-21T22:00:00Z' AND timestamp <= '2021-07-22T01:00:00Z' ORDER BY timestamp"
         output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                 auth=self.config['auth'], timeout=self.config['timeout']) 
-        assert len(output) == row_count, 'Failed Query: %s' % self.cmd % query, 'Failed Query: %s' % self.cmd % query 
+        assert len(output) == row_count, 'Failed Query: %s' % self.cmd % query
  
 
         if len(output) == row_count: 
