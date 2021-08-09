@@ -292,7 +292,8 @@ class TestBaseQueries:
             {'device_name': 'VM Lit SL NMS', 'min(timestamp)': '2021-07-21 22:18:58.765161', 'max(timestamp)': '2021-07-23 01:59:14.737836', 'min(value)': '0.0', 'avg(value)': '4.956625074272133', 'max(value)': '10.0'}, 
             {'device_name': 'Catalyst 3500XL', 'min(timestamp)': '2021-07-21 22:18:14.735669', 'max(timestamp)': '2021-07-23 01:57:24.649650', 'min(value)': '0.0', 'avg(value)': '24.203228315830415', 'max(value)': '48.0'}, 
             {'device_name': 'ADVA FSP3000R7', 'min(timestamp)': '2021-07-21 22:16:24.652293', 'max(timestamp)': '2021-07-23 01:59:36.746599', 'min(value)': '0.0', 'avg(value)': '1.4835597558574523', 'max(value)': '3.0'}, 
-            {'device_name': 'Ubiquiti OLT', 'min(timestamp)': '2021-07-21 22:17:08.676983', 'max(timestamp)': '2021-07-23 01:59:58.768801', 'min(value)': '0.0', 'avg(value)': '24.112939416604338', 'max(value)': '48.0'}, {'device_name': 'GOOGLE_PING', 'min(timestamp)': '2021-07-21 22:20:26.830382', 'max(timestamp)': '2021-07-23 01:56:18.590668', 'min(value)': '2.0', 'avg(value)': '18.8768115942029', 'max(value)': '36.0'}
+            {'device_name': 'Ubiquiti OLT', 'min(timestamp)': '2021-07-21 22:17:08.676983', 'max(timestamp)': '2021-07-23 01:59:58.768801', 'min(value)': '0.0', 'avg(value)': '24.112939416604338', 'max(value)': '48.0'}, 
+            {'device_name': 'GOOGLE_PING', 'min(timestamp)': '2021-07-21 22:20:26.830382', 'max(timestamp)': '2021-07-23 01:56:18.590668', 'min(value)': '2.0', 'avg(value)': '18.8768115942029', 'max(value)': '36.0'}
         ]
 
         query = "select device_name, min(timestamp), max(timestamp), min(value), avg(value), max(value) from ping_sensor group by device_name"
@@ -304,8 +305,63 @@ class TestBaseQueries:
                     for key in row:
                         assert row[key] == result[key]
 
+    # basic complex queries
+    def test_complex_query_mid_day(self): 
+        """
+        Query with both WHERE & GROUP BY 
+        :params: 
+            expect_results:list - list of results
+            query:str - query to execute
+            output - result from request 
+        :assert:
+            WHERE with GROUP BY
+        """
+        expect_results = [
+            {'device_name': 'VM Lit SL NMS', 'min(timestamp)': '2021-07-22 13:00:00.875931', 'max(timestamp)': '2021-07-22 15:59:58.232472', 'min(value)': '0.0', 'avg(value)': '4.891205802357208', 'max(value)': '10.0', 'count(*)': '1103'}, 
+            {'device_name': 'Catalyst 3500XL', 'min(timestamp)': '2021-07-22 13:00:23.805597', 'max(timestamp)': '2021-07-22 15:59:52.075720', 'min(value)': '0.0', 'avg(value)': '24.580882352941178', 'max(value)': '48.0', 'count(*)': '1088'}, 
+            {'device_name': 'ADVA FSP3000R7', 'min(timestamp)': '2021-07-22 13:00:02.790410', 'max(timestamp)': '2021-07-22 15:59:35.789967', 'min(value)': '0.0', 'avg(value)': '1.512987012987013', 'max(value)': '3.0', 'count(*)': '1078'}, 
+            {'device_name': 'Ubiquiti OLT', 'min(timestamp)': '2021-07-22 13:00:16.804801', 'max(timestamp)': '2021-07-22 15:59:55.774716', 'min(value)': '0.0', 'avg(value)': '23.49682107175295', 'max(value)': '48.0', 'count(*)': '1101'}, 
+            {'device_name': 'GOOGLE_PING', 'min(timestamp)': '2021-07-22 13:00:05.972585', 'max(timestamp)': '2021-07-22 15:59:15.092310', 'min(value)': '2.0', 'avg(value)': '19.111737089201878', 'max(value)': '36.0', 'count(*)': '1065'}
+        ] 
+
+        query = "select device_name, min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor where timestamp >= '2021-07-22T13:00:00Z' AND timestamp <= '2021-07-22T16:00:00Z' group by device_name" 
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        for row in output: 
+            for result in expect_results:
+                if row['device_name'] == result['device_name']: 
+                    for key in row:
+                        assert row[key] == result[key]
+
+    def test_complex_query_end_day(self): 
+        """
+        Query with both WHERE & GROUP BY 
+        :params: 
+            expect_results:list - list of results
+            query:str - query to execute
+            output - result from request 
+        :assert:
+            WHERE with GROUP BY
+        """
+        expect_results = [
+            {'device_name': 'VM Lit SL NMS', 'min(timestamp)': '2021-07-21 22:18:58.765161', 'max(timestamp)': '2021-07-22 00:59:55.437627', 'min(value)': '0.0', 'avg(value)': '4.8265963678968955', 'max(value)': '10.0', 'count(*)': '1707'}, 
+            {'device_name': 'Catalyst 3500XL', 'min(timestamp)': '2021-07-21 22:18:14.735669', 'max(timestamp)': '2021-07-22 00:59:52.249602', 'min(value)': '0.0', 'avg(value)': '24.036557930258716', 'max(value)': '48.0', 'count(*)': '1778'}, 
+            {'device_name': 'ADVA FSP3000R7', 'min(timestamp)': '2021-07-21 22:16:24.652293', 'max(timestamp)': '2021-07-22 00:59:58.709637', 'min(value)': '0.0', 'avg(value)': '1.4710312862108923', 'max(value)': '3.0', 'count(*)': '1726'}, 
+            {'device_name': 'Ubiquiti OLT', 'min(timestamp)': '2021-07-21 22:17:08.676983', 'max(timestamp)': '2021-07-22 00:59:58.505636', 'min(value)': '0.0', 'avg(value)': '24.717091295116774', 'max(value)': '48.0', 'count(*)': '1884'}, 
+            {'device_name': 'GOOGLE_PING', 'min(timestamp)': '2021-07-21 22:20:26.830382', 'max(timestamp)': '2021-07-22 00:59:59.289594', 'min(value)': '2.0', 'avg(value)': '18.915443335290664', 'max(value)': '36.0', 'count(*)': '1703'}
+        ]
+
+        query = "select device_name, min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor where timestamp >= '2021-07-21T22:00:00Z' AND timestamp <= '2021-07-22T01:00:00Z' group by device_name" 
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        for row in output: 
+            for result in expect_results:
+                if row['device_name'] == result['device_name']: 
+                    for key in row:
+                        assert row[key] == result[key]
 
     # increments
+    '''
     def test_basic_increments_minute(self):
         """
         Test increments with minute interval
@@ -314,7 +370,7 @@ class TestBaseQueries:
             query:str - query to execute
             output - result from request 
         :assert:
-            increments
+            increments by minute
         """
         for increment in [1, 10, 30, 60]:
             query = "select increments(minute, %s, timestamp), min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor order by min(timestamp);" % increment
@@ -333,7 +389,7 @@ class TestBaseQueries:
             query:str - query to execute
             output - result from request 
         :assert:
-            increments
+            increments by hour 
         """
         for increment in [1, 6, 12, 24]:
             query = "select increments(hour, %s, timestamp), min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor order by min(timestamp);" % increment
@@ -352,7 +408,7 @@ class TestBaseQueries:
             query:str - query to execute
             output - result from request 
         :assert:
-            increments
+            increments by day 
         """
         for increment in [1, 3, 5, 7]:
             query = "select increments(day, %s, timestamp), min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor order by min(timestamp);" % increment
@@ -380,6 +436,40 @@ class TestBaseQueries:
             status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
             assert status == True
             assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name) 
-
-
-
+    
+    def test_increments_where_mid_day(self): 
+        """
+        Test increments with where in mid-day
+        :params: 
+            query:str - query to execute
+            output - result from request 
+        :assert:
+            increments with in mid-day
+        """
+        for increment in ['minute', 'hour', 'day']:
+            query = "select increments(%s, 1, timestamp), min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor where timestamp >= '2021-07-22T13:00:00Z' AND timestamp <= '2021-07-22T16:00:00Z' order by min(timestamp);" % increment
+            output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                    auth=self.config['auth'], timeout=self.config['timeout']) 
+            file_name = 'base_queries_test_increments_where_mid_day_%s.json' % increment  
+            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
+            assert status == True
+            assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name) 
+ 
+    def test_increments_where_between_days(self): 
+        """
+        Test increments with where in mid-day
+        :params: 
+            query:str - query to execute
+            output - result from request 
+        :assert:
+            increments with in mid-day
+        """
+        for increment in ['minute', 'hour', 'day']:
+            query = "select increments(%s, 1, timestamp), min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor where timestamp >= '2021-07-22T13:00:00Z' AND timestamp <= '2021-07-22T16:00:00Z' order by min(timestamp);" % increment
+            output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                    auth=self.config['auth'], timeout=self.config['timeout']) 
+            file_name = 'base_queries_test_increments_where_between_days_%s.json' % increment  
+            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
+            assert status == True
+            assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name) 
+    ''' 
