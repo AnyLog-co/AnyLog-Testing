@@ -27,8 +27,8 @@ class TestBaseQueries:
             2. create actual_dir if not exists 
             3. insert data 
         :param: 
-            self.config:dict - config info 
-        """ 
+            self.config:dict - config info
+        """
         status = True
         self.cmd = 'sql anylog format=json and stat=false "%s"'
         # Read config
@@ -57,34 +57,17 @@ class TestBaseQueries:
 
         # validate publish_conn & query_conn / insert data 
         if self.config['insert'] == 'true' and rest.get.get_status(conn=self.config['publish_conn'], auth=self.config['auth'], timeout=self.config['timeout']):
-            self.status = rest.put_data.put_data(file_info='anylog.ping_sensor', conn=self.config['publish_conn'], auth=self.config['auth'], timeout=self.config['timeout'])
+            rest.put_data.put_data(file_info='anylog.ping_sensor', conn=self.config['publish_conn'], auth=self.config['auth'], timeout=self.config['timeout'])
             time.sleep(10)
         elif self.config['insert'] == 'true':
-            print('Faild to get status from: %s' % self.config['publish_conn'])
-            status = False 
+            assert True == False, 'Faild to get status from: %s' % self.config['publish_conn']
+
 
         if not rest.get.get_status(conn=self.config['query_conn'], auth=self.config['auth'], timeout=self.config['timeout']):
-            print('Failed to get status from: %s' % self.config['query_conn'])
-            status = False
+            assert True == False, 'Failed to get status from: %s' % self.config['query_conn']
 
-        if status == False: 
-            exit(1) 
-
-    def test_put_data(self): 
-        """
-        PUT data in AnyLog 
-        :param: 
-            data:list - FROM put_data whether each insert was successful or not 
-        :assert: 
-            all data was inserted 
-        """
-        if self.config['insert'] == 'true': 
-            assert all(True == i for i in self.status) == True 
-        else: 
-            pass 
-
-    # Basic aggergate 
-    def test_count(self): 
+    # Basic aggregate
+    def test_aggregates_count(self):
         """
         Validate row count 
         :param: 
@@ -99,7 +82,7 @@ class TestBaseQueries:
 
         assert int(output[0]['count(*)']) == 25862, 'Failed Query: %s' % self.cmd % query
 
-    def test_min(self): 
+    def test_aggregates_min(self):
         """
         Validate min(value)
         :param: 
@@ -114,7 +97,7 @@ class TestBaseQueries:
 
         assert float(output[0]['min(value)']) == 0.0, 'Failed Query: %s' % self.cmd % query
 
-    def test_avg(self): 
+    def test_aggregates_avg(self):
         """
         Validate avg(value)
         :param: 
@@ -128,7 +111,7 @@ class TestBaseQueries:
 
         assert float(output[0]['avg(value)']) == 14.885159693759183, 'Failed Query: %s' % self.cmd % query
 
-    def test_max(self): 
+    def test_aggregates_max(self):
         """
         Validate max(value)
         :param: 
@@ -149,15 +132,18 @@ class TestBaseQueries:
         Validate ORDER BY with no conditions
         :params: 
             query:str - query to execute
-            output - result from request 
+            output - result from request
         :assert:
            ORDER BY without condition
         """
         query = 'SELECT timestamp, value FROM ping_sensor ORDER BY timestamp LIMIT 1' 
         output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
-                auth=self.config['auth'], timeout=self.config['timeout']) 
-        
-        assert support.convert.convert_timezone(query=self.cmd % query, timestamp=output[0]['timestamp']) == '2021-07-21 22:16:24.652293', 'Faild Query: %s' % self.cmd % query
+                auth=self.config['auth'], timeout=self.config['timeout'])
+
+        if self.config['convert_timestamp'] == 'true':
+            assert support.convert.convert_timezone(query=self.cmd % query, timestamp=output[0]['timestamp']) == '2021-07-21 22:16:24.652293', 'Faild Query: %s' % self.cmd % query
+        else:
+            assert output[0]['timestamp'] == '2021-07-21 22:16:24.652293', 'Faild Query: %s' % self.cmd % query
         assert float(output[0]['value']) == 2.0, 'Failed Query: %s' % self.cmd % query
 
     def test_order_by_asc(self): 
@@ -214,13 +200,16 @@ class TestBaseQueries:
         :assert:
             mid-day WHERE condition 
         """
+        if self.config['convert_timezone'] == 'true':
+            cmd = self.cmd.replace('format', 'timezone=utc and format')
+        else:
+            cmd = self.cmd
 
         query = "select count(*) from ping_sensor where timestamp >= '2021-07-22T13:00:00Z' AND timestamp <= '2021-07-22T16:00:00Z';"
-        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True,
+        output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
                 auth=self.config['auth'], timeout=self.config['timeout']) 
         row_count = int(output[0]['count(*)'])
 
-        cmd = self.cmd.replace('stat', 'timezone=utc and stat')
         query = "SELECT timestamp, value FROM ping_sensor WHERE timestamp >= '2021-07-22T13:00:00Z' AND timestamp <= '2021-07-22T16:00:00Z' ORDER BY timestamp"
         output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
                 auth=self.config['auth'], timeout=self.config['timeout']) 
@@ -229,7 +218,7 @@ class TestBaseQueries:
         if len(output) == row_count: 
             file_name = 'base_queries_test_where_mid_day.json' 
             support.file.write_file(query=cmd % query, data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
-            assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name), 'Failed Query: %s' % self.cmd % query 
+            assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name), 'Failed Query: %s' % cmd % query
 
     def test_where_end_day(self):
         """
@@ -240,12 +229,16 @@ class TestBaseQueries:
         :assert:
             where condition between 2 days
         """
+        if self.config['convert_timezone'] == 'true':
+            cmd = self.cmd.replace('format', 'timezone=utc and format')
+        else:
+            cmd = self.cmd
+
         query = "select count(*) from ping_sensor where timestamp >= '2021-07-21T22:00:00Z' AND timestamp <= '2021-07-22T01:00:00Z';"
-        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+        output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
                 auth=self.config['auth'], timeout=self.config['timeout']) 
         row_count = int(output[0]['count(*)'])
 
-        cmd = self.cmd.replace('stat', 'timezone=utc and stat')
         query = "SELECT timestamp, value FROM ping_sensor WHERE timestamp >= '2021-07-21T22:00:00Z' AND timestamp <= '2021-07-22T01:00:00Z' ORDER BY timestamp"
         output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
                 auth=self.config['auth'], timeout=self.config['timeout']) 
@@ -254,9 +247,8 @@ class TestBaseQueries:
 
         if len(output) == row_count: 
             file_name = 'base_queries_test_where_end_day.json' 
-            support.file.write_file(query = cmd % query, data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
+            support.file.write_file(query=cmd % query, data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
             assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name), 'Failed Query: %s' % cmd % query
-
 
     def test_where_variable(self):
         """
@@ -266,7 +258,7 @@ class TestBaseQueries:
             output - result from request 
         :assert:
             where condition with non-timestamp
-        """ 
+        """
         query = "select count(*) from ping_sensor where device_name='VM Lit SL NMS'"
         output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                 auth=self.config['auth'], timeout=self.config['timeout']) 
@@ -276,14 +268,20 @@ class TestBaseQueries:
         query = "select min(timestamp), max(timestamp), min(value), avg(value), max(value) from ping_sensor where device_name='VM Lit SL NMS'"
         output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                 auth=self.config['auth'], timeout=self.config['timeout']) 
-        assert support.convert.convert_timezone(query=self.cmd % query, timestamp=output[0]['min(timestamp)']) == '2021-07-21 22:18:58.765161', 'Failed Query: %s' % self.cmd % query 
-        assert support.convert.convert_timezone(query=self.cmd % query, timestamp=output[0]['max(timestamp)']) == '2021-07-23 01:59:14.737836', 'Failed Query: %s' % self.cmd % query 
-        assert float(output[0]['min(value)']) == 0.0, 'Failed Query: %s' % self.cmd % query 
+        if self.config['convert_timezone'] == 'true':
+            assert support.convert.convert_timezone(query=self.cmd % query, timestamp=output[0]['min(timestamp)']) == '2021-07-21 22:18:58.765161', 'Failed Query: %s' % self.cmd % query
+            assert support.convert.convert_timezone(query=self.cmd % query, timestamp=output[0]['max(timestamp)']) == '2021-07-23 01:59:14.737836', 'Failed Query: %s' % self.cmd % query
+        else:
+            assert output[0]['min(timestamp)'] == '2021-07-21 22:18:58.765161', 'Failed Query: %s' % self.cmd % query
+            assert output[0]['max(timestamp)'] == '2021-07-23 01:59:14.737836', 'Failed Query: %s' % self.cmd % query
+        assert float(output[0]['min(value)']) == 0.0, 'Failed Query: %s' % self.cmd % query
         assert float(output[0]['avg(value)']) == 4.956625074272133, 'Failed Query: %s' % self.cmd % query 
         assert float(output[0]['max(value)']) == 10.0, 'Failed Query: %s' % self.cmd % query 
 
-    # Group by 
-    def test_group_by(self): 
+    # Group by
+
+    # GROUP by
+    def test_group_by(self):
         """
         GROUP BY test
         :params; 
@@ -308,13 +306,15 @@ class TestBaseQueries:
             for result in expect_results:
                 if row['device_name'] == result['device_name']: 
                     for key in row:
-                        if 'timestamp' in key:
+                        if 'timestamp' in key and self.config['convert_timezone'] == 'true':
                             assert support.convert.convert_timezone(query=self.cmd % query, timestamp=row[key]) == result[key], 'Failed Query: %s' % self.cmd % query 
                         else: 
                             assert row[key] == result[key], 'Failed Query: %s' % self.cmd % query 
 
     # basic complex queries
-    def test_complex_query_mid_day(self): 
+
+    # queries containing where + group by
+    def test_complex_query_mid_day(self):
         """
         Query with both WHERE & GROUP BY 
         :params: 
@@ -339,12 +339,10 @@ class TestBaseQueries:
             for result in expect_results:
                 if row['device_name'] == result['device_name']: 
                     for key in row:
-                        if 'timestamp' in key:
+                        if 'timestamp' in key and self.config['convert_timezone'] == 'true':
                             assert support.convert.convert_timezone(query=self.cmd % query, timestamp=row[key]) == result[key], 'Failed Query: %s' % self.cmd % query 
                         else: 
-                            assert row[key] == result[key], 'Failed Query: %s' % self.cmd % query 
-
-
+                            assert row[key] == result[key], 'Failed Query: %s' % self.cmd % query
 
     def test_complex_query_end_day(self): 
         """
@@ -371,13 +369,14 @@ class TestBaseQueries:
             for result in expect_results:
                 if row['device_name'] == result['device_name']: 
                     for key in row:
-                        if 'timestamp' in key:
+                        if 'timestamp' in key and self.config['convert_timezone'] == 'true':
                             assert support.convert.convert_timezone(query=self.cmd % query, timestamp=row[key]) == result[key], 'Failed Query: %s' % self.cmd % query 
                         else: 
                             assert row[key] == result[key], 'Failed Query: %s' % self.cmd % query 
 
 
     # increments
+
     '''
     def test_basic_increments_minute(self):
         """
