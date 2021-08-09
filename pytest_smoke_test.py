@@ -157,7 +157,7 @@ class TestBaseQueries:
         output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                 auth=self.config['auth'], timeout=self.config['timeout']) 
         
-        assert support.convert.convert_timezone(query=self.cmd % query, timestamp=output[0]['timestamp']) == '2021-07-21 22:16:24.652293'  
+        assert support.convert.convert_timezone(query=self.cmd % query, timestamp=output[0]['timestamp']) == '2021-07-21 22:16:24.652293', 'Faild Query: %s' % self.cmd % query
         assert float(output[0]['value']) == 2.0, 'Failed Query: %s' % self.cmd % query
 
     def test_order_by_asc(self): 
@@ -179,7 +179,7 @@ class TestBaseQueries:
         output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                 auth=self.config['auth'], timeout=self.config['timeout']) 
         
-        assert support.convert.convert_timezone(query=self.cmd % query, timestamp=output[0]['timestamp']) == min_ts
+        assert output[0]['timestamp'] == min_ts, 'Failed Query: %s' % self.cmd % query
         assert float(output[0]['value']) == 2.0, 'Failed Query: %s' % self.cmd % query
 
     def test_order_by_desc(self): 
@@ -201,7 +201,7 @@ class TestBaseQueries:
         output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                 auth=self.config['auth'], timeout=self.config['timeout']) 
         
-        assert output[0]['timestamp'] == max_ts
+        assert output[0]['timestamp'] == max_ts, 'Failed Query: %s' % self.cmd % query
         assert float(output[0]['value']) == 34.0, 'Failed Query: %s' % self.cmd % query
 
     # WHERE conditions
@@ -222,7 +222,7 @@ class TestBaseQueries:
         query = "SELECT timestamp, value FROM ping_sensor WHERE timestamp >= '2021-07-22T13:00:00Z' AND timestamp <= '2021-07-22T16:00:00Z' ORDER BY timestamp"
         output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                 auth=self.config['auth'], timeout=self.config['timeout']) 
-        assert len(output) == row_count 
+        assert len(output) == row_count, 'Failed Query: %s' % self.cmd % query, 'Failed Query: %s' % self.cmd % query 
 
         if len(output) == row_count: 
             file_name = 'base_queries_test_where_mid_day.json' 
@@ -246,7 +246,7 @@ class TestBaseQueries:
         query = "SELECT timestamp, value FROM ping_sensor WHERE timestamp >= '2021-07-21T22:00:00Z' AND timestamp <= '2021-07-22T01:00:00Z' ORDER BY timestamp"
         output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                 auth=self.config['auth'], timeout=self.config['timeout']) 
-        assert len(output) == row_count, 'Failed Query: %s' % self.cmd % query 
+        assert len(output) == row_count, 'Failed Query: %s' % self.cmd % query, 'Failed Query: %s' % self.cmd % query 
  
 
         if len(output) == row_count: 
@@ -273,8 +273,8 @@ class TestBaseQueries:
         query = "select min(timestamp), max(timestamp), min(value), avg(value), max(value) from ping_sensor where device_name='VM Lit SL NMS'"
         output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                 auth=self.config['auth'], timeout=self.config['timeout']) 
-        assert output[0]['min(timestamp)'] == '2021-07-21 22:18:58.765161', 'Failed Query: %s' % self.cmd % query 
-        assert output[0]['max(timestamp)'] == '2021-07-23 01:59:14.737836', 'Failed Query: %s' % self.cmd % query 
+        assert support.convert.convert_timezone(query=self.cmd % query, timestamp=output[0]['min(timestamp)']) == '2021-07-21 22:18:58.765161', 'Failed Query: %s' % self.cmd % query 
+        assert support.convert.convert_timezone(query=self.cmd % query, timestamp=output[0]['max(timestamp)']) == '2021-07-23 01:59:14.737836', 'Failed Query: %s' % self.cmd % query 
         assert float(output[0]['min(value)']) == 0.0, 'Failed Query: %s' % self.cmd % query 
         assert float(output[0]['avg(value)']) == 4.956625074272133, 'Failed Query: %s' % self.cmd % query 
         assert float(output[0]['max(value)']) == 10.0, 'Failed Query: %s' % self.cmd % query 
@@ -305,7 +305,10 @@ class TestBaseQueries:
             for result in expect_results:
                 if row['device_name'] == result['device_name']: 
                     for key in row:
-                        assert row[key] == result[key], 'Failed Query: %s' % self.cmd % query 
+                        if 'timestamp' in key:
+                            assert support.convert.convert_timezone(query=self.cmd % query, timestamp=row[key]) == result[key], 'Failed Query: %s' % self.cmd % query 
+                        else: 
+                            assert row[key] == result[key], 'Failed Query: %s' % self.cmd % query 
 
     # basic complex queries
     def test_complex_query_mid_day(self): 
@@ -333,7 +336,12 @@ class TestBaseQueries:
             for result in expect_results:
                 if row['device_name'] == result['device_name']: 
                     for key in row:
-                        assert row[key] == result[key], 'Failed Query: %s' % self.cmd % query 
+                        if 'timestamp' in key:
+                            assert support.convert.convert_timezone(query=self.cmd % query, timestamp=row[key]) == result[key], 'Failed Query: %s' % self.cmd % query 
+                        else: 
+                            assert row[key] == result[key], 'Failed Query: %s' % self.cmd % query 
+
+
 
     def test_complex_query_end_day(self): 
         """
@@ -360,7 +368,11 @@ class TestBaseQueries:
             for result in expect_results:
                 if row['device_name'] == result['device_name']: 
                     for key in row:
-                        assert row[key] == result[key], 'Failed Query: %s' % self.cmd % query 
+                        if 'timestamp' in key:
+                            assert support.convert.convert_timezone(query=self.cmd % query, timestamp=row[key]) == result[key], 'Failed Query: %s' % self.cmd % query 
+                        else: 
+                            assert row[key] == result[key], 'Failed Query: %s' % self.cmd % query 
+
 
     # increments
     '''
