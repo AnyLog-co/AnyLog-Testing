@@ -34,12 +34,11 @@ def get(conn:str, query:str, remote:str=False, auth:tuple=(), timeout:int=30)->r
 
     return r
 
-def get_status(conn:str, query:str, auth:tuple=(), timeout:int=30)->bool: 
+def get_status(conn:str, auth:tuple=(), timeout:int=30)->bool: 
     """
     Check whether am able to get status
     :args:
         conn:str - connection
-        query:str - query to execute
         auth:tuple - REST authentication
         timeout:int - timeout 
     :params: 
@@ -67,3 +66,35 @@ def get_status(conn:str, query:str, auth:tuple=(), timeout:int=30)->bool:
         status = False
 
     return status 
+
+def get_json(conn:str, query:str, remote:str=True, auth:tuple=(), timeout:int=30)->list: 
+    """
+    Execute GET query & extract results
+    :args:
+        conn:str - connection
+        query:str - query to execute
+        remote:str - whether query is remote or note
+        auth:tuple - REST authentication
+        timeout:int - timeout 
+    :params: 
+        r:requests.models.Response - results from request
+        raw_data:dict - raw data 
+        output:list - data extracted
+    :return: 
+        output
+    """
+    output = [] 
+    r = get(conn=conn, query=query, remote=remote, auth=auth, timeout=timeout)
+    if r != None: 
+        try: 
+            raw_data= r.json()
+        except Exception as e: 
+            print('Failed to extracted JSON data (Error: %s).\n\tQuery: %s\n' % (e, query))
+        else: 
+            if 'Query' in raw_data: 
+                output = raw_data['Query'] 
+            else: 
+                print('Failed extract data (Error: %s).\n\tQuery; %s\n' % (raw_data, query))
+                output = [] 
+    return output 
+
