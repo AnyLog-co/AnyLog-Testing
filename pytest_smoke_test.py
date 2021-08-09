@@ -13,7 +13,7 @@ sys.path.insert(0, support_dir)
 
 import rest.get
 import rest.put_data
-from support.config import read_config
+import support.file
 
 CONFIG_FILE = 'config.ini' # Config file - located in AnyLog-API directory 
 
@@ -28,6 +28,8 @@ class TestBaseQueries:
         - SELECT timestamp, value FROM ping_sensor ORDER BY timestamp LIMIT 1
         - SELECT timestamp, value FROM ping_sensor ORDER BY timestamp ASC LIMIT 1
             - SELECT MIN(timestamp) FROM ping_sensor
+        - SELECT timestamp, value FROM ping_sensor ORDER BY timestamp DESC LIMIT 1
+            - SELECT MAX(timestamp) FROM ping_sensor
     """
     def setup_class(self): 
         """
@@ -41,7 +43,7 @@ class TestBaseQueries:
         status = True
         self.cmd = 'sql anylog format=json and stat=false "%s"'
         # Read config
-        self.config = read_config(CONFIG_FILE)
+        self.config = support.file.read_config(CONFIG_FILE)
         self.config['expect_dir'] = os.path.expandvars(os.path.expanduser(self.config['expect_dir']))
         self.config['actual_dir'] = os.path.expandvars(os.path.expanduser(self.config['actual_dir']))
        
@@ -156,7 +158,7 @@ class TestBaseQueries:
     def test_order_by(self): 
         """
         Validate ORDER BY with no conditions
-        :parrams: 
+        :params: 
             query:str - query to execute
             output - result from request 
         :assert:
@@ -212,3 +214,54 @@ class TestBaseQueries:
         
         assert output[0]['timestamp'] == max_ts
         assert float(output[0]['value']) == 34.0
+
+    # WHERE conditions
+    def test_where_mid_day(self):
+        """
+        Where condition is mid-day
+        :params: 
+            query:str - query to execute
+            output - result from request 
+        :assert:
+            mid-day WHERE condition 
+        """
+        query = "select count(*) from ping_sensor where timestamp >= '2021-07-22T13:00:00Z' AND timestamp <= '2021-07-22T16:00:00Z';"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        row_count = int(output[0]['count(*)'])
+
+        query = "SELECT timestamp, value FROM ping_sensor WHERE timestamp >= '2021-07-22T13:00:00Z' AND timestamp <= '2021-07-22T16:00:00Z' ORDER BY timestamp"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        assert len(output) == row_count 
+
+        if len(output) == row_count: 
+            file_name = 'base_queries_test_where_mid_day.json' 
+            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
+            assert status == True
+            assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name) 
+
+    def test_where_end_day(self):
+        """
+        Where condition is mid-day
+        :params: 
+            query:str - query to execute
+            output - result from request 
+        :assert:
+            mid-day WHERE condition 
+        """
+        query = "select count(*) from ping_sensor where timestamp >= '2021-07-21T22:00:00Z' AND timestamp <= '2021-07-22T01:00:00Z';"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        row_count = int(output[0]['count(*)'])
+
+        query = "SELECT timestamp, value FROM ping_sensor WHERE timestamp >= '2021-07-21T22:00:00Z' AND timestamp <= '2021-07-22T01:00:00Z' ORDER BY timestamp"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        assert len(output) == row_count 
+
+        if len(output) == row_count: 
+            file_name = 'base_queries_test_where_end_day.json' 
+            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
+            assert status == True
+            assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name) 

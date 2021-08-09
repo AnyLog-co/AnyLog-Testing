@@ -1,8 +1,9 @@
 import ast 
 import configparser 
+import json
 import os 
 
-def read_config(config_file)->dict: 
+def read_config(config_file:str)->dict: 
     """
     Read configuration file
     :args: 
@@ -37,4 +38,30 @@ def read_config(config_file)->dict:
 
     return data 
 
+
+def write_file(data:list, results_file:str)->bool: 
+    """
+    Write to results file
+    :args: 
+        data:list - list data 
+        results_file:str - results file 
+    :params:
+        status:bool 
+    :return: 
+        status
+    """
+    status = True 
+    try:
+        with open(results_file, 'w') as f: 
+            for row in data: 
+                try: 
+                    f.write(json.dumps(row) + '\n')
+                except Exception as e: 
+                    print('Failed to write line to file (Error: %s)' % e)
+                    status = False 
+    except Exception as e: 
+        print('Failed to open file: %s (Error: %s)' % (results_file, e))
+        status = False
+
+    return status
 
