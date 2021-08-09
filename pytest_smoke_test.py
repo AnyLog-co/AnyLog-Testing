@@ -243,12 +243,12 @@ class TestBaseQueries:
 
     def test_where_end_day(self):
         """
-        Where condition is mid-day
+        Where condition is between 2 days
         :params: 
             query:str - query to execute
             output - result from request 
         :assert:
-            mid-day WHERE condition 
+            where condition between 2 days
         """
         query = "select count(*) from ping_sensor where timestamp >= '2021-07-21T22:00:00Z' AND timestamp <= '2021-07-22T01:00:00Z';"
         output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
@@ -265,3 +265,29 @@ class TestBaseQueries:
             status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
             assert status == True
             assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name) 
+
+    def test_where_variable(self):
+        """
+        Where condition non-timestamp
+        :params: 
+            query:str - query to execute
+            output - result from request 
+        :assert:
+            where condition with non-timestamp
+        """ 
+        query = "select count(*) from ping_sensor where device_name='VM Lit SL NMS'"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        assert int(output[0]['count(*)']) == 5049
+
+        query = "select min(timestamp), max(timestamp), min(value), avg(value), max(value) from ping_sensor where device_name='VM Lit SL NMS'"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        assert output[0]['min(timestamp)'] == '2021-07-21 22:18:58.765161'
+        assert output[0]['max(timestamp)'] == '2021-07-23 01:59:14.737836'
+        assert float(output[0]['min(value)']) == 0.0
+        assert float(output[0]['avg(value)']) == 4.956625074272133
+        assert float(output[0]['max(value)']) == 10.0 
+
+    # Group by 
+    #def 
