@@ -25,12 +25,10 @@ def get(conn:str, query:str, remote:str=False, auth:tuple=(), timeout:int=30)->r
     try: 
         r = requests.get('http://%s' % conn, headers=headers, auth=auth, timeout=timeout)
     except Exception as e: 
-        print('Failed execute query on %s (Error: %s).\n\tQuery: %s\n' % (conn, e, query))
-        r = None
+        assert True == False, 'Failed execute query on %s (Error: %s).\n\tQuery: %s\n' % (conn, e, query)
     else: 
         if int(r.status_code) != 200: 
-            print('Failed to execute query on %s due to network error %s.\n\tQuery: %s\n' % (conn, r.status_code, query))
-            r = None
+            assert True == False, 'Failed to execute query on %s due to network error %s.\n\tQuery: %s\n' % (conn, r.status_code, query)
 
     return r
 
@@ -57,15 +55,12 @@ def get_status(conn:str, auth:tuple=(), timeout:int=30)->bool:
         try: 
             output = r.text
         except Exception as e: 
-            print('Failed to extracted data from results (Error: %s).\n\tQuery: %s\n' % (e, query))
-            status = False 
+            assert True == False, 'Failed to extracted data from results (Error: %s).\n\tQuery: %s\n' % (e, query)
         else: 
             if 'running' not in output or 'not' in output:
-                status = False 
-    else: 
-        status = False
+                assert True == False, 'Unable to connect to AnyLog. Recieved message: %s.\n\tQuery: %s\n' % (r.text, query) 
 
-    return status 
+    return True
 
 def get_json(conn:str, query:str, remote:str=True, auth:tuple=(), timeout:int=30)->list: 
     """
@@ -89,12 +84,12 @@ def get_json(conn:str, query:str, remote:str=True, auth:tuple=(), timeout:int=30
         try: 
             raw_data= r.json()
         except Exception as e: 
-            print('Failed to extracted JSON data (Error: %s).\n\tQuery: %s\n' % (e, query))
+            assert True == False, 'Failed to extracted JSON data (Error: %s).\n\tQuery: %s\n' % (e, query)
         else: 
             if 'Query' in raw_data: 
                 output = raw_data['Query'] 
             else: 
-                print('Failed extract data (Error: %s).\n\tQuery; %s\n' % (raw_data, query))
-                output = [] 
+                assert True == False, 'Failed extract data (Error: %s).\n\tQuery; %s\n' % (raw_data, query) 
+
     return output 
 

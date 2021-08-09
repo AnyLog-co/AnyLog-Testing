@@ -96,7 +96,7 @@ class TestBaseQueries:
         output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                 auth=self.config['auth'], timeout=self.config['timeout']) 
 
-        assert int(output[0]['count(*)']) == 25862 
+        assert int(output[0]['count(*)']) == 25862, 'Failed Query: %s' % self.cmd % query
 
     def test_min(self): 
         """
@@ -111,7 +111,7 @@ class TestBaseQueries:
         output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                 auth=self.config['auth'], timeout=self.config['timeout']) 
 
-        assert float(output[0]['min(value)']) == 0.0
+        assert float(output[0]['min(value)']) == 0.0, 'Failed Query: %s' % self.cmd % query
 
     def test_avg(self): 
         """
@@ -125,7 +125,7 @@ class TestBaseQueries:
         output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                 auth=self.config['auth'], timeout=self.config['timeout']) 
 
-        assert float(output[0]['avg(value)']) == 14.885159693759183
+        assert float(output[0]['avg(value)']) == 14.885159693759183, 'Failed Query: %s' % self.cmd % query
 
     def test_max(self): 
         """
@@ -140,7 +140,7 @@ class TestBaseQueries:
         output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                 auth=self.config['auth'], timeout=self.config['timeout']) 
 
-        assert float(output[0]['max(value)']) == 48.0
+        assert float(output[0]['max(value)']) == 48.0, 'Failed Query: %s' % self.cmd % query
 
     # ORDER BY 
     def test_order_by(self): 
@@ -157,7 +157,7 @@ class TestBaseQueries:
                 auth=self.config['auth'], timeout=self.config['timeout']) 
         
         assert output[0]['timestamp'] == '2021-07-21 22:16:24.652293'  
-        assert float(output[0]['value']) == 2.0
+        assert float(output[0]['value']) == 2.0, 'Failed Query: %s' % self.cmd % query
 
     def test_order_by_asc(self): 
         """
@@ -179,7 +179,7 @@ class TestBaseQueries:
                 auth=self.config['auth'], timeout=self.config['timeout']) 
         
         assert output[0]['timestamp'] == min_ts
-        assert float(output[0]['value']) == 2.0
+        assert float(output[0]['value']) == 2.0, 'Failed Query: %s' % self.cmd % query
 
     def test_order_by_desc(self): 
         """
@@ -201,7 +201,7 @@ class TestBaseQueries:
                 auth=self.config['auth'], timeout=self.config['timeout']) 
         
         assert output[0]['timestamp'] == max_ts
-        assert float(output[0]['value']) == 34.0
+        assert float(output[0]['value']) == 34.0, 'Failed Query: %s' % self.cmd % query
 
     # WHERE conditions
     def test_where_mid_day(self):
@@ -225,9 +225,8 @@ class TestBaseQueries:
 
         if len(output) == row_count: 
             file_name = 'base_queries_test_where_mid_day.json' 
-            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
-            assert status == True
-            assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name) 
+            support.file.write_file(query=self.cmd % query, data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
+            assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name), 'Failed Query: %s' % self.cmd % query 
 
     def test_where_end_day(self):
         """
@@ -246,13 +245,14 @@ class TestBaseQueries:
         query = "SELECT timestamp, value FROM ping_sensor WHERE timestamp >= '2021-07-21T22:00:00Z' AND timestamp <= '2021-07-22T01:00:00Z' ORDER BY timestamp"
         output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                 auth=self.config['auth'], timeout=self.config['timeout']) 
-        assert len(output) == row_count 
+        assert len(output) == row_count, 'Failed Query: %s' % self.cmd % query 
+ 
 
         if len(output) == row_count: 
             file_name = 'base_queries_test_where_end_day.json' 
-            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
-            assert status == True
-            assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name) 
+            support.file.write_file(query = self.cmd % query, data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
+            assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name), 'Failed Query: %s' % self.cmd % query 
+
 
     def test_where_variable(self):
         """
@@ -266,16 +266,17 @@ class TestBaseQueries:
         query = "select count(*) from ping_sensor where device_name='VM Lit SL NMS'"
         output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                 auth=self.config['auth'], timeout=self.config['timeout']) 
-        assert int(output[0]['count(*)']) == 5049
+        assert int(output[0]['count(*)']) == 5049, 'Failed Query: %s' % self.cmd % query 
+
 
         query = "select min(timestamp), max(timestamp), min(value), avg(value), max(value) from ping_sensor where device_name='VM Lit SL NMS'"
         output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                 auth=self.config['auth'], timeout=self.config['timeout']) 
-        assert output[0]['min(timestamp)'] == '2021-07-21 22:18:58.765161'
-        assert output[0]['max(timestamp)'] == '2021-07-23 01:59:14.737836'
-        assert float(output[0]['min(value)']) == 0.0
-        assert float(output[0]['avg(value)']) == 4.956625074272133
-        assert float(output[0]['max(value)']) == 10.0 
+        assert output[0]['min(timestamp)'] == '2021-07-21 22:18:58.765161', 'Failed Query: %s' % self.cmd % query 
+        assert output[0]['max(timestamp)'] == '2021-07-23 01:59:14.737836', 'Failed Query: %s' % self.cmd % query 
+        assert float(output[0]['min(value)']) == 0.0, 'Failed Query: %s' % self.cmd % query 
+        assert float(output[0]['avg(value)']) == 4.956625074272133, 'Failed Query: %s' % self.cmd % query 
+        assert float(output[0]['max(value)']) == 10.0, 'Failed Query: %s' % self.cmd % query 
 
     # Group by 
     def test_group_by(self): 
@@ -303,7 +304,7 @@ class TestBaseQueries:
             for result in expect_results:
                 if row['device_name'] == result['device_name']: 
                     for key in row:
-                        assert row[key] == result[key]
+                        assert row[key] == result[key], 'Failed Query: %s' % self.cmd % query 
 
     # basic complex queries
     def test_complex_query_mid_day(self): 
@@ -331,7 +332,7 @@ class TestBaseQueries:
             for result in expect_results:
                 if row['device_name'] == result['device_name']: 
                     for key in row:
-                        assert row[key] == result[key]
+                        assert row[key] == result[key], 'Failed Query: %s' % self.cmd % query 
 
     def test_complex_query_end_day(self): 
         """
@@ -358,7 +359,7 @@ class TestBaseQueries:
             for result in expect_results:
                 if row['device_name'] == result['device_name']: 
                     for key in row:
-                        assert row[key] == result[key]
+                        assert row[key] == result[key], 'Failed Query: %s' % self.cmd % query 
 
     # increments
     '''
