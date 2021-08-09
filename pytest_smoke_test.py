@@ -13,6 +13,7 @@ sys.path.insert(0, support_dir)
 
 import rest.get
 import rest.put_data
+import support.convert 
 import support.file
 
 CONFIG_FILE = 'config.ini' # Config file - located in AnyLog-API directory 
@@ -156,7 +157,7 @@ class TestBaseQueries:
         output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                 auth=self.config['auth'], timeout=self.config['timeout']) 
         
-        assert output[0]['timestamp'] == '2021-07-21 22:16:24.652293'  
+        assert support.convert.convert_timezone(query=self.cmd % query, timestamp=output[0]['timestamp']) == '2021-07-21 22:16:24.652293'  
         assert float(output[0]['value']) == 2.0, 'Failed Query: %s' % self.cmd % query
 
     def test_order_by_asc(self): 
@@ -178,7 +179,7 @@ class TestBaseQueries:
         output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                 auth=self.config['auth'], timeout=self.config['timeout']) 
         
-        assert output[0]['timestamp'] == min_ts
+        assert support.convert.convert_timezone(query=self.cmd % query, timestamp=output[0]['timestamp']) == min_ts
         assert float(output[0]['value']) == 2.0, 'Failed Query: %s' % self.cmd % query
 
     def test_order_by_desc(self): 
