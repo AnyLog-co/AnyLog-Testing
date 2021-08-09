@@ -18,21 +18,9 @@ import support.file
 CONFIG_FILE = 'config.ini' # Config file - located in AnyLog-API directory 
 
 class TestBaseQueries: 
-    """
-    The following is intended to test a basic set of queries using anylog.ping_sensor sample data set
-    :queries; 
-        - SELECT COUNT(*) FROM ping_sensor
-        - SELECT MIN(value) FROM ping_sensor
-        - SELECT AVG(value) FROM ping_sensor
-        - SELECT MAX(value) FROM ping_sensor
-        - SELECT timestamp, value FROM ping_sensor ORDER BY timestamp LIMIT 1
-        - SELECT timestamp, value FROM ping_sensor ORDER BY timestamp ASC LIMIT 1
-            - SELECT MIN(timestamp) FROM ping_sensor
-        - SELECT timestamp, value FROM ping_sensor ORDER BY timestamp DESC LIMIT 1
-            - SELECT MAX(timestamp) FROM ping_sensor
-    """
     def setup_class(self): 
         """
+        The following is intended to test a basic set of queries using anylog.ping_sensor sample data set
         :process:
             1. prepare config
             2. create actual_dir if not exists 
@@ -290,4 +278,108 @@ class TestBaseQueries:
         assert float(output[0]['max(value)']) == 10.0 
 
     # Group by 
-    #def 
+    def test_group_by(self): 
+        """
+        GROUP BY test
+        :params; 
+            expect_results:list - list of results
+            query:str - query to execute
+            output - result from request 
+        :assert:
+            GROUP BY
+        """
+        expect_results = [
+            {'device_name': 'VM Lit SL NMS', 'min(timestamp)': '2021-07-21 22:18:58.765161', 'max(timestamp)': '2021-07-23 01:59:14.737836', 'min(value)': '0.0', 'avg(value)': '4.956625074272133', 'max(value)': '10.0'}, 
+            {'device_name': 'Catalyst 3500XL', 'min(timestamp)': '2021-07-21 22:18:14.735669', 'max(timestamp)': '2021-07-23 01:57:24.649650', 'min(value)': '0.0', 'avg(value)': '24.203228315830415', 'max(value)': '48.0'}, 
+            {'device_name': 'ADVA FSP3000R7', 'min(timestamp)': '2021-07-21 22:16:24.652293', 'max(timestamp)': '2021-07-23 01:59:36.746599', 'min(value)': '0.0', 'avg(value)': '1.4835597558574523', 'max(value)': '3.0'}, 
+            {'device_name': 'Ubiquiti OLT', 'min(timestamp)': '2021-07-21 22:17:08.676983', 'max(timestamp)': '2021-07-23 01:59:58.768801', 'min(value)': '0.0', 'avg(value)': '24.112939416604338', 'max(value)': '48.0'}, {'device_name': 'GOOGLE_PING', 'min(timestamp)': '2021-07-21 22:20:26.830382', 'max(timestamp)': '2021-07-23 01:56:18.590668', 'min(value)': '2.0', 'avg(value)': '18.8768115942029', 'max(value)': '36.0'}
+        ]
+
+        query = "select device_name, min(timestamp), max(timestamp), min(value), avg(value), max(value) from ping_sensor group by device_name"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        for row in output: 
+            for result in expect_results:
+                if row['device_name'] == result['device_name']: 
+                    for key in row:
+                        assert row[key] == result[key]
+
+
+    # increments
+    def test_basic_increments_minute(self):
+        """
+        Test increments with minute interval
+            - intervals: 1, 10, 30, 60
+        :params: 
+            query:str - query to execute
+            output - result from request 
+        :assert:
+            increments
+        """
+        for increment in [1, 10, 30, 60]:
+            query = "select increments(minute, %s, timestamp), min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor order by min(timestamp);" % increment
+            output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                    auth=self.config['auth'], timeout=self.config['timeout']) 
+            file_name = 'base_queries_test_increments_minute%s.json' % increment  
+            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
+            assert status == True
+            assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name) 
+
+    def test_basic_increments_hour(self):
+        """
+        Test increments with hour interval
+            - intervals: 1, 6, 12, 24
+        :params: 
+            query:str - query to execute
+            output - result from request 
+        :assert:
+            increments
+        """
+        for increment in [1, 6, 12, 24]:
+            query = "select increments(hour, %s, timestamp), min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor order by min(timestamp);" % increment
+            output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                    auth=self.config['auth'], timeout=self.config['timeout']) 
+            file_name = 'base_queries_test_increments_hour%s.json' % increment  
+            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
+            assert status == True
+            assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name) 
+
+    def test_basic_increments_day(self):
+        """
+        Test increments with day interval
+            - intervals: 1, 3, 5, 7 
+        :params: 
+            query:str - query to execute
+            output - result from request 
+        :assert:
+            increments
+        """
+        for increment in [1, 3, 5, 7]:
+            query = "select increments(day, %s, timestamp), min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor order by min(timestamp);" % increment
+            output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                    auth=self.config['auth'], timeout=self.config['timeout']) 
+            file_name = 'base_queries_test_increments_day%s.json' % increment  
+            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
+            assert status == True
+            assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name) 
+
+    def test_basic_increments_group_by(self):
+        """
+        Test increments with group by
+        :params: 
+            query:str - query to execute
+            output - result from request 
+        :assert:
+            group by
+        """
+        for increment in ['minute', 'hour', 'day']:
+            query = "select increments(%s, 1, timestamp), device_name, min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor group by device_name order by min(timestamp);" % increment
+            output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                    auth=self.config['auth'], timeout=self.config['timeout']) 
+            file_name = 'base_queries_test_increments_group_by_%s.json' % increment  
+            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
+            assert status == True
+            assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name) 
+
+
+
