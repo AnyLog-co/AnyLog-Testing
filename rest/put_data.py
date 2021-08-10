@@ -25,9 +25,9 @@ def put_data(file_info:str, conn:str, auth:tuple=(), timeout:int=30):
     headers = {
         'type': 'json',
         'dbms': 'anylog', 
-        'table': 'ping_sensor', 
+        'table': 'ping_sensor',
         'mode': 'file',
-        'Content-Type': 'text/text'
+        'Content-Type': 'text/plain'
     }
 
     for file_name in os.listdir(DATA_DIR):
@@ -37,11 +37,11 @@ def put_data(file_info:str, conn:str, auth:tuple=(), timeout:int=30):
             try:
                 with open(full_path, 'r') as f:
                     try:
-                        data = str(f.readlines())
+                        data = str(f.read())
                     except Exception as e:
-                        assert True == False, 'Failed to extract results (Error: %s).\n\tQuery: %s\n' % (e, query)
+                        assert True == False, 'Failed to extract results (Error: %s)' % e
             except Exception as e:
-                assert True == False, 'Failed to read file %s (Error: %s).\n\tQuery: %s\n' % (file_name, e, query)
+                assert True == False, 'Failed to read file %s (Error: %s)' % (file_name, e)
             else:
                 try:
                     r = requests.put('http://%s' % conn, headers=headers, auth=auth, timeout=timeout, data=data)

@@ -62,7 +62,7 @@ class TestBaseQueries:
         # validate publish_conn & query_conn / insert data 
         if self.config['insert'] == 'true' and rest.get.get_status(conn=self.config['publish_conn'], auth=self.config['auth'], timeout=self.config['timeout']):
             rest.put_data.put_data(file_info='anylog.ping_sensor', conn=self.config['publish_conn'], auth=self.config['auth'], timeout=self.config['timeout'])
-            time.sleep(65)
+            time.sleep(10)
         elif self.config['insert'] == 'true':
             assert True == False, 'Faild to get status from: %s' % self.config['publish_conn']
 
@@ -353,7 +353,7 @@ class TestBaseQueries:
         Query with both WHERE & GROUP BY 
         :params: 
             expect_results:list - list of results
-            query:str - query to execute
+            query:str - query to e}xecute
             output - result from request 
         :assert:
             WHERE with GROUP BY
