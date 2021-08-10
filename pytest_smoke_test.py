@@ -17,6 +17,10 @@ import support.convert
 import support.file
 
 CONFIG_FILE = 'config.ini' # Config file - located in AnyLog-API directory 
+if sys.platform.startswith('win'):
+    slash_char = '\\'
+else:
+    slash_char = '/'
 
 class TestBaseQueries: 
     def setup_class(self): 
@@ -33,8 +37,8 @@ class TestBaseQueries:
         self.cmd = 'sql anylog format=json and stat=false "%s"'
         # Read config
         self.config = support.file.read_config(CONFIG_FILE)
-        self.config['expect_dir'] = os.path.expandvars(os.path.expanduser(self.config['expect_dir']))
-        self.config['actual_dir'] = os.path.expandvars(os.path.expanduser(self.config['actual_dir']))
+        self.config['expect_dir'] = os.path.expandvars(os.path.expanduser(self.config['expect_dir'])) + slash_char
+        self.config['actual_dir'] = os.path.expandvars(os.path.expanduser(self.config['actual_dir'])) + slash_char
        
         # create actual_dir if not exists 
         if not os.path.isdir(self.config['actual_dir']): 
@@ -217,8 +221,8 @@ class TestBaseQueries:
 
         if len(output) == row_count: 
             file_name = 'base_queries_test_where_mid_day.json' 
-            support.file.write_file(query=cmd % query, data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
-            assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name), 'Failed Query: %s' % cmd % query
+            support.file.write_file(query=cmd % query, data=output, results_file=self.config['actual_dir'] + file_name)
+            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
 
     def test_where_end_day(self):
         """
@@ -247,8 +251,8 @@ class TestBaseQueries:
 
         if len(output) == row_count: 
             file_name = 'base_queries_test_where_end_day.json' 
-            support.file.write_file(query=cmd % query, data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
-            assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name), 'Failed Query: %s' % cmd % query
+            support.file.write_file(query=cmd % query, data=output, results_file=self.config['actual_dir'] + file_name)
+            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
 
     def test_where_variable(self):
         """
@@ -393,9 +397,9 @@ class TestBaseQueries:
             output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                     auth=self.config['auth'], timeout=self.config['timeout']) 
             file_name = 'base_queries_test_increments_minute%s.json' % increment  
-            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
+            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + file_name)
             assert status == True
-            assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name) 
+            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name) 
 
     def test_basic_increments_hour(self):
         """
@@ -412,9 +416,9 @@ class TestBaseQueries:
             output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                     auth=self.config['auth'], timeout=self.config['timeout']) 
             file_name = 'base_queries_test_increments_hour%s.json' % increment  
-            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
+            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + file_name)
             assert status == True
-            assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name) 
+            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name) 
 
     def test_basic_increments_day(self):
         """
@@ -431,9 +435,9 @@ class TestBaseQueries:
             output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                     auth=self.config['auth'], timeout=self.config['timeout']) 
             file_name = 'base_queries_test_increments_day%s.json' % increment  
-            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
+            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + file_name)
             assert status == True
-            assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name) 
+            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name) 
 
     def test_basic_increments_group_by(self):
         """
@@ -449,9 +453,9 @@ class TestBaseQueries:
             output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                     auth=self.config['auth'], timeout=self.config['timeout']) 
             file_name = 'base_queries_test_increments_group_by_%s.json' % increment  
-            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
+            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + file_name)
             assert status == True
-            assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name) 
+            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name) 
     
     def test_increments_where_mid_day(self): 
         """
@@ -467,9 +471,9 @@ class TestBaseQueries:
             output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                     auth=self.config['auth'], timeout=self.config['timeout']) 
             file_name = 'base_queries_test_increments_where_mid_day_%s.json' % increment  
-            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
+            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + file_name)
             assert status == True
-            assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name) 
+            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name) 
  
     def test_increments_where_between_days(self): 
         """
@@ -485,7 +489,7 @@ class TestBaseQueries:
             output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                     auth=self.config['auth'], timeout=self.config['timeout']) 
             file_name = 'base_queries_test_increments_where_between_days_%s.json' % increment  
-            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + '/%s' % file_name)
+            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + file_name)
             assert status == True
-            assert filecmp.cmp(self.config['expect_dir'] + '/%s' % file_name, self.config['actual_dir'] + '/%s' % file_name) 
+            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name) 
     ''' 
