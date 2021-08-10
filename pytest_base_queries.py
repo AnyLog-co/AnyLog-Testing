@@ -710,7 +710,7 @@ class TestBaseQueries:
             support.file.write_file(query=query, data=output, results_file=self.config['actual_dir'] + file_name)
             assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
 
-    def test_basic_period_minute(self):
+    def test_basic_period_hour(self):
         """
         Test period with hour interval
             - intervals: 1, 6, 12, 24
@@ -724,7 +724,7 @@ class TestBaseQueries:
             cmd = self.cmd.replace('format', 'timezone=utc and format')
         else:
             cmd = self.cmd
-        for increment in [1, 10, 30, 60]:
+        for increment in [1, 6, 12, 24]:
             query = "select timestamp, value from ping_sensor where period(hour, %s, now(), timestamp) order by timestamp;" % increment
             output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
                     auth=self.config['auth'], timeout=self.config['timeout'])
