@@ -1,7 +1,11 @@
 import os
-import requests 
+import requests
+import sys
 
-DATA_DIR = 'data'
+if sys.platform.startswith('win'):
+    DATA_DIR = "data\\"
+else:
+    DATA_DIR = "data/"
 
 def put_data(file_info:str, conn:str, auth:tuple=(), timeout:int=30):
     """
@@ -26,16 +30,15 @@ def put_data(file_info:str, conn:str, auth:tuple=(), timeout:int=30):
         'Content-Type': 'text/text'
     }
 
-    for file_name in os.listdir(DATA_DIR): 
+    for file_name in os.listdir(DATA_DIR):
         data = []
         if file_info in file_name:
-            full_path = DATA_DIR + '/' + file_name 
-            try: 
-                with open(full_path, 'r') as f:
+            full_path = DATA_DIR + file_name
+            try:
+                with open(full_path, 'r') as f
                     try:
-                        r = requests.put('http://%s' % conn, headers=headers, auth=auth, timeout=timeout, data=f.readlines())
+                        r = requests.put('http://%s' % conn, headers=headers, auth=auth, timeout=timeout, data=list(f.readlines()))
                     except Exception as e:
                             assert True == False, 'Failed to POST data from %s on %s (Error: %s)' % (file_name, conn, e)
             except Exception as e:
                 assert True == False, 'Failed to open file %s (Error: %s)' % (file_name, e)
-
