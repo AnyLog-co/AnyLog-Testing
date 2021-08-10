@@ -466,3 +466,69 @@ class TestBaseQueries:
             file_name = 'base_queries_test_increments_day%s.json' % increment
             support.file.write_file(query=query, data=output, results_file=self.config['actual_dir'] + file_name)
             assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
+
+    def test_basic_period_minute(self):
+        """
+        Test period with minute interval
+            - intervals: 1, 10, 30, 60
+        :params:
+            query:str - query to execute
+            output - result from request
+        :assert:
+            period by minute
+        """
+        if self.config['convert_timezone'] == 'true':
+            cmd = self.cmd.replace('format', 'timezone=utc and format')
+        else:
+            cmd = self.cmd
+        for increment in [1, 10, 30, 60]:
+            query = "select timestamp, value from ping_sensor where period(minute, %s, now(), timestamp) order by timestamp;" % increment
+            output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
+                    auth=self.config['auth'], timeout=self.config['timeout'])
+            file_name = 'base_queries_test_period_minute%s.json' % increment
+            support.file.write_file(query=query, data=output, results_file=self.config['actual_dir'] + file_name)
+            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
+
+    def test_basic_period_minute(self):
+        """
+        Test period with hour interval
+            - intervals: 1, 6, 12, 24
+        :params:
+            query:str - query to execute
+            output - result from request
+        :assert:
+            period by minute
+        """
+        if self.config['convert_timezone'] == 'true':
+            cmd = self.cmd.replace('format', 'timezone=utc and format')
+        else:
+            cmd = self.cmd
+        for increment in [1, 10, 30, 60]:
+            query = "select timestamp, value from ping_sensor where period(hour, %s, now(), timestamp) order by timestamp;" % increment
+            output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
+                    auth=self.config['auth'], timeout=self.config['timeout'])
+            file_name = 'base_queries_test_period_hour%s.json' % increment
+            support.file.write_file(query=query, data=output, results_file=self.config['actual_dir'] + file_name)
+            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
+
+    def test_basic_period_day(self):
+        """
+        Test period with day interval
+            - intervals: 1, 3, 5, 7
+        :params:
+            query:str - query to execute
+            output - result from request
+        :assert:
+            period by minute
+        """
+        if self.config['convert_timezone'] == 'true':
+            cmd = self.cmd.replace('format', 'timezone=utc and format')
+        else:
+            cmd = self.cmd
+        for increment in [1, 3, 5, 7]:
+            query = "select timestamp, value from ping_sensor where period(day, %s, now(), timestamp) order by timestamp;" % increment
+            output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
+                    auth=self.config['auth'], timeout=self.config['timeout'])
+            file_name = 'base_queries_test_period_day%s.json' % increment
+            support.file.write_file(query=query, data=output, results_file=self.config['actual_dir'] + file_name)
+            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
