@@ -30,6 +30,7 @@ class TestBaseQueries:
         - MIN - timestamp & value
         - MAX - timestamp & value
         - AVG - timestamp & value
+        - SUM(value)
         - ORDER BY
         - WHERE condition using AND
         - GROUP BY
@@ -149,6 +150,20 @@ class TestBaseQueries:
                 auth=self.config['auth'], timeout=self.config['timeout']) 
 
         assert float(output[0]['max(value)']) == 48.0, 'Failed Query: %s' % self.cmd % query
+
+    def test_aggregates_sum(self):
+        """
+        Validate sum(value)
+        :param:
+            query:str - query to execute
+            output - result from request
+        :assert:
+            sum value
+        """
+        query = 'SELECT SUM(value) FROM ping_sensor;'
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True,
+                auth=self.config['auth'], timeout=self.config['timeout'])
+        assert float(output[0]['sum(value)']) == 384960.0, 'Failed Query: %s' % self.cmd % query
 
     # ORDER BY 
     def test_order_by(self): 
