@@ -1,4 +1,9 @@
-
+"""
+The following will be a continuation of base queries, where queries will be more complex
+Example:
+    - increments with where condition
+    - where and/or
+"""
 
 def test_basic_increments_group_by(self):
     """
@@ -57,4 +62,3 @@ def test_increments_where_between_days(self):
         assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name)
 
 
-''' 
