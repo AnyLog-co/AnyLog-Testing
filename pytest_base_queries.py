@@ -230,6 +230,35 @@ class TestBaseQueries:
         assert float(output[0]['value']) == 34.0, 'Failed Query: %s' % self.cmd % query
 
     # WHERE conditions
+    def test_where_less_than(self):
+        """
+        Test WHERE <
+        :params:
+            query:str - query to execute
+            output - result from request
+        :assert:
+            mid-day WHERE condition
+        """
+        if self.config['convert_timezone'] == 'true':
+            cmd = self.cmd.replace('format', 'timezone=utc and format')
+        else:
+            cmd = self.cmd
+
+        query = "select count(*) from ping_sensor where timestamp < '2021-07-21T23:59:59Z'"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
+                auth=self.config['auth'], timeout=self.config['timeout'])
+        row_count = int(output[0]['count(*)'])
+
+        query = "select timestamp, value from ping_sensor where timestamp < '2021-07-21T23:59:59Z' order by timestamp"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
+                auth=self.config['auth'], timeout=self.config['timeout'])
+        assert len(output) == row_count, 'Failed Query: %s' % cmd % query
+
+        if len(output) == row_count:
+            file_name = 'base_queries_test_where_less_than.json'
+            support.file.write_file(query=cmd % query, data=output, results_file=self.config['actual_dir'] + file_name)
+            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
+
     def test_where_mid_day(self):
         """
         Where condition is mid-day
@@ -286,90 +315,6 @@ class TestBaseQueries:
 
         if len(output) == row_count: 
             file_name = 'base_queries_test_where_end_day.json' 
-            support.file.write_file(query=cmd % query, data=output, results_file=self.config['actual_dir'] + file_name)
-            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
-
-    def test_where_timestamp_equals(self):
-        """
-        Test WHERE condition with timestamp =
-        :params:
-            query:str - query to execute
-            output - result from request
-        :assert:
-             WHERE conidition with timestamp =
-        """
-        query = "select count(*) from ping_sensor where timestamp='2021-07-22T14:27:14.237628Z';"
-        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True,
-                auth=self.config['auth'], timeout=self.config['timeout'])
-        row_count = int(output[0]['count(*)'])
-        assert row_count == 1, 'Failed Query: %s' % self.cmd % query
-
-        query = "select timestamp, value from ping_sensor where timestamp='2021-07-22T14:27:14.237628Z order by timestamp';"
-        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True,
-                                   auth=self.config['auth'], timeout=self.config['timeout'])
-        if self.config['convert_timezone'] == 'true':
-            assert support.convert.convert_timezone(query=self.cmd % query, timestamp=output[0]['timestamp']) == '2021-07-22T14:27:14.237628Z', 'Faild Query: %s' % self.cmd % query
-        else:
-            assert output[0]['timestamp'] == '2021-07-22 14:27:14.237628', 'Faild Query: %s' % self.cmd % query
-        assert float(output[0]['value']) == 0.0
-
-    def test_where_greater_than(self):
-        """
-        Test WHERE condition with timestamp >
-                :params:
-            query:str - query to execute
-            output - result from request
-        :assert:
-             WHERE conidition with timestamp >
-        """
-        if self.config['convert_timezone'] == 'true':
-            cmd = self.cmd.replace('format', 'timezone=utc and format')
-        else:
-            cmd = self.cmd
-
-        query = "select count(*) from ping_sensor where timestamp > '2021-07-23T00:27:14.237628Z';"
-        output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
-                auth=self.config['auth'], timeout=self.config['timeout'])
-        row_count = int(output[0]['count(*)'])
-        assert row_count == 56, 'Failed Query: %s' % cmd % query
-
-        query = "select timestamp, value from ping_sensor where timestamp > '2021-07-23T00:27:14.237628Z' order by timestamp;"
-        output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
-                auth=self.config['auth'], timeout=self.config['timeout'])
-        assert len(output) == row_count, 'Failed Query: %s' % cmd % query
-
-        if len(output) == row_count:
-            file_name = 'base_queries_test_where_less_than.json'
-            support.file.write_file(query=cmd % query, data=output, results_file=self.config['actual_dir'] + file_name)
-            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
-
-    def test_where_less_than(self):
-        """
-        Test WHERE condition with timestamp <
-                :params:
-            query:str - query to execute
-            output - result from request
-        :assert:
-             WHERE conidition with timestamp <
-        """
-        if self.config['convert_timezone'] == 'true':
-            cmd = self.cmd.replace('format', 'timezone=utc and format')
-        else:
-            cmd = self.cmd
-
-        query = "select count(*) from ping_sensor where timestamp < '2021-07-22T00:27:14.237628Z';"
-        output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
-                auth=self.config['auth'], timeout=self.config['timeout'])
-        row_count = int(output[0]['count(*)'])
-        assert row_count == 4076, 'Failed Query: %s' % cmd % query
-
-        query = "select timestamp, value from ping_sensor where timestamp < '2021-07-22T00:27:14.237628Z' order by timestamp;"
-        output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
-                auth=self.config['auth'], timeout=self.config['timeout'])
-        assert len(output) == row_count, 'Failed Query: %s' % cmd % query
-
-        if len(output) == row_count:
-            file_name = 'base_queries_test_where_less_than.json'
             support.file.write_file(query=cmd % query, data=output, results_file=self.config['actual_dir'] + file_name)
             assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
 
