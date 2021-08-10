@@ -819,3 +819,49 @@ class TestBaseQueries:
             file_name = 'base_queries_test_period_day%s.json' % increment
             support.file.write_file(query=query, data=output, results_file=self.config['actual_dir'] + file_name)
             assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
+
+    def test_period_group(self):
+        """
+        period with group by
+                :params:
+            query:str - query to execute
+            output - result from request
+        :assert:
+            period with group by
+        """
+        if self.config['convert_timezone'] == 'true':
+            cmd = self.cmd.replace('format', 'timezone=utc and format')
+        else:
+            cmd = self.cmd
+
+        for interval in ['minute', 'hour', 'day']:
+            query = "SELECT device_name, parentelement, webid, min(timestamp), max(timestamp), min(value), avg(value), max(value), count(value) from ping_sensor where period(%s, 1, now(), timestamp) group by device_name, parentelement, webid order by min(timestamp)" % interval
+            output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
+                    auth=self.config['auth'], timeout=self.config['timeout'])
+            file_name = 'base_queries_test_period_group_%s.json' % interval
+            support.file.write_file(query=query, data=output, results_file=self.config['actual_dir'] + file_name)
+            assert filecmp.cmp(self.config['expect_dir'] + file_name,
+                               self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
+
+    def test_period_historic_group(self):
+        """
+        period with group by
+                :params:
+            query:str - query to execute
+            output - result from request
+        :assert:
+            period with group by
+        """
+        if self.config['convert_timezone'] == 'true':
+            cmd = self.cmd.replace('format', 'timezone=utc and format')
+        else:
+            cmd = self.cmd
+
+        for interval in ['minute', 'hour', 'day']:
+            query = "SELECT device_name, parentelement, webid, min(timestamp), max(timestamp), min(value), avg(value), max(value), count(value) from ping_sensor where period(%s, 1, '2021-07-22T15:30:45', timestamp) group by device_name, parentelement, webid order by min(timestamp)" % interval
+            output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
+                    auth=self.config['auth'], timeout=self.config['timeout'])
+            file_name = 'base_queries_test_period_historic_group_%s.json' % interval
+            support.file.write_file(query=query, data=output, results_file=self.config['actual_dir'] + file_name)
+            assert filecmp.cmp(self.config['expect_dir'] + file_name,
+                               self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
