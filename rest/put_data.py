@@ -35,10 +35,15 @@ def put_data(file_info:str, conn:str, auth:tuple=(), timeout:int=30):
         if file_info in file_name:
             full_path = DATA_DIR + file_name
             try:
-                with open(full_path, 'r') as f
+                with open(full_path, 'r') as f:
                     try:
-                        r = requests.put('http://%s' % conn, headers=headers, auth=auth, timeout=timeout, data=list(f.readlines()))
+                        data = str(f.readlines())
                     except Exception as e:
-                            assert True == False, 'Failed to POST data from %s on %s (Error: %s)' % (file_name, conn, e)
+                        assert True == False, 'Failed to extract results (Error: %s).\n\tQuery: %s\n' % (e, query)
             except Exception as e:
-                assert True == False, 'Failed to open file %s (Error: %s)' % (file_name, e)
+                assert True == False, 'Failed to read file %s (Error: %s).\n\tQuery: %s\n' % (file_name, e, query)
+            else:
+                try:
+                    r = requests.put('http://%s' % conn, headers=headers, auth=auth, timeout=timeout, data=data)
+                except Exception as e:
+                    assert True == False, 'Failed to POST data from %s on %s (Error: %s)' % (file_name, conn, e)

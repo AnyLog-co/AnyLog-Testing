@@ -62,7 +62,7 @@ class TestBaseQueries:
         # validate publish_conn & query_conn / insert data 
         if self.config['insert'] == 'true' and rest.get.get_status(conn=self.config['publish_conn'], auth=self.config['auth'], timeout=self.config['timeout']):
             rest.put_data.put_data(file_info='anylog.ping_sensor', conn=self.config['publish_conn'], auth=self.config['auth'], timeout=self.config['timeout'])
-            time.sleep(10)
+            time.sleep(65)
         elif self.config['insert'] == 'true':
             assert True == False, 'Faild to get status from: %s' % self.config['publish_conn']
 
@@ -144,7 +144,7 @@ class TestBaseQueries:
         output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
                 auth=self.config['auth'], timeout=self.config['timeout'])
 
-        if self.config['convert_timestamp'] == 'true':
+        if self.config['convert_timezone'] == 'true':
             assert support.convert.convert_timezone(query=self.cmd % query, timestamp=output[0]['timestamp']) == '2021-07-21 22:16:24.652293', 'Faild Query: %s' % self.cmd % query
         else:
             assert output[0]['timestamp'] == '2021-07-21 22:16:24.652293', 'Faild Query: %s' % self.cmd % query
