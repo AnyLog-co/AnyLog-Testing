@@ -165,18 +165,18 @@ class TestBaseQueries:
                 auth=self.config['auth'], timeout=self.config['timeout'])
         assert float(output[0]['sum(value)']) == 384960.0, 'Failed Query: %s' % self.cmd % query
 
-    # ORDER BY 
-    def test_order_by(self): 
+    # ORDER BY
+    def test_order_by(self):
         """
         Validate ORDER BY with no conditions
-        :params: 
+        :params:
             query:str - query to execute
             output - result from request
         :assert:
            ORDER BY without condition
         """
-        query = 'SELECT timestamp, value FROM ping_sensor ORDER BY timestamp LIMIT 1' 
-        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+        query = 'SELECT timestamp, value FROM ping_sensor ORDER BY timestamp LIMIT 1'
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True,
                 auth=self.config['auth'], timeout=self.config['timeout'])
 
         if self.config['convert_timezone'] == 'true':
@@ -345,6 +345,35 @@ class TestBaseQueries:
         if len(output) == row_count: 
             file_name = 'base_queries_test_where_end_day.json' 
             support.file.write_file(query=cmd % query, data=output, results_file=self.config['actual_dir'] + file_name)
+            #assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
+
+    def test_where_or(self):
+        """
+        Test WHERE OR
+        :params:
+            query:str - query to execute
+            output - result from request
+        :assert:
+            mid-day WHERE OR
+        """
+        if self.config['convert_timezone'] == 'true':
+            cmd = self.cmd.replace('format', 'timezone=utc and format')
+        else:
+            cmd = self.cmd
+
+        query = "select count(*) from ping_sensor where timestamp <= '2021-07-21T23:59:59Z' OR timestamp >= '2021-07-23T00:00:00'"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
+                auth=self.config['auth'], timeout=self.config['timeout'])
+        row_count = int(output[0]['count(*)'])
+
+        query = "select timestamp, value from ping_sensor where timestamp <= '2021-07-21T23:59:59Z' OR timestamp >= '2021-07-23T00:00:00's order by timestamp"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
+                auth=self.config['auth'], timeout=self.config['timeout'])
+        assert len(output) == row_count, 'Failed Query: %s' % cmd % query
+
+        if len(output) == row_count:
+            file_name = 'base_queries_test_where_or.json'
+            support.file.write_file(query=cmd % query, data=output, results_file=self.config['actual_dir'] + file_name)
             assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
 
     def test_where_variable(self):
@@ -373,10 +402,129 @@ class TestBaseQueries:
             assert output[0]['max(timestamp)'] == '2021-07-23 01:59:14.737836', 'Failed Query: %s' % self.cmd % query
         assert float(output[0]['min(value)']) == 0.0, 'Failed Query: %s' % self.cmd % query
         assert float(output[0]['avg(value)']) == 4.956625074272133, 'Failed Query: %s' % self.cmd % query 
-        assert float(output[0]['max(value)']) == 10.0, 'Failed Query: %s' % self.cmd % query 
+        assert float(output[0]['max(value)']) == 10.0, 'Failed Query: %s' % self.cmd % query
 
-    # GROUP by
+    def test_where_mid_day_and_variable(self):
+        """
+        Where condition is mid-day with AND device_name
+        :params:
+            query:str - query to execute
+            output - result from request
+        :assert:
+            mid-day WHERE condition
+        """
+        if self.config['convert_timezone'] == 'true':
+            cmd = self.cmd.replace('format', 'timezone=utc and format')
+        else:
+            cmd = self.cmd
 
+        query = "select count(*) from ping_sensor where timestamp > '2021-07-22T13:00:00Z' AND timestamp < '2021-07-22T16:00:00Z' AND device_name='VM Lit SL NMS';"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
+                                   auth=self.config['auth'], timeout=self.config['timeout'])
+        row_count = int(output[0]['count(*)'])
+
+        query = "select timestamp, value from ping_sensor where timestamp > '2021-07-22T13:00:00Z' AND timestamp < '2021-07-22T16:00:00Z' AND device_name='VM Lit SL NMS' order by timestamp;"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
+                                   auth=self.config['auth'], timeout=self.config['timeout'])
+        assert len(output) == row_count, 'Failed Query: %s' % cmd % query
+
+        if len(output) == row_count:
+            file_name = 'base_queries_test_where_mid_day_and_variable.json'
+            support.file.write_file(query=cmd % query, data=output, results_file=self.config['actual_dir'] + file_name)
+            assert filecmp.cmp(self.config['expect_dir'] + file_name,
+                               self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
+
+    def test_where_end_day_and_variable(self):
+        """
+        Where condition is between 2 days AND variable name
+        :params:
+            query:str - query to execute
+            output - result from request
+        :assert:
+            where condition between 2 days
+        """
+        if self.config['convert_timezone'] == 'true':
+            cmd = self.cmd.replace('format', 'timezone=utc and format')
+        else:
+            cmd = self.cmd
+
+        query = "select count(*) from ping_sensor where timestamp > '2021-07-21T22:00:00Z' AND timestamp < '2021-07-22T01:00:00Z' AND device_name='VM Lit SL NMS';"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
+                                   auth=self.config['auth'], timeout=self.config['timeout'])
+        row_count = int(output[0]['count(*)'])
+
+        query = "SELECT timestamp, value FROM ping_sensor WHERE timestamp > '2021-07-21T22:00:00Z' AND timestamp < '2021-07-22T01:00:00Z' AND device_name='VM Lit SL NMS' ORDER BY timestamp"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
+                                   auth=self.config['auth'], timeout=self.config['timeout'])
+        assert len(output) == row_count, 'Failed Query: %s' % cmd % query
+
+        if len(output) == row_count:
+            file_name = 'base_queries_test_where_mid_day_and_variable.json'
+            support.file.write_file(query=cmd % query, data=output, results_file=self.config['actual_dir'] + file_name)
+            #assert filecmp.cmp(self.config['expect_dir'] + file_name,
+            #                   self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
+
+    def test_where_mid_day_or_variable(self):
+        """
+        Where condition is mid-day with OR device_name
+        :params:
+            query:str - query to execute
+            output - result from request
+        :assert:
+            mid-day WHERE condition
+        """
+        if self.config['convert_timezone'] == 'true':
+            cmd = self.cmd.replace('format', 'timezone=utc and format')
+        else:
+            cmd = self.cmd
+
+        query = "select count(*) from ping_sensor where timestamp > '2021-07-22T13:00:00Z' AND timestamp < '2021-07-22T16:00:00Z' OR device_name='VM Lit SL NMS';"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
+                                   auth=self.config['auth'], timeout=self.config['timeout'])
+        row_count = int(output[0]['count(*)'])
+
+        query = "select timestamp, value from ping_sensor where timestamp > '2021-07-22T13:00:00Z' AND timestamp < '2021-07-22T16:00:00Z' OR device_name='VM Lit SL NMS' order by timestamp;"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
+                                   auth=self.config['auth'], timeout=self.config['timeout'])
+        assert len(output) == row_count, 'Failed Query: %s' % cmd % query
+
+        if len(output) == row_count:
+            file_name = 'base_queries_test_where_mid_day_or_variable.json'
+            support.file.write_file(query=cmd % query, data=output, results_file=self.config['actual_dir'] + file_name)
+            #assert filecmp.cmp(self.config['expect_dir'] + file_name,
+            #                   self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
+
+    def test_where_end_day_or_variable(self):
+        """
+        Where condition is between 2 days OR variable name
+        :params:
+            query:str - query to execute
+            output - result from request
+        :assert:
+            where condition between 2 days
+        """
+        if self.config['convert_timezone'] == 'true':
+            cmd = self.cmd.replace('format', 'timezone=utc and format')
+        else:
+            cmd = self.cmd
+
+        query = "select count(*) from ping_sensor where timestamp > '2021-07-21T22:00:00Z' AND timestamp < '2021-07-22T01:00:00Z' OR device_name='VM Lit SL NMS';"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
+                                   auth=self.config['auth'], timeout=self.config['timeout'])
+        row_count = int(output[0]['count(*)'])
+
+        query = "SELECT timestamp, value FROM ping_sensor WHERE timestamp > '2021-07-21T22:00:00Z' AND timestamp < '2021-07-22T01:00:00Z' OR device_name='VM Lit SL NMS' ORDER BY timestamp"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
+                                   auth=self.config['auth'], timeout=self.config['timeout'])
+        assert len(output) == row_count, 'Failed Query: %s' % cmd % query
+
+        if len(output) == row_count:
+            file_name = 'base_queries_test_where_end_day_or_variable.json'
+            support.file.write_file(query=cmd % query, data=output, results_file=self.config['actual_dir'] + file_name)
+            #assert filecmp.cmp(self.config['expect_dir'] + file_name,
+            #                   self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
+
+    # GROUP BY
     def test_group_by(self):
         """
         GROUP BY test
