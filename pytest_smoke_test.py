@@ -5,50 +5,40 @@ import pytest
 import sys
 import time
 
-support_dir = os.path.expandvars(os.path.expanduser('$HOME/AnyLog-API/support'))
+rest_dir = os.path.expandvars(os.path.expanduser('$HOME/testing/rest'))
+support_dir = os.path.expandvars(os.path.expanduser('$HOME/testing/support'))
+
+sys.path.insert(0, rest_dir)
 sys.path.insert(0, support_dir)
 
-from support.config import read_config
-from support.put_data import put_data
-from support.rest_query import rest_query
+import rest.get
+import rest.put_data
+import support.convert 
+import support.file
 
 CONFIG_FILE = 'config.ini' # Config file - located in AnyLog-API directory 
+if sys.platform.startswith('win'):
+    slash_char = '\\'
+else:
+    slash_char = '/'
 
-def print_exception(step:str, conn:str, query:str, error:str)->bool:
-    """
-    Print error message
-    :args: 
-        step:str - whether the failure occured on: 
-            -- request (get) 
-            -- network failure (network) 
-            -- data extraction (json)
-        conn:str - REST connection to AnyLog
-        query:str - Query executed
-        error:str - error from exception
-    """
-    if step.lower() == 'get': 
-        print('Failed to execute GET on %s (Error: %s)\n\tQuery: %s\n' % (conn, error, query))
-    elif step.lower() == 'network': 
-        print('Failed to execute GET on %s due to network error: %s.\n\tQuery: %s\n' % (conn, error, query))
-    elif step.lower() == 'json': 
-        print('Failed to extract data from %s (Error: %s).\n\tQuery: %s\n' % (conn, error, query))
-
-
-class TestSmoke: 
+class TestBaseQueries: 
     def setup_class(self): 
         """
-        The following is intended to act as the smoke-test for AnyLog
+        The following is intended to test a basic set of queries using anylog.ping_sensor sample data set
         :process:
             1. prepare config
             2. create actual_dir if not exists 
             3. insert data 
         :param: 
-            self.config:dict - config info 
-        """ 
+            self.config:dict - config info
+        """
+        status = True
+        self.cmd = 'sql anylog format=json and stat=false "%s"'
         # Read config
-        self.config = read_config(CONFIG_FILE)
-        self.config['expect_dir'] = os.path.expandvars(os.path.expanduser(self.config['expect_dir']))
-        self.config['actual_dir'] = os.path.expandvars(os.path.expanduser(self.config['actual_dir']))
+        self.config = support.file.read_config(CONFIG_FILE)
+        self.config['expect_dir'] = os.path.expandvars(os.path.expanduser(self.config['expect_dir'])) + slash_char
+        self.config['actual_dir'] = os.path.expandvars(os.path.expanduser(self.config['actual_dir'])) + slash_char
        
         # create actual_dir if not exists 
         if not os.path.isdir(self.config['actual_dir']): 
@@ -60,630 +50,446 @@ class TestSmoke:
                 print('Failed to create dir: %s (Error: %s)' % (self.config['actual_dir'], e))
                 exit(1)
         
-        # insert data 
-        if self.config['insert'] == 'true': 
-            self.status = put_data(self.config['publish_conn'])
-            time.sleep(10)
-
-    def __get_request(self, query:str)->list: 
-        """
-        Method to execute query
-        :args:
-            query:str - query to execute
-        :params: 
-            output:list - data extracted
-        :return: 
-            output
-        """
-        output = [] 
         try: 
-    def test_put_data(self): 
-        """
-        PUT data in AnyLog 
-        :param: 
-            data:list - FROM put_data whether each insert was successful or not 
-        :assert: 
-            all data was inserted 
-        """
-        if self.config['insert'] == 'true': 
-            assert all(True == i for i in self.status) == True 
-        else: 
-            pass 
+            self.config['auth'] = tuple(self.config['auth'])
+        except: 
+            self.config['auth'] = () 
+        try: 
+            self.config['timeout'] = int(self.config['timeout']) 
+        except: 
+            self.config['timeout'] = 30 
 
-    def test_status(self): 
-        """
-        Valide status for publisher & query connections 
-        :param: 
-            r - result from request 
-            error:str - error if request fails 
-        :assert: 
-            1. assert request didn't fail 
-            2. assert status_code  == 200 
-            3. assert node is running 
-        """
-        for ip in ['publish_conn', 'query_conn']: 
-            r, error = rest_query(self.config[ip], command='get status')
-            if error != None: 
-                print('Failed to GET status (Error: %s)' % error) 
-                assert False 
-            assert r.status_code == 200
-            assert 'running' in r.text
+        # validate publish_conn & query_conn / insert data 
+        if self.config['insert'] == 'true' and rest.get.get_status(conn=self.config['publish_conn'], auth=self.config['auth'], timeout=self.config['timeout']):
+            rest.put_data.put_data(file_info='anylog.ping_sensor', conn=self.config['publish_conn'], auth=self.config['auth'], timeout=self.config['timeout'])
+            time.sleep(10)
+        elif self.config['insert'] == 'true':
+            assert True == False, 'Faild to get status from: %s' % self.config['publish_conn']
 
-    # Basic aggergate 
-    def test_count(self): 
+
+        if not rest.get.get_status(conn=self.config['query_conn'], auth=self.config['auth'], timeout=self.config['timeout']):
+            assert True == False, 'Failed to get status from: %s' % self.config['query_conn']
+
+    # Basic aggregate
+    def test_aggregates_count(self):
         """
         Validate row count 
         :param: 
-            r - result from request 
-            error:str - error if request fails 
+            query:str - query to execute
+            output - result from request 
         :assert: 
-            1. assert request didn't fail 
-            2. assert status_code  == 200 
-            3. row count 
+            row count 
         """
-        r, error = rest_query(
-            self.config['query_conn'], 
-            command='sql anylog format=json and stat=False "select count(*) from ping_sensor;"', 
-            query=True
-        )
-        if error != None: 
-            print('Failed to GET row count (Error: %s)' % e)
-            assert False 
-        assert r.status_code == 200 
-        assert int(r.json()['Query'][0]['count(*)']) == 25862 
+        query = 'SELECT COUNT(*) FROM ping_sensor;' 
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
 
-    def test_min(self): 
+        assert int(output[0]['count(*)']) == 25862, 'Failed Query: %s' % self.cmd % query
+
+    def test_aggregates_min(self):
         """
-        Validate min value
+        Validate min(value)
         :param: 
-            r - result from request 
-            error:str - error if request fails 
+            query:str - query to execute
+            output - result from request 
         :assert: 
-            1. assert request didn't fail 
-            2. assert status_code  == 200 
-            3. min value
+            min value
         """
-        r, error = rest_query(
-            self.config['query_conn'], 
-            command='sql anylog format=json and stat=False "select min(value) from ping_sensor;"', 
-            query=True
-        )
-        if error != None: 
-            print('Failed to GET row count (Error: %s)' % e)
-            assert False 
-        assert r.status_code == 200 
-        assert float(r.json()['Query'][0]['min(value)']) == 0.0 
+        query = 'SELECT MIN(value) FROM ping_sensor;' 
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
 
-    def test_avg(self): 
+        assert float(output[0]['min(value)']) == 0.0, 'Failed Query: %s' % self.cmd % query
+
+    def test_aggregates_avg(self):
         """
-        Validate avg value
+        Validate avg(value)
         :param: 
-            r - result from request 
-            error:str - error if request fails 
+            output - result from request 
         :assert: 
-            1. assert request didn't fail 
-            2. assert status_code  == 200 
-            3. AVG value 
+            avg value
         """
-        r, error = rest_query(
-            self.config['query_conn'], 
-            command='sql anylog format=json and stat=False "select avg(value) from ping_sensor;"', 
-            query=True
-        )
-        if error != None: 
-            print('Failed to GET row count (Error: %s)' % e)
-            assert False 
-        assert r.status_code == 200 
-        assert float(r.json()['Query'][0]['avg(value)']) == 14.885159693759183
+        query = 'SELECT AVG(value) FROM ping_sensor;' 
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
 
-    def test_max(self): 
+        assert float(output[0]['avg(value)']) == 14.885159693759183, 'Failed Query: %s' % self.cmd % query
+
+    def test_aggregates_max(self):
         """
-        Validate max value
+        Validate max(value)
         :param: 
-            r - result from request 
-            error:str - error if request fails 
+            query:str - query to execute
+            output - result from request 
         :assert: 
-            1. assert request didn't fail 
-            2. assert status_code  == 200 
-            3. max value 
+            max value
         """
-        r, error = rest_query(
-            self.config['query_conn'], 
-            command='sql anylog format=json and stat=False "select max(value) from ping_sensor;"', 
-            query=True
-        )
-        if error != None: 
-            print('Failed to GET row count (Error: %s)' % e)
-            assert False 
-        assert r.status_code == 200
-        assert float(r.json()['Query'][0]['max(value)']) == 48.0
+        query = 'SELECT MAX(value) FROM ping_sensor;' 
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
 
-    # ORDER BY & WHERE Conditions 
+        assert float(output[0]['max(value)']) == 48.0, 'Failed Query: %s' % self.cmd % query
+
+    # ORDER BY 
+    def test_order_by(self): 
+        """
+        Validate ORDER BY with no conditions
+        :params: 
+            query:str - query to execute
+            output - result from request
+        :assert:
+           ORDER BY without condition
+        """
+        query = 'SELECT timestamp, value FROM ping_sensor ORDER BY timestamp LIMIT 1' 
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout'])
+
+        if self.config['convert_timezone'] == 'true':
+            assert support.convert.convert_timezone(query=self.cmd % query, timestamp=output[0]['timestamp']) == '2021-07-21 22:16:24.652293', 'Faild Query: %s' % self.cmd % query
+        else:
+            assert output[0]['timestamp'] == '2021-07-21 22:16:24.652293', 'Faild Query: %s' % self.cmd % query
+        assert float(output[0]['value']) == 2.0, 'Failed Query: %s' % self.cmd % query
+
     def test_order_by_asc(self): 
         """
-        Validate ORDER BY ASC
-        :param: 
-            r - result from request 
-            error:str - error if request fails 
-        :assert: 
-            1. assert request didn't fail 
-            2. assert status_code  == 200 
-            3. validate min timestamp == first timestamp with ASC 
-            4. validate value is consistant 
+        Validate ORDER BY with ASC 
+        :parrams: 
+            query:str - query to execute
+            min_ts:int - min timestamp
+            output - result from request 
+        :assert:
+           ORDER BY ASC 
         """
-        cmd = 'sql anylog format=json and stat=False "select min(timestamp) from ping_sensor"'
-        r, error = rest_query(self.config['query_conn'], command=cmd, query=True)
-        if error != None: 
-            print('Failed to GET row count (Error: %s)' % e)
-            assert False 
-        assert r.status_code == 200 
-        min_timestamp = r.json()['Query'][0]['min(timestamp)']
+        query = 'SELECT MIN(timestamp) FROM ping_sensor;' 
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        min_ts = output[0]['min(timestamp)']  
 
-        cmd = 'sql anylog format=json and stat=False "select timestamp, value from ping_sensor order by timestamp asc limit 1"' 
-        r, error = rest_query(self.config['query_conn'], command=cmd, query=True)
-        if error != None: 
-            print('Failed to GET row count (Error: %s)' % e)
-            assert False 
-        assert r.status_code == 200 
-        assert r.json()['Query'][0]['timestamp'] == min_timestamp
-        assert float(r.json()['Query'][0]['value']) == 2.0
+        query = 'SELECT timestamp, value FROM ping_sensor ORDER BY timestamp ASC LIMIT 1' 
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        
+        assert output[0]['timestamp'] == min_ts, 'Failed Query: %s' % self.cmd % query
+        assert float(output[0]['value']) == 2.0, 'Failed Query: %s' % self.cmd % query
 
     def test_order_by_desc(self): 
         """
-        Validate ORDER BY DESC
-        :param: 
-            r - result from request 
-            error:str - error if request fails 
-        :assert: 
-            1. assert request didn't fail 
-            2. assert status_code  == 200 
-            3. validate max timestamp == first timestamp with DESC 
-            4. validate value is consistant 
+        Validate ORDER BY with DESC
+        :parrams: 
+            query:str - query to execute
+            max_ts:int - max timestamp
+            output - result from request 
+        :assert:
+           ORDER BY DESC
         """
-        cmd = 'sql anylog format=json and stat=False "select max(timestamp) from ping_sensor"'
-        r, error = rest_query(self.config['query_conn'], command=cmd, query=True)
-        if error != None: 
-            print('Failed to GET row count (Error: %s)' % e)
-            assert False 
-        assert r.status_code == 200 
-        max_timestamp = r.json()['Query'][0]['max(timestamp)']
+        query = 'SELECT MAX(timestamp) FROM ping_sensor;' 
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        max_ts = output[0]['max(timestamp)']  
 
-        cmd = 'sql anylog format=json and stat=False "select timestamp, value from ping_sensor order by timestamp desc limit 1"' 
-        r, error = rest_query(self.config['query_conn'], command=cmd, query=True)
-        if error != None: 
-            print('Failed to GET row count (Error: %s)' % e)
-            assert False 
-        assert r.status_code == 200 
-        assert r.json()['Query'][0]['timestamp'] == max_timestamp
-        assert float(r.json()['Query'][0]['value']) == 34.0 
+        query = 'SELECT timestamp, value FROM ping_sensor ORDER BY timestamp DESC LIMIT 1' 
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        
+        assert output[0]['timestamp'] == max_ts, 'Failed Query: %s' % self.cmd % query
+        assert float(output[0]['value']) == 34.0, 'Failed Query: %s' % self.cmd % query
 
-    def test_mid_day_where(self): 
+    # WHERE conditions
+    def test_where_mid_day(self):
         """
-        Validate basic where condition (with order by) 
-        :param: 
-            results_file:str - file name containing results 
-            query:str - SQL query to execute
-            cmd:str - full AnyLog command in header 
-            r - result from request 
-            error:str - error if request fails 
-        :assert: 
-            1. assert request didn't fail 
-            2. assert status_code  == 200 
-            3. all values within range returned 
+        Where condition is mid-day
+        :params: 
+            query:str - query to execute
+            output - result from request 
+        :assert:
+            mid-day WHERE condition 
         """
-        where_condition = " where timestamp >= '2021-07-22T13:00:00Z' AND timestamp <= '2021-07-22T16:00:00Z'" 
-        query = "select count(*) from ping_sensor %s;" % where_condition  
+        if self.config['convert_timezone'] == 'true':
+            cmd = self.cmd.replace('format', 'timezone=utc and format')
+        else:
+            cmd = self.cmd
 
-        cmd = 'sql anylog format=json and stat=False  "%s"' % query
-        r, error = rest_query(self.config['query_conn'], command=cmd, query=True)
-        if error != None: 
-            print('Failed to GET row count (Error: %s)' % e)
-            assert False 
+        query = "select count(*) from ping_sensor where timestamp >= '2021-07-22T13:00:00Z' AND timestamp <= '2021-07-22T16:00:00Z';"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        row_count = int(output[0]['count(*)'])
 
-        assert r.status_code == 200 
-        try: 
-            row_count = int(r.json()['Query'][0]['count(*)'])
-        except Exception as e: 
-            print('Failed to extract JSON data from query: %s (Error: %s)' % (cmd, e))
-            assert False 
+        query = "SELECT timestamp, value FROM ping_sensor WHERE timestamp >= '2021-07-22T13:00:00Z' AND timestamp <= '2021-07-22T16:00:00Z' ORDER BY timestamp"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        assert len(output) == row_count, 'Failed Query: %s' % cmd % query
 
-        query = "select timestamp, value from ping_sensor %s order by timestamp;" % where_condition
+        if len(output) == row_count: 
+            file_name = 'base_queries_test_where_mid_day.json' 
+            support.file.write_file(query=cmd % query, data=output, results_file=self.config['actual_dir'] + file_name)
+            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
 
-        assert len(r.json()['Query']) == row_count 
-        results_file = 'test_mid_day_where.json'
+    def test_where_end_day(self):
         """
-        try: 
-            with open(self.config['actual_dir'] + '/%s' % results_file, 'w') as f: 
-                for row in r.json()['Query']: 
-                    f.write(json.dumps(row) + '\n')
-        except: 
-            assert False
-        else: 
-            assert filecmp.cmp(
-                self.config['expect_dir'] + '/%s' % results_file, 
-                self.config['actual_dir'] + '/%s' % results_file
-            ) == True
+        Where condition is between 2 days
+        :params: 
+            query:str - query to execute
+            output - result from request 
+        :assert:
+            where condition between 2 days
         """
+        if self.config['convert_timezone'] == 'true':
+            cmd = self.cmd.replace('format', 'timezone=utc and format')
+        else:
+            cmd = self.cmd
+
+        query = "select count(*) from ping_sensor where timestamp >= '2021-07-21T22:00:00Z' AND timestamp <= '2021-07-22T01:00:00Z';"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        row_count = int(output[0]['count(*)'])
+
+        query = "SELECT timestamp, value FROM ping_sensor WHERE timestamp >= '2021-07-21T22:00:00Z' AND timestamp <= '2021-07-22T01:00:00Z' ORDER BY timestamp"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        assert len(output) == row_count, 'Failed Query: %s' % cmd % query
+ 
+
+        if len(output) == row_count: 
+            file_name = 'base_queries_test_where_end_day.json' 
+            support.file.write_file(query=cmd % query, data=output, results_file=self.config['actual_dir'] + file_name)
+            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
+
+    def test_where_variable(self):
+        """
+        Where condition non-timestamp
+        :params: 
+            query:str - query to execute
+            output - result from request 
+        :assert:
+            where condition with non-timestamp
+        """
+        query = "select count(*) from ping_sensor where device_name='VM Lit SL NMS'"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        assert int(output[0]['count(*)']) == 5049, 'Failed Query: %s' % self.cmd % query 
+
+
+        query = "select min(timestamp), max(timestamp), min(value), avg(value), max(value) from ping_sensor where device_name='VM Lit SL NMS'"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        if self.config['convert_timezone'] == 'true':
+            assert support.convert.convert_timezone(query=self.cmd % query, timestamp=output[0]['min(timestamp)']) == '2021-07-21 22:18:58.765161', 'Failed Query: %s' % self.cmd % query
+            assert support.convert.convert_timezone(query=self.cmd % query, timestamp=output[0]['max(timestamp)']) == '2021-07-23 01:59:14.737836', 'Failed Query: %s' % self.cmd % query
+        else:
+            assert output[0]['min(timestamp)'] == '2021-07-21 22:18:58.765161', 'Failed Query: %s' % self.cmd % query
+            assert output[0]['max(timestamp)'] == '2021-07-23 01:59:14.737836', 'Failed Query: %s' % self.cmd % query
+        assert float(output[0]['min(value)']) == 0.0, 'Failed Query: %s' % self.cmd % query
+        assert float(output[0]['avg(value)']) == 4.956625074272133, 'Failed Query: %s' % self.cmd % query 
+        assert float(output[0]['max(value)']) == 10.0, 'Failed Query: %s' % self.cmd % query 
+
+    # Group by
+
+    # GROUP by
+    def test_group_by(self):
+        """
+        GROUP BY test
+        :params; 
+            expect_results:list - list of results
+            query:str - query to execute
+            output - result from request 
+        :assert:
+            GROUP BY
+        """
+        expect_results = [
+            {'device_name': 'VM Lit SL NMS', 'min(timestamp)': '2021-07-21 22:18:58.765161', 'max(timestamp)': '2021-07-23 01:59:14.737836', 'min(value)': '0.0', 'avg(value)': '4.956625074272133', 'max(value)': '10.0'}, 
+            {'device_name': 'Catalyst 3500XL', 'min(timestamp)': '2021-07-21 22:18:14.735669', 'max(timestamp)': '2021-07-23 01:57:24.649650', 'min(value)': '0.0', 'avg(value)': '24.203228315830415', 'max(value)': '48.0'}, 
+            {'device_name': 'ADVA FSP3000R7', 'min(timestamp)': '2021-07-21 22:16:24.652293', 'max(timestamp)': '2021-07-23 01:59:36.746599', 'min(value)': '0.0', 'avg(value)': '1.4835597558574523', 'max(value)': '3.0'}, 
+            {'device_name': 'Ubiquiti OLT', 'min(timestamp)': '2021-07-21 22:17:08.676983', 'max(timestamp)': '2021-07-23 01:59:58.768801', 'min(value)': '0.0', 'avg(value)': '24.112939416604338', 'max(value)': '48.0'}, 
+            {'device_name': 'GOOGLE_PING', 'min(timestamp)': '2021-07-21 22:20:26.830382', 'max(timestamp)': '2021-07-23 01:56:18.590668', 'min(value)': '2.0', 'avg(value)': '18.8768115942029', 'max(value)': '36.0'}
+        ]
+
+        query = "select device_name, min(timestamp), max(timestamp), min(value), avg(value), max(value) from ping_sensor group by device_name"
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        for row in output: 
+            for result in expect_results:
+                if row['device_name'] == result['device_name']: 
+                    for key in row:
+                        if 'timestamp' in key and self.config['convert_timezone'] == 'true':
+                            assert support.convert.convert_timezone(query=self.cmd % query, timestamp=row[key]) == result[key], 'Failed Query: %s' % self.cmd % query 
+                        else: 
+                            assert row[key] == result[key], 'Failed Query: %s' % self.cmd % query 
+
+    # basic complex queries
+
+    # queries containing where + group by
+    def test_complex_query_mid_day(self):
+        """
+        Query with both WHERE & GROUP BY 
+        :params: 
+            expect_results:list - list of results
+            query:str - query to execute
+            output - result from request 
+        :assert:
+            WHERE with GROUP BY
+        """
+        expect_results = [
+            {'device_name': 'VM Lit SL NMS', 'min(timestamp)': '2021-07-22 13:00:00.875931', 'max(timestamp)': '2021-07-22 15:59:58.232472', 'min(value)': '0.0', 'avg(value)': '4.891205802357208', 'max(value)': '10.0', 'count(*)': '1103'}, 
+            {'device_name': 'Catalyst 3500XL', 'min(timestamp)': '2021-07-22 13:00:23.805597', 'max(timestamp)': '2021-07-22 15:59:52.075720', 'min(value)': '0.0', 'avg(value)': '24.580882352941178', 'max(value)': '48.0', 'count(*)': '1088'}, 
+            {'device_name': 'ADVA FSP3000R7', 'min(timestamp)': '2021-07-22 13:00:02.790410', 'max(timestamp)': '2021-07-22 15:59:35.789967', 'min(value)': '0.0', 'avg(value)': '1.512987012987013', 'max(value)': '3.0', 'count(*)': '1078'}, 
+            {'device_name': 'Ubiquiti OLT', 'min(timestamp)': '2021-07-22 13:00:16.804801', 'max(timestamp)': '2021-07-22 15:59:55.774716', 'min(value)': '0.0', 'avg(value)': '23.49682107175295', 'max(value)': '48.0', 'count(*)': '1101'}, 
+            {'device_name': 'GOOGLE_PING', 'min(timestamp)': '2021-07-22 13:00:05.972585', 'max(timestamp)': '2021-07-22 15:59:15.092310', 'min(value)': '2.0', 'avg(value)': '19.111737089201878', 'max(value)': '36.0', 'count(*)': '1065'}
+        ] 
+
+        query = "select device_name, min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor where timestamp >= '2021-07-22T13:00:00Z' AND timestamp <= '2021-07-22T16:00:00Z' group by device_name" 
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        for row in output: 
+            for result in expect_results:
+                if row['device_name'] == result['device_name']: 
+                    for key in row:
+                        if 'timestamp' in key and self.config['convert_timezone'] == 'true':
+                            assert support.convert.convert_timezone(query=self.cmd % query, timestamp=row[key]) == result[key], 'Failed Query: %s' % self.cmd % query 
+                        else: 
+                            assert row[key] == result[key], 'Failed Query: %s' % self.cmd % query
+
+    def test_complex_query_end_day(self): 
+        """
+        Query with both WHERE & GROUP BY 
+        :params: 
+            expect_results:list - list of results
+            query:str - query to e}xecute
+            output - result from request 
+        :assert:
+            WHERE with GROUP BY
+        """
+        expect_results = [
+            {'device_name': 'VM Lit SL NMS', 'min(timestamp)': '2021-07-21 22:18:58.765161', 'max(timestamp)': '2021-07-22 00:59:55.437627', 'min(value)': '0.0', 'avg(value)': '4.8265963678968955', 'max(value)': '10.0', 'count(*)': '1707'}, 
+            {'device_name': 'Catalyst 3500XL', 'min(timestamp)': '2021-07-21 22:18:14.735669', 'max(timestamp)': '2021-07-22 00:59:52.249602', 'min(value)': '0.0', 'avg(value)': '24.036557930258716', 'max(value)': '48.0', 'count(*)': '1778'}, 
+            {'device_name': 'ADVA FSP3000R7', 'min(timestamp)': '2021-07-21 22:16:24.652293', 'max(timestamp)': '2021-07-22 00:59:58.709637', 'min(value)': '0.0', 'avg(value)': '1.4710312862108923', 'max(value)': '3.0', 'count(*)': '1726'}, 
+            {'device_name': 'Ubiquiti OLT', 'min(timestamp)': '2021-07-21 22:17:08.676983', 'max(timestamp)': '2021-07-22 00:59:58.505636', 'min(value)': '0.0', 'avg(value)': '24.717091295116774', 'max(value)': '48.0', 'count(*)': '1884'}, 
+            {'device_name': 'GOOGLE_PING', 'min(timestamp)': '2021-07-21 22:20:26.830382', 'max(timestamp)': '2021-07-22 00:59:59.289594', 'min(value)': '2.0', 'avg(value)': '18.915443335290664', 'max(value)': '36.0', 'count(*)': '1703'}
+        ]
+
+        query = "select device_name, min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor where timestamp >= '2021-07-21T22:00:00Z' AND timestamp <= '2021-07-22T01:00:00Z' group by device_name" 
+        output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                auth=self.config['auth'], timeout=self.config['timeout']) 
+        for row in output: 
+            for result in expect_results:
+                if row['device_name'] == result['device_name']: 
+                    for key in row:
+                        if 'timestamp' in key and self.config['convert_timezone'] == 'true':
+                            assert support.convert.convert_timezone(query=self.cmd % query, timestamp=row[key]) == result[key], 'Failed Query: %s' % self.cmd % query 
+                        else: 
+                            assert row[key] == result[key], 'Failed Query: %s' % self.cmd % query 
+
+
+    # increments
+
     '''
-    # Group by 
-    def test_basic_group_by(self): 
+    def test_basic_increments_minute(self):
         """
-        Validate basic GROUP BY 
-        :param: 
-            results_file:str - file name containing results 
-            query:str - SQL query to execute
-            cmd:str - full AnyLog command in header 
-            r - result from request 
-            error:str - error if request fails 
-        :assert: 
-            1. assert request didn't fail 
-            2. assert status_code  == 200 
-            3. group by function 
-        """
-        results_file = 'test_basic_group_by.json'
-        query = "select device_name, min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor group by device_name"
-        cmd = 'sql anylog format=json and stat=False "%s"' % query
-        r, error = rest_query(self.config['query_conn'], command=cmd, query=True)
-        if error != None: 
-            print('Failed to GET row count (Error: %s)' % e)
-            assert False 
-        assert r.status_code == 200 
-        try: 
-            with open(self.config['actual_dir'] + '/%s' % results_file, 'w') as f: 
-                for row in r.json()['Query']: 
-                    f.write(json.dumps(row) + '\n')
-        except: 
-            assert False
-        else: 
-            assert filecmp.cmp(
-                self.config['expect_dir'] + '/%s' % results_file, 
-                self.config['actual_dir'] + '/%s' % results_file
-            ) == True
-
-    # increments 
-    def test_basic_increments_minute(self): 
-        """
-        test increments for minute interval 
-            - intervals: 1, 10, 30, 60 
-        :param: 
-            results_file:str - file name containing results 
-            query:str - sql query to execute
-            cmd:str - full anylog command in header 
-            r - result from request 
-            error:str - error if request fails 
-        :assert: 
-            1. assert request didn't fail 
-            2. assert status_code  == 200 
-            3. increments are valid for each interval
-        """
-        for value in [1, 10, 30, 60]: 
-            results_file = 'test_basic_increments_minute%s.json' % value 
-            query = "select increments(minute, %s, timestamp), min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor order by min(timestamp);" % value
-            cmd = 'sql anylog format=json and stat=False "%s"' % query
-            r, error = rest_query(self.config['query_conn'], command=cmd, query=True)
-            if error != None: 
-                print('Failed to GET row count (Error: %s)' % e)
-                assert False 
-
-            assert r.status_code == 200 
-            try: 
-                with open(self.config['actual_dir'] + '/%s' % results_file, 'w') as f: 
-                    for row in r.json()['Query']: 
-                        f.write(json.dumps(row) + '\n')
-            except: 
-                assert False
-            else: 
-                assert filecmp.cmp(self.config['expect_dir'] + '/%s' % results_file, self.config['actual_dir'] + '/%s' % results_file) == True
-
-    def test_basic_increments_hour(self): 
-        """
-        test increments for hour interval 
-            - intervals: 1, 6, 12, 23 
-        :param: 
-            results_file:str - file name containing results 
-            query:str - sql query to execute
-            cmd:str - full anylog command in header 
-            r - result from request 
-            error:str - error if request fails 
-        :assert: 
-            1. assert request didn't fail 
-            2. assert status_code  == 200 
-            3. increments are valid for each interval
-        """
-        for value in [1, 6, 12, 24]: 
-            results_file = 'test_basic_increments_hour%s.json' % value 
-            query = "select increments(hour, %s, timestamp), min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor order by min(timestamp);" % value
-            cmd = 'sql anylog format=json and stat=False "%s"' % query
-            r, error = rest_query(self.config['query_conn'], command=cmd, query=True)
-            if error != None: 
-                print('Failed to GET row count (Error: %s)' % e)
-                assert False 
-
-            assert r.status_code == 200 
-            try: 
-                with open(self.config['actual_dir'] + '/%s' % results_file, 'w') as f: 
-                    for row in r.json()['Query']: 
-                        f.write(json.dumps(row) + '\n')
-            except: 
-                assert False
-            else: 
-                assert filecmp.cmp(self.config['expect_dir'] + '/%s' % results_file, self.config['actual_dir'] + '/%s' % results_file) == True
-
-    def test_basic_increments_day(self): 
-        """
-        test increments for day interval 
-            - intervals: 1, 3, 5, 7 
-        :param: 
-            results_file:str - file name containing results 
-            query:str - sql query to execute
-            cmd:str - full anylog command in header 
-            r - result from request 
-            error:str - error if request fails 
-        :assert: 
-            1. assert request didn't fail 
-            2. assert status_code  == 200 
-            3. increments are valid for each interval
-        """
-        for value in [1, 3, 5, 7]: 
-            results_file = 'test_basic_increments_day%s.json' % value 
-            query = "select increments(day, %s, timestamp), min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor order by min(timestamp);" % value
-            cmd = 'sql anylog format=json and stat=False "%s"' % query
-            r, error = rest_query(self.config['query_conn'], command=cmd, query=True)
-            if error != None: 
-                print('Failed to GET row count (Error: %s)' % e)
-                assert False 
-
-            assert r.status_code == 200 
-            try: 
-                with open(self.config['actual_dir'] + '/%s' % results_file, 'w') as f: 
-                    for row in r.json()['Query']: 
-                        f.write(json.dumps(row) + '\n')
-            except: 
-                assert False
-            else: 
-                assert filecmp.cmp(self.config['expect_dir'] + '/%s' % results_file, self.config['actual_dir'] + '/%s' % results_file) == True
-
-
-    def test_increments_group_by(self):
-        """
-        test increments with group by
-           - interval period: minute, hour, day
-        :param: 
-            results_file:str - file name containing results 
-            query:str - sql query to execute
-            cmd:str - full anylog command in header 
-            r - result from request 
-            error:str - error if request fails 
-        :assert: 
-            1. assert request didn't fail 
-            2. assert status_code  == 200 
-            3. increments are valid for each interval period using group by 
-        """
-        for period in ['minute', 'hour', 'day']: 
-            results_file = 'test_basic_increments_%s_group_by.json' % period 
-            query = "select increments(%s, 1, timestamp), device_name, min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor group by device_name order by min(timestamp);" % period 
-            cmd = 'sql anylog format=json and stat=False "%s"' % query
-            r, error = rest_query(self.config['query_conn'], command=cmd, query=True)
-            if error != None: 
-                print('Failed to GET row count (Error: %s)' % e)
-                assert False 
-
-            assert r.status_code == 200 
-            try: 
-                with open(self.config['actual_dir'] + '/%s' % results_file, 'w') as f: 
-                    for row in r.json()['Query']: 
-                        f.write(json.dumps(row) + '\n')
-            except: 
-                assert False
-            else: 
-                assert filecmp.cmp(self.config['expect_dir'] + '/%s' % results_file, self.config['actual_dir'] + '/%s' % results_file) == True
-
-    def test_increments_where(self):
-        """
-        test increments with where condition
-            - interval period: minute, hour, day
-        :param: 
-            results_file:str - file name containing results 
-            query:str - sql query to execute
-            cmd:str - full anylog command in header 
-            r - result from request 
-            error:str - error if request fails 
-        :assert: 
-            1. assert request didn't fail 
-            2. assert status_code  == 200 
-            3. increments are valid for each interval period using where condition 
-        """
-        for period in ['minute', 'hour', 'day']:
-            results_file = 'test_basic_increments_%s_where.json' % period 
-            query = "select increments(%s, 1, timestamp), min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor where timestamp >= '2021-07-24T00:00:00Z' and timestamp <= '2021-07-24T23:59:59Z' order by min(timestamp);" % period
-            if period == 'day': 
-                query = query.replace("timestamp >= '2021-07-24T00:00:00Z' and timestamp <= '2021-07-24T23:59:59Z'", "timestamp >= '2021-07-23T00:00:00Z' and timestamp <= '2021-07-25T23:59:59Z'")
-            cmd = 'sql anylog format=json and stat=False "%s"' % query
-            r, error = rest_query(self.config['query_conn'], command=cmd, query=True)
-            if error != None: 
-                print('failed to get row count (error: %s)' % e)
-                assert False 
-
-            assert r.status_code == 200 
-            try: 
-                with open(self.config['actual_dir'] + '/%s' % results_file, 'w') as f: 
-                    for row in r.json()['Query']: 
-                        f.write(json.dumps(row) + '\n')
-            except: 
-                assert False
-            else: 
-                assert filecmp.cmp(self.config['expect_dir'] + '/%s' % results_file, self.config['actual_dir'] + '/%s' % results_file) == True
-
-    def test_increments_both(self):
-        """
-        test increments with where & group by condition
-            - interval period: minute, hour, day
-        :param: 
-            results_file:str - file name containing results 
-            query:str - sql query to execute
-            cmd:str - full anylog command in header 
-            r - result from request 
-            error:str - error if request fails 
-        :assert: 
-            1. assert request didn't fail 
-            2. assert status_code  == 200 
-            3. increments are valid for each interval period using both using and group by conditions
-        """
-        for period in ['hour', 'minute', 'day']: 
-            results_file = 'test_basic_increments_%s_both.json' % period
-            query = "select increments(%s, 1, timestamp), device_name, min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor where timestamp >= '2021-07-24T00:00:00Z' and timestamp <= '2021-07-24T23:59:59Z' group by device_name order by min(timestamp);" % period
-            if period == 'day': 
-                query = query.replace("timestamp >= '2021-07-24T00:00:00Z' and timestamp <= '2021-07-24T23:59:59Z'", "timestamp >= '2021-07-23T00:00:00Z' and timestamp <= '2021-07-25T23:59:59Z'")
-            cmd = 'sql anylog format=json and stat=False "%s"' % query
-            r, error = rest_query(self.config['query_conn'], command=cmd, query=True)
-            if error != None: 
-                print('failed to get row count (error: %s)' % e)
-                assert False 
-
-            assert r.status_code == 200 
-            try: 
-                with open(self.config['actual_dir'] + '/%s' % results_file, 'w') as f: 
-                    for row in r.json()['Query']: 
-                        f.write(json.dumps(row) + '\n')
-            except: 
-                assert False
-            else: 
-                assert filecmp.cmp(self.config['expect_dir'] + '/%s' % results_file, self.config['actual_dir'] + '/%s' % results_file) == True
-
-    # period 
-    def test_basic_period_minute(self): 
-        """
-        test period for minute
+        Test increments with minute interval
             - intervals: 1, 10, 30, 60
-        :param: 
-            results_file:str - file name containing results 
-            query:str - sql query to execute
-            cmd:str - full anylog command in header 
-            r - result from request 
-            error:str - error if request fails 
-        :assert: 
-            1. assert request didn't fail 
-            2. assert status_code  == 200 
-            3. period are valid for each interval 
+        :params: 
+            query:str - query to execute
+            output - result from request 
+        :assert:
+            increments by minute
         """
-        for value in [1, 10, 30, 60]: 
-            results_file = 'test_basic_period_minute%s.json' % value 
-            query = "select timestamp, value from ping_sensor where period(minute, %s, now(), timestamp) order by timestamp;" % value
-            cmd = 'sql anylog format=json and stat=False "%s"' % query
-            r, error = rest_query(self.config['query_conn'], command=cmd, query=True)
-            if error != None: 
-                print('Failed to GET row count (Error: %s)' % e)
-                assert False 
+        for increment in [1, 10, 30, 60]:
+            query = "select increments(minute, %s, timestamp), min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor order by min(timestamp);" % increment
+            output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                    auth=self.config['auth'], timeout=self.config['timeout']) 
+            file_name = 'base_queries_test_increments_minute%s.json' % increment  
+            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + file_name)
+            assert status == True
+            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name) 
 
-            assert r.status_code == 200 
-            try: 
-                with open(self.config['actual_dir'] + '/%s' % results_file, 'w') as f: 
-                    for row in r.json()['Query']: 
-                        f.write(json.dumps(row) + '\n')
-            except: 
-                assert False
-            else: 
-                assert filecmp.cmp(self.config['expect_dir'] + '/%s' % results_file, self.config['actual_dir'] + '/%s' % results_file) == True
-
-    def test_basic_period_hour(self): 
+    def test_basic_increments_hour(self):
         """
-        test period for hour
+        Test increments with hour interval
             - intervals: 1, 6, 12, 24
-        :param: 
-            results_file:str - file name containing results 
-            query:str - sql query to execute
-            cmd:str - full anylog command in header 
-            r - result from request 
-            error:str - error if request fails 
-        :assert: 
-            1. assert request didn't fail 
-            2. assert status_code  == 200 
-            3. period are valid for each interval 
+        :params: 
+            query:str - query to execute
+            output - result from request 
+        :assert:
+            increments by hour 
         """
-        for value in [1, 6, 12, 24]: 
-            results_file = 'test_basic_period_hour%s.json' % value 
-            query = "select timestamp, value from ping_sensor where period(hour, %s, now(), timestamp) order by timestamp;" % value
-            cmd = 'sql anylog format=json and stat=False "%s"' % query
-            r, error = rest_query(self.config['query_conn'], command=cmd, query=True)
-            if error != None: 
-                print('Failed to GET row count (Error: %s)' % e)
-                assert False 
+        for increment in [1, 6, 12, 24]:
+            query = "select increments(hour, %s, timestamp), min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor order by min(timestamp);" % increment
+            output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                    auth=self.config['auth'], timeout=self.config['timeout']) 
+            file_name = 'base_queries_test_increments_hour%s.json' % increment  
+            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + file_name)
+            assert status == True
+            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name) 
 
-            assert r.status_code == 200 
-            try: 
-                with open(self.config['actual_dir'] + '/%s' % results_file, 'w') as f: 
-                    for row in r.json()['Query']: 
-                        f.write(json.dumps(row) + '\n')
-            except: 
-                assert False
-            else: 
-                assert filecmp.cmp(self.config['expect_dir'] + '/%s' % results_file, self.config['actual_dir'] + '/%s' % results_file) == True
-
-    def test_basic_period_day(self): 
+    def test_basic_increments_day(self):
         """
-        test period for day
-            - intervals: 1, 3, 5, 7
-        :param: 
-            results_file:str - file name containing results 
-            query:str - sql query to execute
-            cmd:str - full anylog command in header 
-            r - result from request 
-            error:str - error if request fails 
-        :assert: 
-            1. assert request didn't fail 
-            2. assert status_code  == 200 
-            3. period are valid for each interval 
+        Test increments with day interval
+            - intervals: 1, 3, 5, 7 
+        :params: 
+            query:str - query to execute
+            output - result from request 
+        :assert:
+            increments by day 
         """
-        for value in [1, 3, 5, 7]: 
-            results_file = 'test_basic_period_day%s.json' % value 
-            query = "select timestamp, value from ping_sensor where period(day, %s, now(), timestamp) order by timestamp;" % value
-            cmd = 'sql anylog format=json and stat=False "%s"' % query
-            r, error = rest_query(self.config['query_conn'], command=cmd, query=True)
-            if error != None: 
-                print('Failed to GET row count (Error: %s)' % e)
-                assert False 
+        for increment in [1, 3, 5, 7]:
+            query = "select increments(day, %s, timestamp), min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor order by min(timestamp);" % increment
+            output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                    auth=self.config['auth'], timeout=self.config['timeout']) 
+            file_name = 'base_queries_test_increments_day%s.json' % increment  
+            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + file_name)
+            assert status == True
+            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name) 
 
-            assert r.status_code == 200 
-            try: 
-                with open(self.config['actual_dir'] + '/%s' % results_file, 'w') as f: 
-                    for row in r.json()['Query']: 
-                        f.write(json.dumps(row) + '\n')
-            except: 
-                assert False
-            else: 
-                assert filecmp.cmp(self.config['expect_dir'] + '/%s' % results_file, self.config['actual_dir'] + '/%s' % results_file) == True
-
-    def test_basic_period_group_by(self): 
+    def test_basic_increments_group_by(self):
         """
-        test period with group by
-            - period: minute, hour, day
-        :param: 
-            results_file:str - file name containing results 
-            query:str - sql query to execute
-            cmd:str - full anylog command in header 
-            r - result from request 
-            error:str - error if request fails 
-        :assert: 
-            1. assert request didn't fail 
-            2. assert status_code  == 200 
-            3. period are valid for each interval 
+        Test increments with group by
+        :params: 
+            query:str - query to execute
+            output - result from request 
+        :assert:
+            group by
         """
-        for period in ['minute', 'hour', 'day']:
-            results_file = 'test_basic_period_%s_group_by.json' % period
-            query = "select device_name, min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor where period(%s, 1, now(), timestamp) group by device_name order by min(timestamp);" % period 
-            cmd = 'sql anylog format=json and stat=False "%s"' % query
-            r, error = rest_query(self.config['query_conn'], command=cmd, query=True)
-            if error != None: 
-                print('Failed to GET row count (Error: %s)' % error)
-                assert False 
-
-            assert r.status_code == 200 
-            try: 
-                with open(self.config['actual_dir'] + '/%s' % results_file, 'w') as f: 
-                    for row in r.json()['Query']: 
-                        f.write(json.dumps(row) + '\n')
-            except: 
-                assert False
-            else: 
-                assert filecmp.cmp(self.config['expect_dir'] + '/%s' % results_file, self.config['actual_dir'] + '/%s' % results_file) == True
+        for increment in ['minute', 'hour', 'day']:
+            query = "select increments(%s, 1, timestamp), device_name, min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor group by device_name order by min(timestamp);" % increment
+            output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                    auth=self.config['auth'], timeout=self.config['timeout']) 
+            file_name = 'base_queries_test_increments_group_by_%s.json' % increment  
+            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + file_name)
+            assert status == True
+            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name) 
+    
+    def test_increments_where_mid_day(self): 
+        """
+        Test increments with where in mid-day
+        :params: 
+            query:str - query to execute
+            output - result from request 
+        :assert:
+            increments with in mid-day
+        """
+        for increment in ['minute', 'hour', 'day']:
+            query = "select increments(%s, 1, timestamp), min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor where timestamp >= '2021-07-22T13:00:00Z' AND timestamp <= '2021-07-22T16:00:00Z' order by min(timestamp);" % increment
+            output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                    auth=self.config['auth'], timeout=self.config['timeout']) 
+            file_name = 'base_queries_test_increments_where_mid_day_%s.json' % increment  
+            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + file_name)
+            assert status == True
+            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name) 
+ 
+    def test_increments_where_between_days(self): 
+        """
+        Test increments with where in mid-day
+        :params: 
+            query:str - query to execute
+            output - result from request 
+        :assert:
+            increments with in mid-day
+        """
+        for increment in ['minute', 'hour', 'day']:
+            query = "select increments(%s, 1, timestamp), min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor where timestamp >= '2021-07-22T13:00:00Z' AND timestamp <= '2021-07-22T16:00:00Z' order by min(timestamp);" % increment
+            output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+                    auth=self.config['auth'], timeout=self.config['timeout']) 
+            file_name = 'base_queries_test_increments_where_between_days_%s.json' % increment  
+            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + file_name)
+            assert status == True
+            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name) 
     ''' 

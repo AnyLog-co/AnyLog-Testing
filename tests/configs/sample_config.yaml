@@ -1,0 +1,15 @@
+# Config for executing queries.
+REST: '10.0.0.181:2049' 
+OPERATOR: # Nodes containing data 
+   - '10.0.0.194:2048'
+   - '10.0.0.36:2048' 
+DB: 'lsl_demo' # database to query against 
+TABLE: 'ping_sensor' # table to query against 
+TABLE COLUMNS: # Columns in table to be  used for testing 
+   - device_name: 'string' # CHAR, VARCHAR, UUID, etc.
+   - parentelement: 'string' # CHAR, VARCHAR, UUID, etc.
+   - timestamp: 'timestamp' # DATE, TIME, TIMESTAMP, DATETIME
+   - value: 'numeric' # INT, FLOAT, DOUBLE, NUMERIC, etc.
+# For WHERE conditions, the minimum and maxium number of days back 
+MIN DAYS BACK: 1 
+MAX DAYS BACK: 10
