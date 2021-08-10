@@ -380,8 +380,6 @@ class TestBaseQueries:
 
 
     # increments
-
-    '''
     def test_basic_increments_minute(self):
         """
         Test increments with minute interval
@@ -392,15 +390,18 @@ class TestBaseQueries:
         :assert:
             increments by minute
         """
+        if self.config['convert_timezone'] == 'true':
+            cmd = self.cmd.replace('format', 'timezone=utc and format')
+        else:
+            cmd = self.cmd
         for increment in [1, 10, 30, 60]:
             query = "select increments(minute, %s, timestamp), min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor order by min(timestamp);" % increment
-            output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+            output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
                     auth=self.config['auth'], timeout=self.config['timeout']) 
             file_name = 'base_queries_test_increments_minute%s.json' % increment  
-            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + file_name)
-            assert status == True
-            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name) 
-
+            support.file.write_file(query=query, data=output, results_file=self.config['actual_dir'] + file_name)
+            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
+    '''
     def test_basic_increments_hour(self):
         """
         Test increments with hour interval
