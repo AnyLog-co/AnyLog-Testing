@@ -21,29 +21,7 @@ else:
     slash_char = '/'
 
 class TestBaseQueries:
-    """
-    The following uses anylog.ping_sensor data which has 25,862 between July 21 2021 22:16:24.652293 and July 23 2021 01:59:58.768801 UTC
-    :requirement:
-        Data is inserted using rest PUT, as such the node should already already have an empty anylog database connected to the node
-    :tests basic SQL for:
-        - COUNT - *, timestamp & value
-        - MIN - timestamp & value
-        - MAX - timestamp & value
-        - AVG - timestamp & value
-        - SUM(value)
-        - ORDER BY
-        - WHERE condition using AND
-        - GROUP BY
-        - INCREMENTS
-            -> minute: 1, 10, 30, 60
-            -> hour: 1, 6, 12, 24
-            -> day: 1, 3, 5, 7
-        - PERIOD
-            -> minute: 1, 10, 30, 60
-            -> hour: 1, 6, 12, 24
-            -> day: 1, 3, 5, 7
-    """
-    def setup_class(self): 
+    def setup_class(self):
         """
         The following is intended to test a basic set of queries using anylog.ping_sensor sample data set
         :process:
