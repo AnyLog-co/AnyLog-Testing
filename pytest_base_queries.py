@@ -1,7 +1,5 @@
 import filecmp
-import json
-import os 
-import pytest
+import os
 import sys
 import time
 
@@ -22,15 +20,37 @@ if sys.platform.startswith('win'):
 else:
     slash_char = '/'
 
-class TestBaseQueries: 
+class TestBaseQueries:
+    """
+    The following uses anylog.ping_sensor data which has 25,862 between July 21 2021 22:16:24.652293 and July 23 2021 01:59:58.768801 UTC
+    :requirement:
+        Data is inserted using rest PUT, as such the node should already already have an empty anylog database connected to the node
+    :tests basic SQL for:
+        - COUNT - *, timestamp & value
+        - MIN - timestamp & value
+        - MAX - timestamp & value
+        - AVG - timestamp & value
+        - ORDER BY
+        - WHERE condition using AND
+        - GROUP BY
+        - INCREMENTS
+            -> minute: 1, 10, 30, 60
+            -> hour: 1, 6, 12, 24
+            -> day: 1, 3, 5, 7
+        - PERIOD
+            -> minute: 1, 10, 30, 60
+            -> hour: 1, 6, 12, 24
+            -> day: 1, 3, 5, 7
+    """
     def setup_class(self): 
         """
         The following is intended to test a basic set of queries using anylog.ping_sensor sample data set
         :process:
             1. prepare config
             2. create actual_dir if not exists 
-            3. insert data 
-        :param: 
+            3. insert data if valid
+        :param:
+            self.cmd:str - AnyLog SQL wrapper
             self.config:dict - config info
         """
         status = True
@@ -282,9 +302,8 @@ class TestBaseQueries:
         assert float(output[0]['avg(value)']) == 4.956625074272133, 'Failed Query: %s' % self.cmd % query 
         assert float(output[0]['max(value)']) == 10.0, 'Failed Query: %s' % self.cmd % query 
 
-    # Group by
-
     # GROUP by
+
     def test_group_by(self):
         """
         GROUP BY test
@@ -380,6 +399,8 @@ class TestBaseQueries:
 
 
     # increments
+
+    # incrments & period queries
     def test_basic_increments_minute(self):
         """
         Test increments with minute interval
@@ -401,7 +422,7 @@ class TestBaseQueries:
             file_name = 'base_queries_test_increments_minute%s.json' % increment  
             support.file.write_file(query=query, data=output, results_file=self.config['actual_dir'] + file_name)
             assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
-    '''
+
     def test_basic_increments_hour(self):
         """
         Test increments with hour interval
@@ -412,85 +433,36 @@ class TestBaseQueries:
         :assert:
             increments by hour 
         """
+        if self.config['convert_timezone'] == 'true':
+            cmd = self.cmd.replace('format', 'timezone=utc and format')
+        else:
+            cmd = self.cmd
         for increment in [1, 6, 12, 24]:
             query = "select increments(hour, %s, timestamp), min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor order by min(timestamp);" % increment
-            output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
+            output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
                     auth=self.config['auth'], timeout=self.config['timeout']) 
             file_name = 'base_queries_test_increments_hour%s.json' % increment  
-            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + file_name)
-            assert status == True
-            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name) 
+            support.file.write_file(query=query, data=output, results_file=self.config['actual_dir'] + file_name)
+            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
 
     def test_basic_increments_day(self):
         """
         Test increments with day interval
-            - intervals: 1, 3, 5, 7 
-        :params: 
+            - intervals: 1, 3, 5, 7
+        :params:
             query:str - query to execute
-            output - result from request 
+            output - result from request
         :assert:
-            increments by day 
+            increments by day
         """
+        if self.config['convert_timezone'] == 'true':
+            cmd = self.cmd.replace('format', 'timezone=utc and format')
+        else:
+            cmd = self.cmd
         for increment in [1, 3, 5, 7]:
             query = "select increments(day, %s, timestamp), min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor order by min(timestamp);" % increment
-            output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
-                    auth=self.config['auth'], timeout=self.config['timeout']) 
-            file_name = 'base_queries_test_increments_day%s.json' % increment  
-            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + file_name)
-            assert status == True
-            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name) 
-
-    def test_basic_increments_group_by(self):
-        """
-        Test increments with group by
-        :params: 
-            query:str - query to execute
-            output - result from request 
-        :assert:
-            group by
-        """
-        for increment in ['minute', 'hour', 'day']:
-            query = "select increments(%s, 1, timestamp), device_name, min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor group by device_name order by min(timestamp);" % increment
-            output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
-                    auth=self.config['auth'], timeout=self.config['timeout']) 
-            file_name = 'base_queries_test_increments_group_by_%s.json' % increment  
-            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + file_name)
-            assert status == True
-            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name) 
-    
-    def test_increments_where_mid_day(self): 
-        """
-        Test increments with where in mid-day
-        :params: 
-            query:str - query to execute
-            output - result from request 
-        :assert:
-            increments with in mid-day
-        """
-        for increment in ['minute', 'hour', 'day']:
-            query = "select increments(%s, 1, timestamp), min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor where timestamp >= '2021-07-22T13:00:00Z' AND timestamp <= '2021-07-22T16:00:00Z' order by min(timestamp);" % increment
-            output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
-                    auth=self.config['auth'], timeout=self.config['timeout']) 
-            file_name = 'base_queries_test_increments_where_mid_day_%s.json' % increment  
-            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + file_name)
-            assert status == True
-            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name) 
- 
-    def test_increments_where_between_days(self): 
-        """
-        Test increments with where in mid-day
-        :params: 
-            query:str - query to execute
-            output - result from request 
-        :assert:
-            increments with in mid-day
-        """
-        for increment in ['minute', 'hour', 'day']:
-            query = "select increments(%s, 1, timestamp), min(timestamp), max(timestamp), min(value), avg(value), max(value), count(*) from ping_sensor where timestamp >= '2021-07-22T13:00:00Z' AND timestamp <= '2021-07-22T16:00:00Z' order by min(timestamp);" % increment
-            output = rest.get.get_json(conn=self.config['query_conn'], query=self.cmd % query, remote=True, 
-                    auth=self.config['auth'], timeout=self.config['timeout']) 
-            file_name = 'base_queries_test_increments_where_between_days_%s.json' % increment  
-            status = support.file.write_file(data=output, results_file=self.config['actual_dir'] + file_name)
-            assert status == True
-            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name) 
-    ''' 
+            output = rest.get.get_json(conn=self.config['query_conn'], query=cmd % query, remote=True,
+                                       auth=self.config['auth'], timeout=self.config['timeout'])
+            file_name = 'base_queries_test_increments_day%s.json' % increment
+            support.file.write_file(query=query, data=output, results_file=self.config['actual_dir'] + file_name)
+            assert filecmp.cmp(self.config['expect_dir'] + file_name, self.config['actual_dir'] + file_name), 'Failed Query: %s' % cmd % query
