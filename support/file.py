@@ -1,7 +1,13 @@
 import ast 
 import configparser 
 import json
-import os 
+import os
+import sys
+
+slash_char = '/'
+if sys.platform.startswith('win'):
+    slash_char = '\\'
+
 
 def read_config(config_file:str)->dict: 
     """
@@ -14,27 +20,40 @@ def read_config(config_file:str)->dict:
     :return: 
         data 
     """
+    data_dir = os.getcwd() + slash_char + 'data'
     data = {} 
     try: 
-        config = configparser.ConfigParser()
+        configs = configparser.ConfigParser()
     except Exception as e: 
         assert True == False, 'Failed to declare Parser (Error: %s)' % e
     if os.path.isfile(config_file):
         try:
-            config.read(config_file)
+            configs.read(config_file)
         except Exception as e: 
-            assert True == False, 'Failed to read config_file %s (Error: %s)' % (config_file, e)
+            assert True is False, 'Failed to read config_file %s (Error: %s)' % (config_file, e)
     else: 
-        assert True == False, 'Config file: %s does not exist' % config_file 
+        assert True is False, 'Config file: %s does not exist' % config_file
     try: 
-        for section in config.sections():
-            for key in config[section]:
-                try: 
-                    data[key] = ast.literal_eval(config[section][key])
-                except: 
-                    data[key] = config[section][key]
+        for section in configs.sections():
+            for key in configs[section]:
+                re_add = False
+                if key == 'nodes':
+                    try:
+                        data[key] = json.loads(configs[section][key])
+                    except:
+                        re_add = True
+                if key == 'add_data' and configs[section][key].lower() == 'false':
+                    data[key] = False
+                elif key == 'add_data' and configs[section][key].lower() == 'true':
+                    data[key] = True
+
+                if re_add is True:
+                    try:
+                        data[key] = ast.literal_eval(configs[section][key])
+                    except:
+                        data[key] = configs[section][key]
     except Exception as e: 
-        assert True == False, 'Failed to extract variables from config file - %s (Error: %s)' % (config_file, e)
+        assert True is False, 'Failed to extract variables from config file - %s (Error: %s)' % (config_file, e)
 
     return data 
 
