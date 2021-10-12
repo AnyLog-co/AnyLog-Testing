@@ -1,4 +1,3 @@
-import json
 import random
 import sys
 import support.anylog_api as anylog_api
@@ -38,6 +37,7 @@ def put_data(node_config:str, file_name:str)->bool:
                 conn.put(headers=header, payload=line)
     except:
         pass
+
 
 
 def query_data(conn:anylog_api.AnyLogConnect, command:str, destination:str="network")->str:

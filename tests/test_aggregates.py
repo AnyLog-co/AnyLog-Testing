@@ -1,6 +1,6 @@
 import os
-import pytest
 import sys
+import time
 
 import support.file as file
 from support.anylog_api import AnyLogConnect
@@ -23,18 +23,20 @@ DATA_FILES=[
 class TestAggregates:
     def setup_class(self):
         """
-        The following class tests basic aggregate functions
+        The following class tests basic aggregate functions against float, timestamp and string type column respectively
             - COUNT
             - MIN
             - MAX
             - AVG
             - SUM
             - DISTINCT
-            - COUNT(DISTINCT(
+            - COUNT DISTINCT
         :process:
             1. Extract config
             2. create node(s)
             3. Insert data
+            4. connect to query node
+            5. begin tests
         :local-params:
             config_file:str - full path of CONFIG_FILE
         :class-params:
@@ -42,21 +44,33 @@ class TestAggregates:
         """
         self.config_data = {}
 
+        # Extract config file (user param: --config-file)
         config_file = os.path.expandvars(os.path.expanduser(option.config_file))
 
+        # read config file -- if fails stops
         if os.path.isfile(config_file):
             self.config_data = file.read_config(config_file=config_file)
         if self.config_data == {}:
             exit(1)
 
+        # deploy AnyLog instance(s) based on config file - note, nodes should be accessible via REST
         deploy_anylog(anylog_api_path=self.config_data['anylog_api'], anylog_api_config=self.config_data['anylog_api_info'])
 
+        # Insert data
         if self.config_data['add_data'] is True:
             for file_name in DATA_FILES:
                 put_data(node_config=self.config_data['nodes']['insert'], file_name=file_name)
-            self.config_data['add_data'] = False
+            time.sleep(60)
+            #self.config_data['add_data'] = False
 
+        # connect to AnyLog instance
         self.conn = AnyLogConnect(conn=self.config_data['nodes']['query'], auth=(), timeout=30)
+
+    def teardown_class(self):
+        """
+        clean AnyLog instance(s)
+        """
+        pass
 
     def test_count_all(self):
         """
