@@ -6,6 +6,7 @@ slash_char = '/'
 if sys.platform.startswith('win'):
     slash_char = '\\'
 
+
 def deploy_anylog(anylog_api_path:str, anylog_api_config:dict):
     """
     Code to deploy AnyLog using API configs
