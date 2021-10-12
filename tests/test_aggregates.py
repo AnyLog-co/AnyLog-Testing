@@ -5,18 +5,13 @@ import sys
 import support.file as file
 from support.anylog_api import AnyLogConnect
 from support.rest import put_data, query_data
+from support.deploy_anylog import deploy_anylog
 from tests.conftest import option
-
-try:
-    from unittest import mock  # python 3.3+
-except ImportError:
-    import mock  # python 2.6-3.2
 
 slash_char = '/'
 if sys.platform.startswith('win'):
     slash_char = '\\'
 
-CONFIG_FILE = '$HOME/AnyLog-Testing/config/default_config.ini'
 ROOT_DIR = os.getcwd() + slash_char + 'data' + slash_char
 
 DATA_FILES=[
@@ -38,8 +33,8 @@ class TestAggregates:
             - COUNT(DISTINCT(
         :process:
             1. Extract config
-            2. Insert data
-            3. tests
+            2. create node(s)
+            3. Insert data
         :local-params:
             config_file:str - full path of CONFIG_FILE
         :class-params:
@@ -51,6 +46,10 @@ class TestAggregates:
 
         if os.path.isfile(config_file):
             self.config_data = file.read_config(config_file=config_file)
+        if self.config_data == {}:
+            exit(1)
+
+        deploy_anylog(anylog_api_path=self.config_data['anylog_api'], anylog_api_config=self.config_data['anylog_api_info'])
 
         if self.config_data['add_data'] is True:
             for file_name in DATA_FILES:
@@ -58,10 +57,6 @@ class TestAggregates:
             self.config_data['add_data'] = False
 
         self.conn = AnyLogConnect(conn=self.config_data['nodes']['query'], auth=(), timeout=30)
-
-    @pytest.fixture()
-    def name(self, pytestconfig):
-        print(pytestconfig.getoption("config"))
 
     def test_count_all(self):
         """

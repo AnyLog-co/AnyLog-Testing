@@ -20,7 +20,6 @@ def read_config(config_file:str)->dict:
     :return: 
         data 
     """
-    data_dir = os.getcwd() + slash_char + 'data'
     data = {} 
     try: 
         configs = configparser.ConfigParser()
@@ -36,8 +35,9 @@ def read_config(config_file:str)->dict:
     try: 
         for section in configs.sections():
             for key in configs[section]:
+                print(key)
                 re_add = False
-                if key == 'nodes':
+                if key == 'nodes' or key == 'anylog_api_info':
                     try:
                         data[key] = json.loads(configs[section][key])
                     except:
@@ -46,7 +46,8 @@ def read_config(config_file:str)->dict:
                     data[key] = False
                 elif key == 'add_data' and configs[section][key].lower() == 'true':
                     data[key] = True
-
+                if key == 'anylog_api':
+                    data[key] = os.path.expandvars(os.path.expanduser(configs[section][key]))
                 if re_add is True:
                     try:
                         data[key] = ast.literal_eval(configs[section][key])
@@ -55,7 +56,7 @@ def read_config(config_file:str)->dict:
     except Exception as e: 
         assert True is False, 'Failed to extract variables from config file - %s (Error: %s)' % (config_file, e)
 
-    return data 
+    return data
 
 
 def write_file(query:str, data:list, results_file:str)->bool: 
