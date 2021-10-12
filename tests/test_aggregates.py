@@ -14,11 +14,14 @@ if sys.platform.startswith('win'):
 
 ROOT_DIR = os.getcwd() + slash_char + 'data' + slash_char
 
-DATA_FILES=[
+DATA_FILES = ROOT_DIR + 'al_smoke_test.ping_sensor.0.0.json',
+"""    
+[
     ROOT_DIR + 'al_smoke_test.ping_sensor.0.20210721.json',
     ROOT_DIR + 'al_smoke_test.ping_sensor.0.20210722.json',
     ROOT_DIR + 'al_smoke_test.ping_sensor.0.20210723.json'
 ]
+"""
 
 class TestAggregates:
     def setup_class(self):
@@ -60,6 +63,7 @@ class TestAggregates:
         if self.config_data['add_data'] is True:
             for file_name in DATA_FILES:
                 put_data(node_config=self.config_data['nodes']['insert'], file_name=file_name)
+                time.sleep(10)
             time.sleep(60)
             #self.config_data['add_data'] = False
 
@@ -80,7 +84,7 @@ class TestAggregates:
         """
         query = 'sql al_smoke_test format=json and stat=false "select count(*) as row_count from ping_sensor;"'
         results = query_data(conn=self.conn, command=query)
-        assert int(results[0]['row_count']) == 25862, "Incorrect row count against '*'"
+        assert int(results[0]['row_count']) == 293, "Incorrect row count against '*'"
 
     def test_count_value(self):
         """
@@ -90,7 +94,7 @@ class TestAggregates:
         """
         query = 'sql al_smoke_test format=json and stat=false "select count(value) as row_count from ping_sensor;"'
         results = query_data(conn=self.conn, command=query)
-        assert int(results[0]['row_count']) == 25862, "Incorrect row count against '*'"
+        assert int(results[0]['row_count']) == 293, "Incorrect row count against '*'"
 
     def test_count_timestamp(self):
         """
@@ -100,7 +104,7 @@ class TestAggregates:
         """
         query = 'sql al_smoke_test format=json and stat=false "select count(timestamp) as row_count from ping_sensor;"'
         results = query_data(conn=self.conn, command=query)
-        assert int(results[0]['row_count']) == 25862, "Incorrect row count against '*'"
+        assert int(results[0]['row_count']) == 293, "Incorrect row count against '*'"
 
     def test_count_string(self):
         """
@@ -110,7 +114,7 @@ class TestAggregates:
         """
         query = 'sql al_smoke_test format=json and stat=false "select count(device_name) as row_count from ping_sensor;"'
         results = query_data(conn=self.conn, command=query)
-        assert int(results[0]['row_count']) == 25862, "Incorrect row count against '*'"
+        assert int(results[0]['row_count']) == 293, "Incorrect row count against '*'"
 
     def test_min_value(self):
         """
