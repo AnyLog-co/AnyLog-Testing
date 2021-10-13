@@ -4,17 +4,13 @@ import time
 
 import support.file as file
 from support.anylog_api import AnyLogConnect
-from support.rest import put_data, query_data, get_status
-from support.deploy_anylog import deploy_anylog
+import support.rest as rest
+
 from tests.conftest import option
 
 slash_char = '/'
 if sys.platform.startswith('win'):
     slash_char = '\\'
-
-ROOT_DIR = os.getcwd() + slash_char + 'data' + slash_char
-
-DATA_FILE = os.path.expanduser(os.path.expandvars('$HOME/AnyLog-Testing/data/al_smoke_test.ping_sensor.0.0.json'))
 
 class TestAggregates:
     def setup_class(self):
@@ -34,13 +30,16 @@ class TestAggregates:
             4. connect to query node
             5. begin tests
         :local-params:
-            config_file:str - full path of CONFIG_FILE
+            root_dir:str - path for AnyLog-Testing
+            config_file:str - full path of config file
+            data_file:str - path to data
         :class-params:
             self.config_data:dict - values from config file
         """
         self.config_data = {}
 
-        # Extract config file (user param: --config-file)
+        # Extract config file
+        root_dir = os.path.expandvars(os.path.expanduser(option.root_dir))
         config_file = os.path.expandvars(os.path.expanduser(option.config_file))
 
         # read config file -- if fails stops
@@ -50,17 +49,15 @@ class TestAggregates:
             exit(1)
 
         # deploy AnyLog instance(s) based on config file - note, nodes should be accessible via REST
-        if self.config_data['enable_anylog_api'] is True:
-            deploy_anylog(anylog_api_path=self.config_data['anylog_api'],
-                          anylog_api_config=self.config_data['anylog_api_info'])
+        # if self.config_data['enable_anylog_api'] is True:
+        #     deploy_anylog(anylog_api_path=self.config_data['anylog_api'],
+        #                   anylog_api_config=self.config_data['anylog_api_info'])
 
         # Insert data
+        data_file = root_dir + '%sdata%sal_smoke_test.ping_sensor.0.0.json' % (slash_char, slash_char)
         if self.config_data['add_data'] is True:
-            if put_data(node_config=self.config_data['nodes']['insert'], file_name=DATA_FILE):
-                time.sleep(60)
-                self.config_data['add_data'] = False
-            else:
-                exit(1)
+            rest.put_data(node_config=self.config_data['nodes']['insert'], file_name=data_file)
+            self.config_data['add_data'] = False
 
         # connect to AnyLog instance
         self.conn = AnyLogConnect(conn=self.config_data['nodes']['query'], auth=(), timeout=30)
@@ -75,8 +72,7 @@ class TestAggregates:
         """
         Validate connection to query node
         """
-        print(DATA_FILE)
-        assert get_status(self.conn) is True
+        assert rest.get_status(self.conn) is True
 
     def test_count_all(self):
         """
@@ -85,7 +81,7 @@ class TestAggregates:
             select count(*) as row_count from ping_sensor returns consistent results
         """
         query = 'sql al_smoke_test format=json and stat=false "select count(*) as row_count from ping_sensor;"'
-        results = query_data(conn=self.conn, command=query)
+        results = rest.query_data(conn=self.conn, command=query)
         assert int(results[0]['row_count']) == 295, "Incorrect row count against '*'"
 
     def test_count_value(self):
@@ -95,7 +91,7 @@ class TestAggregates:
             select count(value) as row_count from ping_sensor returns consistent results
         """
         query = 'sql al_smoke_test format=json and stat=false "select count(value) as row_count from ping_sensor;"'
-        results = query_data(conn=self.conn, command=query)
+        results = rest.query_data(conn=self.conn, command=query)
         assert int(results[0]['row_count']) == 295, "Incorrect row count against '*'"
 
     def test_count_timestamp(self):
@@ -105,7 +101,7 @@ class TestAggregates:
             select count(timestamp) as row_count from ping_sensor returns consistent results
         """
         query = 'sql al_smoke_test format=json and stat=false "select count(timestamp) as row_count from ping_sensor;"'
-        results = query_data(conn=self.conn, command=query)
+        results = rest.query_data(conn=self.conn, command=query)
         assert int(results[0]['row_count']) == 295, "Incorrect row count against '*'"
 
     def test_count_string(self):
@@ -115,7 +111,7 @@ class TestAggregates:
             select count(device_name) as row_count from ping_sensor returns consistent results
         """
         query = 'sql al_smoke_test format=json and stat=false "select count(device_name) as row_count from ping_sensor;"'
-        results = query_data(conn=self.conn, command=query)
+        results = rest.query_data(conn=self.conn, command=query)
         assert int(results[0]['row_count']) == 295, "Incorrect row count against '*'"
 
     def test_min_value(self):
@@ -125,7 +121,7 @@ class TestAggregates:
             select min(value) as min_value from ping_sensor
         """
         query = 'sql al_smoke_test format=json and stat=false "select min(value) as min_value from ping_sensor;"'
-        results = query_data(conn=self.conn, command=query)
+        results = rest.query_data(conn=self.conn, command=query)
         assert float(results[0]['min_value']) == 0.0
 
     def test_min_timestamp(self):
@@ -135,7 +131,7 @@ class TestAggregates:
             select min(timestamp) as min_ts from ping_sensor
         """
         query = 'sql al_smoke_test format=json and stat=false "select min(timestamp) as min_ts from ping_sensor;"'
-        results = query_data(conn=self.conn, command=query)
+        results = rest.query_data(conn=self.conn, command=query)
         assert results[0]['min_ts'] == '2021-07-21 22:16:24.652293'
 
     def test_max_value(self):
@@ -145,7 +141,7 @@ class TestAggregates:
             select max(value) as min_value from ping_sensor
         """
         query = 'sql al_smoke_test format=json and stat=false "select max(value) as max_value from ping_sensor;"'
-        results = query_data(conn=self.conn, command=query)
+        results = rest.query_data(conn=self.conn, command=query)
         assert float(results[0]['max_value']) == 48.0
 
     def test_max_timestamp(self):
@@ -155,8 +151,8 @@ class TestAggregates:
             select max(timestamp) as max_ts from ping_sensor
         """
         query = 'sql al_smoke_test format=json and stat=false "select max(timestamp) as max_ts from ping_sensor;"'
-        results = query_data(conn=self.conn, command=query)
-        assert results[0]['max_ts'] == '2021-07-23 01:59:58.768801'
+        results = rest.query_data(conn=self.conn, command=query)
+        assert results[0]['max_ts'] == '2021-07-23 02:00:44.453699'
 
     def test_avg_value(self):
         """
@@ -165,8 +161,8 @@ class TestAggregates:
             select avg(value) as avg_value from ping_sensor
         """
         query = 'sql al_smoke_test format=json and stat=false "select avg(value) as avg_value from ping_sensor;"'
-        results = query_data(conn=self.conn, command=query)
-        assert float(results[0]['avg_value']) == 14.8851596937591834
+        results = rest.query_data(conn=self.conn, command=query)
+        assert float(results[0]['avg_value']) == 14.844067796610169
 
     def test_sum_value(self):
         """
@@ -175,8 +171,8 @@ class TestAggregates:
             select sum(value) as sum_value from ping_sensor
         """
         query = 'sql al_smoke_test format=json and stat=false "select sum(value) as sum_value from ping_sensor;"'
-        results = query_data(conn=self.conn, command=query)
-        assert float(results[0]['sum_value']) == 384960.0
+        results = rest.query_data(conn=self.conn, command=query)
+        assert float(results[0]['sum_value']) == 4379.0
 
     def test_distinct_value(self):
         """
@@ -185,13 +181,13 @@ class TestAggregates:
             distinct(value) is the same as `GROUP BY value`
         """
         query = 'sql al_smoke_test format=json and stat=false "select distinct(value) as distinct_value from ping_sensor;"'
-        results = query_data(conn=self.conn, command=query)
+        results = rest.query_data(conn=self.conn, command=query)
         distinct_results = []
         for row in results:
             distinct_results.append(row['distinct_value'])
 
         query = 'sql al_smoke_test format=json and stat=false "select value from ping_sensor group by value;"'
-        results = query_data(conn=self.conn, command=query)
+        results = rest.query_data(conn=self.conn, command=query)
         group_results = []
         for row in results:
             group_results.append(row['value'])
@@ -205,13 +201,13 @@ class TestAggregates:
             distinct(timestamp) is the same as `GROUP BY timestamp`
         """
         query = 'sql al_smoke_test format=json and stat=false "select distinct(timestamp) as distinct_ts from ping_sensor;"'
-        results = query_data(conn=self.conn, command=query)
+        results = rest.query_data(conn=self.conn, command=query)
         distinct_results = []
         for row in results:
             distinct_results.append(row['distinct_ts'])
 
         query = 'sql al_smoke_test format=json and stat=false "select timestamp from ping_sensor group by timestamp;"'
-        results = query_data(conn=self.conn, command=query)
+        results = rest.query_data(conn=self.conn, command=query)
         group_results = []
         for row in results:
             group_results.append(row['timestamp'])
@@ -225,13 +221,13 @@ class TestAggregates:
             distinct(device_name) is the same as `GROUP BY timestamp`
         """
         query = 'sql al_smoke_test format=json and stat=false "select distinct(device_name) as distinct_dn from ping_sensor;"'
-        results = query_data(conn=self.conn, command=query)
+        results = rest.query_data(conn=self.conn, command=query)
         distinct_results = []
         for row in results:
             distinct_results.append(row['distinct_dn'])
 
         query = 'sql al_smoke_test format=json and stat=false "select device_name from ping_sensor group by device_name;"'
-        results = query_data(conn=self.conn, command=query)
+        results = rest.query_data(conn=self.conn, command=query)
         group_results = []
         for row in results:
             group_results.append(row['device_name'])
@@ -245,8 +241,8 @@ class TestAggregates:
             select count(distinct(value)) as count_distinct from ping_sensor
         """
         query = 'sql al_smoke_test format=json and stat=false "select count(distinct(value)) as count_distinct from ping_sensor;"'
-        results = query_data(conn=self.conn, command=query)
-        assert int(results[0]['count_distinct']) == 49
+        results = rest.query_data(conn=self.conn, command=query)
+        assert int(results[0]['count_distinct']) == 45
 
     def test_count_distinct_timestamp(self):
         """
@@ -255,8 +251,8 @@ class TestAggregates:
             distinct(timestamp) is the same as `GROUP BY timestamp`
         """
         query = 'sql al_smoke_test format=json and stat=false "select count(distinct(timestamp)) as count_distinct from ping_sensor;"'
-        results = query_data(conn=self.conn, command=query)
-        assert int(results[0]['count_distinct']) == 19161
+        results = rest.query_data(conn=self.conn, command=query)
+        assert int(results[0]['count_distinct']) == 295
 
     def test_count_distinct_string(self):
         """
@@ -265,5 +261,5 @@ class TestAggregates:
             distinct(device_name) is the same as `GROUP BY timestamp`
         """
         query = 'sql al_smoke_test format=json and stat=false "select count(distinct(device_name)) as count_distinct from ping_sensor;"'
-        results = query_data(conn=self.conn, command=query)
+        results = rest.query_data(conn=self.conn, command=query)
         assert int(results[0]['count_distinct']) == 5

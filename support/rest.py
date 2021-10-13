@@ -1,6 +1,8 @@
 import json
 import random
 import sys
+import time
+
 import support.anylog_api as anylog_api
 
 slash_char = '/'
@@ -36,12 +38,13 @@ def put_data(node_config:str, file_name:str)->bool:
     try:
         with open(file_name, 'r') as f:
             for line in f.read().split('\n'):
-                r = conn.put(headers=header, payload=line)
+                conn.put(headers=header, payload=line)
     except Exception as e:
         print(e)
-    else:
-        if int(r.status_code) != 200:
-            status = False
+
+    if status is True:
+        time.sleep(90)
+
     return status
 
 def post_data(node_config:str, cmd:str=None, file_name:str=None):
