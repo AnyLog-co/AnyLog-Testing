@@ -4,7 +4,7 @@ import time
 
 import support.file as file
 from support.anylog_api import AnyLogConnect
-from support.rest import put_data, query_data
+from support.rest import put_data, query_data, get_status
 from support.deploy_anylog import deploy_anylog
 from tests.conftest import option
 
@@ -14,14 +14,7 @@ if sys.platform.startswith('win'):
 
 ROOT_DIR = os.getcwd() + slash_char + 'data' + slash_char
 
-DATA_FILES = ROOT_DIR + 'al_smoke_test.ping_sensor.0.0.json',
-"""    
-[
-    ROOT_DIR + 'al_smoke_test.ping_sensor.0.20210721.json',
-    ROOT_DIR + 'al_smoke_test.ping_sensor.0.20210722.json',
-    ROOT_DIR + 'al_smoke_test.ping_sensor.0.20210723.json'
-]
-"""
+DATA_FILE = os.path.expanduser(os.path.expandvars('$HOME/AnyLog-Testing/data/al_smoke_test.ping_sensor.0.0.json'))
 
 class TestAggregates:
     def setup_class(self):
@@ -57,15 +50,17 @@ class TestAggregates:
             exit(1)
 
         # deploy AnyLog instance(s) based on config file - note, nodes should be accessible via REST
-        deploy_anylog(anylog_api_path=self.config_data['anylog_api'], anylog_api_config=self.config_data['anylog_api_info'])
+        if self.config_data['enable_anylog_api'] is True:
+            deploy_anylog(anylog_api_path=self.config_data['anylog_api'],
+                          anylog_api_config=self.config_data['anylog_api_info'])
 
         # Insert data
         if self.config_data['add_data'] is True:
-            for file_name in DATA_FILES:
-                put_data(node_config=self.config_data['nodes']['insert'], file_name=file_name)
-                time.sleep(10)
-            time.sleep(60)
-            #self.config_data['add_data'] = False
+            if put_data(node_config=self.config_data['nodes']['insert'], file_name=DATA_FILE):
+                time.sleep(60)
+                self.config_data['add_data'] = False
+            else:
+                exit(1)
 
         # connect to AnyLog instance
         self.conn = AnyLogConnect(conn=self.config_data['nodes']['query'], auth=(), timeout=30)
@@ -76,6 +71,13 @@ class TestAggregates:
         """
         pass
 
+    def test_status(self):
+        """
+        Validate connection to query node
+        """
+        print(DATA_FILE)
+        assert get_status(self.conn) is True
+
     def test_count_all(self):
         """
         Check row count using '*'
@@ -84,7 +86,7 @@ class TestAggregates:
         """
         query = 'sql al_smoke_test format=json and stat=false "select count(*) as row_count from ping_sensor;"'
         results = query_data(conn=self.conn, command=query)
-        assert int(results[0]['row_count']) == 293, "Incorrect row count against '*'"
+        assert int(results[0]['row_count']) == 295, "Incorrect row count against '*'"
 
     def test_count_value(self):
         """
@@ -94,7 +96,7 @@ class TestAggregates:
         """
         query = 'sql al_smoke_test format=json and stat=false "select count(value) as row_count from ping_sensor;"'
         results = query_data(conn=self.conn, command=query)
-        assert int(results[0]['row_count']) == 293, "Incorrect row count against '*'"
+        assert int(results[0]['row_count']) == 295, "Incorrect row count against '*'"
 
     def test_count_timestamp(self):
         """
@@ -104,7 +106,7 @@ class TestAggregates:
         """
         query = 'sql al_smoke_test format=json and stat=false "select count(timestamp) as row_count from ping_sensor;"'
         results = query_data(conn=self.conn, command=query)
-        assert int(results[0]['row_count']) == 293, "Incorrect row count against '*'"
+        assert int(results[0]['row_count']) == 295, "Incorrect row count against '*'"
 
     def test_count_string(self):
         """
@@ -114,7 +116,7 @@ class TestAggregates:
         """
         query = 'sql al_smoke_test format=json and stat=false "select count(device_name) as row_count from ping_sensor;"'
         results = query_data(conn=self.conn, command=query)
-        assert int(results[0]['row_count']) == 293, "Incorrect row count against '*'"
+        assert int(results[0]['row_count']) == 295, "Incorrect row count against '*'"
 
     def test_min_value(self):
         """

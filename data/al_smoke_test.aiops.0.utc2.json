@@ -1,0 +1,500 @@
+{"timestamp": "2021-06-18 23:08:48.114672+00:00", "value": 67.67896865405338, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-18 23:08:54.422064+00:00", "value": 65.9676277075627, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-18 23:08:50.730240+00:00", "value": 62.32043179221876, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-18 23:08:58.002149+00:00", "value": 62.990906559199445, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-18 23:09:02.416354+00:00", "value": 67.55985255824355, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-18 23:09:04.695249+00:00", "value": 63.857167243894715, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-18 23:09:06.495733+00:00", "value": 67.6002315012873, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:38:59.977450+00:00", "value": 66.82538603831277, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:02.796022+00:00", "value": 62.46896238468412, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:05.063539+00:00", "value": 66.80845116768683, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:07.371732+00:00", "value": 62.60223888043669, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:09.643717+00:00", "value": 64.36858565551653, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:12.034935+00:00", "value": 65.97843173490904, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:14.275410+00:00", "value": 65.59985279357237, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:16.625859+00:00", "value": 62.75443967681499, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:18.840594+00:00", "value": 67.71085605319577, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:21.234631+00:00", "value": 66.46943913850866, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:23.510702+00:00", "value": 63.45181709642243, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:25.719169+00:00", "value": 62.66662083140608, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:28.110255+00:00", "value": 66.72867352770831, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:30.367194+00:00", "value": 62.710669238057655, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:32.593237+00:00", "value": 62.12798772959473, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:34.838375+00:00", "value": 66.58887880969856, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:37.086425+00:00", "value": 65.70574866589764, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:39.359041+00:00", "value": 64.22760769472197, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:41.602004+00:00", "value": 63.21768384571985, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:44.673897+00:00", "value": 63.080161286822815, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:46.939417+00:00", "value": 68.10253307275734, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:49.168743+00:00", "value": 65.2566193035237, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:51.434140+00:00", "value": 63.766883646047816, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:53.672173+00:00", "value": 63.130465127771146, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:55.885794+00:00", "value": 67.47282094108053, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:39:58.864807+00:00", "value": 66.10459975318535, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-22 11:40:01.955045+00:00", "value": 67.94509138576821, "tag_id": 3, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-27 05:14:11.567062+00:00", "value": 67.00352648153041, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-27 05:14:13.111687+00:00", "value": 63.189985645270156, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-27 05:14:14.671229+00:00", "value": 67.17199170525106, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-27 05:14:16.182069+00:00", "value": 63.24001534757411, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-27 05:14:17.739586+00:00", "value": 68.26322681930628, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-27 05:14:19.308597+00:00", "value": 63.39699691819608, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-27 05:14:20.819953+00:00", "value": 67.04359851520304, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-27 05:14:22.633107+00:00", "value": 66.12574901276362, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-27 05:14:24.146075+00:00", "value": 64.07153784934218, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-27 05:14:25.711941+00:00", "value": 67.118421696137, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-27 05:14:27.216502+00:00", "value": 63.9500377161813, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-27 05:14:28.741318+00:00", "value": 67.05904301251832, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-27 05:14:30.341154+00:00", "value": 63.536246563254714, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-27 05:14:31.971701+00:00", "value": 67.56378346104067, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-27 05:14:33.583749+00:00", "value": 67.60661919570077, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-27 05:14:35.126374+00:00", "value": 64.02521485250199, "dbms": "al_smoke_test", "table": "fic11"}
+{"timestamp": "2021-06-02 20:26:27.861933+00:00", "value": 77.0694528724019, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:29.317456+00:00", "value": 74.05083614840159, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:29.960213+00:00", "value": 71.920027881588, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:30.622196+00:00", "value": 76.51939394078312, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:31.241015+00:00", "value": 74.11611804712643, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:31.859709+00:00", "value": 72.12028690419194, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:32.536942+00:00", "value": 76.844714229267, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:33.226407+00:00", "value": 72.73191388396428, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:33.813037+00:00", "value": 78.21080565074168, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:33.876400+00:00", "value": 73.92686691662422, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:34.514886+00:00", "value": 76.77761973088728, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:35.190449+00:00", "value": 73.41339665944507, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:35.813825+00:00", "value": 76.55034290010146, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:36.521755+00:00", "value": 77.62991556585179, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:37.140262+00:00", "value": 72.03302291852013, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:37.775819+00:00", "value": 75.84926107217929, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:38.410573+00:00", "value": 75.97243086286471, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:38.957797+00:00", "value": 74.64028095130732, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:39.079721+00:00", "value": 74.64028095130732, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:39.702822+00:00", "value": 77.36987234168632, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:40.391538+00:00", "value": 75.73837153372719, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:41.016837+00:00", "value": 73.28904722600586, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:41.708158+00:00", "value": 76.84225152178499, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:42.358069+00:00", "value": 76.2794837239745, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:43.021827+00:00", "value": 74.25622896741834, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:43.647794+00:00", "value": 77.72805046448015, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:44.082402+00:00", "value": 72.85076911063283, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:44.328804+00:00", "value": 72.85076911063283, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:44.948070+00:00", "value": 73.556189969662, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:45.614705+00:00", "value": 77.85466104610627, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:46.241705+00:00", "value": 72.22919389733508, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:46.907012+00:00", "value": 74.5303099736096, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:47.530075+00:00", "value": 77.64729117095168, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:48.186413+00:00", "value": 72.50486628890975, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:48.817582+00:00", "value": 77.70358727265594, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:49.231788+00:00", "value": 73.20090399154661, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:49.493800+00:00", "value": 75.87681282294128, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:50.124633+00:00", "value": 73.07204085111924, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:50.776324+00:00", "value": 75.62006575544711, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:51.412182+00:00", "value": 78.16218929923642, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:52.086664+00:00", "value": 72.61032689792057, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:52.714618+00:00", "value": 77.1011826932452, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:53.388247+00:00", "value": 76.64273772847974, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:54.012022+00:00", "value": 73.63760196576239, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:54.354119+00:00", "value": 75.55926554654067, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:54.684983+00:00", "value": 75.55926554654067, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:55.304274+00:00", "value": 74.15349351044027, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:55.982989+00:00", "value": 72.3238429091173, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:56.614325+00:00", "value": 75.96781668095056, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-06-02 20:26:57.267058+00:00", "value": 72.69914775504976, "dbms": "al_smoke_test", "table": "fic11_fb_factualvalue"}
+{"timestamp": "2021-09-21 17:04:11.629693+00:00", "value": 27.15471776434277, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:12.680660+00:00", "value": 27.162610756997374, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:13.630141+00:00", "value": 27.148197883227702, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:14.641346+00:00", "value": 27.12634972064994, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:15.650239+00:00", "value": 27.130490080944366, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:16.653112+00:00", "value": 27.143293282196186, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:17.634652+00:00", "value": 27.147333095071197, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:18.634630+00:00", "value": 27.14845177848727, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:19.635291+00:00", "value": 27.16869938967061, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:21.639001+00:00", "value": 27.18231026987301, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:21.639001+00:00", "value": 27.18231026987301, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:22.638535+00:00", "value": 27.156084909411053, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:23.659651+00:00", "value": 27.168484569108376, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:24.642052+00:00", "value": 27.19375923552546, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:25.641879+00:00", "value": 27.19997558579729, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:26.643317+00:00", "value": 27.199839164020702, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:27.646473+00:00", "value": 27.204315320435875, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:28.828690+00:00", "value": 27.210329002914968, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:29.750278+00:00", "value": 27.190966616634984, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:30.836239+00:00", "value": 27.163145540768642, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:31.809166+00:00", "value": 27.163776522757445, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:32.852371+00:00", "value": 27.173891524031298, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:33.844856+00:00", "value": 27.154448800215192, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:34.849943+00:00", "value": 27.1251535013691, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:35.851094+00:00", "value": 27.135413215003037, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:36.849232+00:00", "value": 27.158857932796987, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:38.030226+00:00", "value": 27.146087095413204, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:39.031493+00:00", "value": 27.121244406303507, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:40.060571+00:00", "value": 27.123420440329717, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:41.043007+00:00", "value": 27.12677512285117, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:42.096066+00:00", "value": 27.129672034344196, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:43.078789+00:00", "value": 27.130647690530033, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:44.080472+00:00", "value": 27.168683821336668, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:45.194148+00:00", "value": 27.199307857219143, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:46.117555+00:00", "value": 27.195197329536246, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:47.124174+00:00", "value": 27.198033714566424, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:48.122125+00:00", "value": 27.20484583283492, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:49.124827+00:00", "value": 27.21086280445575, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:50.123187+00:00", "value": 27.163358845075134, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:51.124521+00:00", "value": 27.126559071894807, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:52.642993+00:00", "value": 27.177872603179136, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:53.126532+00:00", "value": 27.18990505689035, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:54.129136+00:00", "value": 27.161853556355556, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:55.130052+00:00", "value": 27.144225337412205, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:56.149723+00:00", "value": 27.185817770161535, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:57.131355+00:00", "value": 27.21556607257233, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:58.134040+00:00", "value": 27.205787743377087, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:04:59.137077+00:00", "value": 27.203914740503052, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:05:00.134226+00:00", "value": 27.230910020354536, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-09-21 17:05:01.153998+00:00", "value": 27.252131643660917, "dbms": "al_smoke_test", "table": "fic11_mv"}
+{"timestamp": "2021-08-13 19:42:38.165503+00:00", "value": 49.03077952078707, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:42:39.580835+00:00", "value": 49.03077952078707, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:42:40.990196+00:00", "value": 50.02421318872384, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:42:42.401152+00:00", "value": 49.772939418858506, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:42:43.865472+00:00", "value": 50.61069405806204, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:42:45.276878+00:00", "value": 50.61069405806204, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:42:46.698969+00:00", "value": 49.226628040880534, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:42:48.099805+00:00", "value": 51.13224978539522, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:42:49.567043+00:00", "value": 51.13224978539522, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:42:50.854093+00:00", "value": 49.58412050088425, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:42:52.261893+00:00", "value": 50.921427274662356, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:42:53.744362+00:00", "value": 50.921427274662356, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:42:55.148177+00:00", "value": 49.61693066985959, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:42:56.572094+00:00", "value": 50.03857727202015, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:42:58.046177+00:00", "value": 48.8376535631948, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:42:59.453972+00:00", "value": 48.8376535631948, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:00.809700+00:00", "value": 51.07589015196311, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:02.225087+00:00", "value": 49.08389671075406, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:03.666526+00:00", "value": 49.08389671075406, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:05.042376+00:00", "value": 50.73347227348152, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:06.450177+00:00", "value": 49.424895403222926, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:07.809802+00:00", "value": 50.942753164420736, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:09.315879+00:00", "value": 50.942753164420736, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:10.724588+00:00", "value": 49.49238674442111, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:12.241167+00:00", "value": 50.36720245665757, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:13.761395+00:00", "value": 50.36720245665757, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:15.256667+00:00", "value": 48.964753179858505, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:16.766360+00:00", "value": 50.09046693343291, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:18.278206+00:00", "value": 49.39854029689854, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:19.688877+00:00", "value": 49.39854029689854, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:21.079619+00:00", "value": 50.730701959683905, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:22.542714+00:00", "value": 49.46036226500557, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:23.932540+00:00", "value": 51.137009402390845, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:25.355171+00:00", "value": 51.137009402390845, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:27.149630+00:00", "value": 48.994773609998454, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:28.400709+00:00", "value": 50.90121787381041, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:29.833542+00:00", "value": 49.2689918191671, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:31.217517+00:00", "value": 49.2689918191671, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:32.676541+00:00", "value": 50.99743984006404, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:34.033757+00:00", "value": 49.519732189885566, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:35.441548+00:00", "value": 49.519732189885566, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:36.945005+00:00", "value": 50.54759779022012, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-13 19:43:38.381738+00:00", "value": 49.404089571291514, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-01 19:07:58.420694+00:00", "value": 19.23959923829111, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-01 19:07:59.702028+00:00", "value": 18.131198166245408, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-01 19:08:00.990047+00:00", "value": 19.35607155122033, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-01 19:08:02.264329+00:00", "value": 19.35607155122033, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-01 19:08:03.538008+00:00", "value": 17.93220398930645, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-01 19:08:04.817589+00:00", "value": 17.93220398930645, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-08-01 19:08:06.089216+00:00", "value": 20.05058587462285, "dbms": "al_smoke_test", "table": "fic11_pv"}
+{"timestamp": "2021-07-21 19:21:34.726960+00:00", "value": 124.14045833845107, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:21:36.978198+00:00", "value": 122.05373532301074, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:21:39.077099+00:00", "value": 123.278050514263, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:21:41.567082+00:00", "value": 123.36983842763422, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:21:43.928308+00:00", "value": 122.16015976332699, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:21:46.028434+00:00", "value": 123.27226915227877, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:21:48.420881+00:00", "value": 122.81650159014144, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:21:50.515366+00:00", "value": 123.97480671809042, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:21:53.338249+00:00", "value": 123.38236951740504, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:21:55.876509+00:00", "value": 122.21877004524126, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:21:58.040681+00:00", "value": 123.07716207720553, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:22:00.304029+00:00", "value": 121.9577102222076, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:22:02.566191+00:00", "value": 123.57888700513475, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:22:04.631163+00:00", "value": 122.3278363445515, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:22:06.989282+00:00", "value": 124.39449593341463, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:22:09.788014+00:00", "value": 124.32328491030492, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:22:11.905430+00:00", "value": 121.71774981304985, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:22:14.216593+00:00", "value": 122.8801320489013, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:22:16.425754+00:00", "value": 122.57687760286099, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:22:18.602489+00:00", "value": 123.40670392808457, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:22:20.900501+00:00", "value": 122.3052691860219, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:22:22.999452+00:00", "value": 123.82346311231159, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:22:25.310867+00:00", "value": 123.4377649183682, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:22:27.570246+00:00", "value": 122.04167626144181, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:22:29.596949+00:00", "value": 123.06204929189087, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:22:31.785486+00:00", "value": 122.22654060244818, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-07-21 19:22:33.811675+00:00", "value": 123.8290982980209, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-08-15 08:00:15.334463+00:00", "value": 114.8630077751843, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-08-15 08:00:16.682163+00:00", "value": 114.8630077751843, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-08-15 08:00:18.171467+00:00", "value": 115.59901245468699, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-08-15 08:00:19.690679+00:00", "value": 114.77558128580202, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-08-15 08:00:21.096677+00:00", "value": 114.77558128580202, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-08-15 08:00:22.535762+00:00", "value": 116.08342830292332, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-08-15 08:00:23.939714+00:00", "value": 114.17179791279283, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-08-15 08:00:25.531649+00:00", "value": 115.95991652136165, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-08-15 08:00:26.948727+00:00", "value": 115.95991652136165, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-08-15 08:00:28.461525+00:00", "value": 114.14589969961946, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-08-15 08:00:29.920768+00:00", "value": 115.08452212985702, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-08-15 08:00:31.413261+00:00", "value": 114.16020599023231, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-08-15 08:00:32.806170+00:00", "value": 114.16020599023231, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-08-15 08:00:34.217242+00:00", "value": 115.95744279242831, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-08-15 08:00:35.644956+00:00", "value": 114.06368461375386, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-08-15 08:00:37.187058+00:00", "value": 116.0495272574279, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-08-15 08:00:38.732691+00:00", "value": 116.0495272574279, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-08-15 08:00:41.588779+00:00", "value": 115.51459613349384, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-08-15 08:00:41.588779+00:00", "value": 115.51459613349384, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-08-15 08:00:43.132013+00:00", "value": 113.89139240075255, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-08-15 08:00:44.588887+00:00", "value": 113.89139240075255, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-08-15 08:00:46.005000+00:00", "value": 115.98200333723881, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-08-15 08:00:47.532195+00:00", "value": 114.57868970960632, "dbms": "al_smoke_test", "table": "fic12_pv"}
+{"timestamp": "2021-06-03 12:03:45.929258+00:00", "value": 62.70356197484436, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:46.479066+00:00", "value": 67.79637460879769, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:46.562042+00:00", "value": 67.79637460879769, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:47.218362+00:00", "value": 66.04793698474876, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:47.874730+00:00", "value": 63.27439591513509, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:48.495170+00:00", "value": 67.50508127664452, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:49.164407+00:00", "value": 67.80252516219933, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:49.797928+00:00", "value": 63.24330390054812, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:50.447068+00:00", "value": 67.59908910064469, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:51.068933+00:00", "value": 64.74886375309124, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:51.659245+00:00", "value": 62.6491811915383, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:51.766163+00:00", "value": 62.6491811915383, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:52.407809+00:00", "value": 66.79723919612611, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:53.028179+00:00", "value": 62.65823550691148, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:53.709114+00:00", "value": 63.58630618374167, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:54.331496+00:00", "value": 68.04425345299273, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:55.004872+00:00", "value": 61.93469605930663, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:55.639071+00:00", "value": 62.858185924370936, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:56.313247+00:00", "value": 67.50551943715645, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:56.840245+00:00", "value": 63.106705618405286, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:56.937782+00:00", "value": 63.106705618405286, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:57.581575+00:00", "value": 62.584701957820585, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:58.235738+00:00", "value": 66.03288903727065, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:58.862923+00:00", "value": 62.88292814716964, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:03:59.543919+00:00", "value": 66.54016166099777, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:00.162827+00:00", "value": 67.85168767623195, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:00.821913+00:00", "value": 64.34204778936696, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:01.457717+00:00", "value": 65.67066851225854, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:02.023191+00:00", "value": 63.81420247691085, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:02.143638+00:00", "value": 65.57546149979662, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:02.797264+00:00", "value": 64.26647891771324, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:03.481966+00:00", "value": 68.29298391824308, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:04.102524+00:00", "value": 66.29919194694327, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:04.780944+00:00", "value": 63.293617637387385, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:05.415077+00:00", "value": 66.383045369345, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:06.066364+00:00", "value": 67.20770410819239, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:06.701397+00:00", "value": 63.312421692345445, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:07.206636+00:00", "value": 68.1158468125687, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:07.372387+00:00", "value": 68.1158468125687, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:08.012813+00:00", "value": 62.28422572135356, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:08.694309+00:00", "value": 63.73639373602311, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:09.327290+00:00", "value": 67.74950427139248, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:10.003246+00:00", "value": 61.98226815516147, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:10.627857+00:00", "value": 63.44487245031817, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:11.302294+00:00", "value": 66.68168802090413, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:11.924728+00:00", "value": 63.13833387653475, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:12.333959+00:00", "value": 63.13833387653475, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:13.488894+00:00", "value": 67.05900278284317, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:14.120716+00:00", "value": 65.2991121897023, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-03 12:04:14.801570+00:00", "value": 64.28787234408331, "dbms": "al_smoke_test", "table": "fic12_fb_factualvalue"}
+{"timestamp": "2021-06-24 15:36:39.325852+00:00", "value": 48.37403919388303, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-24 15:36:41.846059+00:00", "value": 49.748721010835816, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-24 15:36:46.661857+00:00", "value": 48.21500622396134, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-24 15:36:49.301939+00:00", "value": 47.703361577713565, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-24 15:36:55.093356+00:00", "value": 51.58452045293954, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-24 15:36:57.970672+00:00", "value": 52.34479873772855, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-24 15:37:03.036675+00:00", "value": 52.01671108538412, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-24 15:37:05.797948+00:00", "value": 50.16160488090995, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-24 15:37:10.584216+00:00", "value": 48.80713870754568, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-24 15:37:13.617932+00:00", "value": 47.89172587519972, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-24 15:37:19.762664+00:00", "value": 50.42766665132024, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-24 15:37:22.402133+00:00", "value": 49.251229649766216, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-24 15:37:27.847733+00:00", "value": 52.94307372272255, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-24 15:37:30.584951+00:00", "value": 49.412047004728834, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-24 15:37:35.395695+00:00", "value": 49.147307522595085, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-24 15:37:41.263634+00:00", "value": 47.4885298875752, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-22 11:59:30.311026+00:00", "value": 48.824761396982346, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-22 11:59:35.974130+00:00", "value": 48.353782075389, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-22 11:59:41.354871+00:00", "value": 48.62218451273429, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-22 11:59:46.391472+00:00", "value": 51.53998105031285, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-22 11:59:51.330578+00:00", "value": 53.17673135656864, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-22 11:59:55.609148+00:00", "value": 50.33813858666153, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-22 11:59:59.987931+00:00", "value": 49.514028783825204, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-22 12:00:05.172583+00:00", "value": 47.72133224067184, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-22 12:00:09.648762+00:00", "value": 52.03521170888373, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-22 12:00:13.084104+00:00", "value": 47.52747217289161, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-22 12:00:16.874550+00:00", "value": 47.9490988099312, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-22 12:00:19.850440+00:00", "value": 48.6319077486344, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-22 12:00:23.165697+00:00", "value": 47.49494186968506, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-22 12:00:26.106711+00:00", "value": 48.35371788441524, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-22 12:00:29.752951+00:00", "value": 52.53491545260658, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-26 20:38:58.393189+00:00", "value": 48.04508920438029, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-26 20:39:00.198311+00:00", "value": 48.71131300692593, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-26 20:39:01.736425+00:00", "value": 51.02241613736555, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-26 20:39:04.019664+00:00", "value": 49.25812404283684, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-26 20:39:05.567391+00:00", "value": 52.21368286641072, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-26 20:39:07.188571+00:00", "value": 47.8350032226303, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-26 20:39:08.744708+00:00", "value": 51.91079634022137, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-26 20:39:10.330621+00:00", "value": 49.107736717702295, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-26 20:39:11.887204+00:00", "value": 50.7743168545166, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-26 20:39:13.470674+00:00", "value": 53.32874452764764, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-26 20:39:15.021390+00:00", "value": 48.184528626708804, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-26 20:39:16.595202+00:00", "value": 50.938047810109666, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-26 20:39:18.127103+00:00", "value": 48.09506528325034, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-26 20:39:19.688417+00:00", "value": 52.967263554955636, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-26 20:39:21.376099+00:00", "value": 48.980093863824074, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-26 20:39:23.032692+00:00", "value": 47.10043318150655, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-26 20:39:24.662797+00:00", "value": 51.27715731498399, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-26 20:39:26.304146+00:00", "value": 48.007325696149465, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-26 20:39:27.843387+00:00", "value": 50.6242044380147, "tag_id": 4, "dbms": "al_smoke_test", "table": "fic12"}
+{"timestamp": "2021-06-18 08:43:01.775546+00:00", "value": 86.65726871969993, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:04.143029+00:00", "value": 83.21070080591143, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:06.123004+00:00", "value": 82.59117471880661, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:08.390503+00:00", "value": 83.87318684065859, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:10.678196+00:00", "value": 86.69562508006287, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:13.172082+00:00", "value": 81.58628240555707, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:15.085984+00:00", "value": 82.27318361227381, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:17.795640+00:00", "value": 87.82545052258557, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:19.462257+00:00", "value": 86.19254135298894, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:21.612793+00:00", "value": 86.86604985066573, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:23.836867+00:00", "value": 87.02937565173347, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:25.755415+00:00", "value": 87.97500320725257, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:27.846651+00:00", "value": 88.29409542248077, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:29.716283+00:00", "value": 88.33441561856216, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:31.668369+00:00", "value": 87.28898663226086, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:34.165437+00:00", "value": 81.62520946146434, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:35.840864+00:00", "value": 88.39354169948955, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:38.438265+00:00", "value": 88.49648410886518, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:40.569675+00:00", "value": 87.67478406474372, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:43.462750+00:00", "value": 87.41919966065153, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:45.670177+00:00", "value": 85.87379849531526, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:47.791748+00:00", "value": 87.33168436186553, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:51.607677+00:00", "value": 88.6500635579414, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:53.875460+00:00", "value": 87.27457427953844, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:56.497119+00:00", "value": 87.4477427089895, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:43:59.283653+00:00", "value": 82.3254643431409, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:44:01.585934+00:00", "value": 87.47757962208465, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-24 07:19:32.889400+00:00", "value": 95.91546031786088, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-24 07:19:37.834982+00:00", "value": 95.99400793705192, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-24 07:19:43.071238+00:00", "value": 96.6985417545023, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-24 07:19:48.579378+00:00", "value": 104.05390330419665, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-24 07:19:54.364392+00:00", "value": 103.76703629442237, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-24 07:20:00.165203+00:00", "value": 102.53751942693316, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-24 07:20:05.395374+00:00", "value": 103.71057927073726, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-24 07:20:10.694346+00:00", "value": 98.7446282686134, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-24 07:20:14.008083+00:00", "value": 96.32269863965011, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-24 07:20:20.206902+00:00", "value": 102.92610494379042, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-24 07:20:23.228630+00:00", "value": 103.0281286965397, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-24 07:20:26.187730+00:00", "value": 101.91462305531134, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-24 07:20:31.629722+00:00", "value": 103.24665885794984, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-24 07:20:34.328348+00:00", "value": 102.5003342227152, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:35:43.303981+00:00", "value": 82.18545683133424, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:35:46.006818+00:00", "value": 85.97287506168297, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:35:48.152436+00:00", "value": 81.44031876496345, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:35:50.120964+00:00", "value": 88.34285709195015, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:35:52.980675+00:00", "value": 88.09912273883025, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:35:54.609809+00:00", "value": 88.45240226223218, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:35:57.034486+00:00", "value": 88.470263688948, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:35:59.136936+00:00", "value": 82.14672235018611, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-18 08:36:00.949054+00:00", "value": 85.77272153312997, "tag_id": 5, "dbms": "al_smoke_test", "table": "fic13"}
+{"timestamp": "2021-06-03 09:14:39.651009+00:00", "value": 50.817322166901455, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:40.324047+00:00", "value": 48.99705041794276, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:40.960879+00:00", "value": 51.49043658016433, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:41.394167+00:00", "value": 48.52571078917641, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:41.636042+00:00", "value": 50.170998478921746, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:42.260519+00:00", "value": 49.405628627421926, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:42.893945+00:00", "value": 51.31427406891115, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:43.556068+00:00", "value": 48.46824687241428, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:44.178613+00:00", "value": 48.3701205002792, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:44.847465+00:00", "value": 51.839729776050575, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:45.474353+00:00", "value": 48.69736627356019, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:46.169326+00:00", "value": 47.56532927975692, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:46.518307+00:00", "value": 47.56532927975692, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:46.875131+00:00", "value": 52.83887167113369, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:47.494836+00:00", "value": 48.29687443748512, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:48.162751+00:00", "value": 46.96879954918287, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:48.801017+00:00", "value": 50.47991234824173, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:49.473397+00:00", "value": 47.843953806729836, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:50.094848+00:00", "value": 47.922317514060296, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:50.780504+00:00", "value": 53.07820823705682, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:51.401539+00:00", "value": 48.188785608784414, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:51.651931+00:00", "value": 51.916346362154485, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:52.083416+00:00", "value": 51.916346362154485, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:52.720873+00:00", "value": 50.24021872007385, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:53.397295+00:00", "value": 48.619659456619296, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:54.023771+00:00", "value": 52.20754351026194, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:54.723666+00:00", "value": 52.84038428317335, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:55.396167+00:00", "value": 48.313299198697344, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:56.022115+00:00", "value": 51.32798764258455, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:56.723615+00:00", "value": 52.758288714188396, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:56.776774+00:00", "value": 52.758288714188396, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:57.425796+00:00", "value": 46.91775733035043, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:58.478666+00:00", "value": 46.822561450301464, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:59.151764+00:00", "value": 48.22304370292423, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:14:59.777072+00:00", "value": 50.35694514987729, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:15:00.457726+00:00", "value": 49.136898027683934, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:15:01.077368+00:00", "value": 52.02590256959416, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:15:01.746869+00:00", "value": 51.70978244952824, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:15:01.948786+00:00", "value": 51.70978244952824, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:15:02.381691+00:00", "value": 47.50842188318975, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:15:03.000504+00:00", "value": 52.23674693757846, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:15:03.674568+00:00", "value": 52.323412720252534, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:15:04.307114+00:00", "value": 47.64009702852682, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:15:04.968292+00:00", "value": 52.664892030675865, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:15:05.839015+00:00", "value": 50.80265818658859, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:15:06.545783+00:00", "value": 48.852213272472675, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:15:07.112892+00:00", "value": 48.852213272472675, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:15:07.853063+00:00", "value": 51.00041425253843, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:15:08.534445+00:00", "value": 48.14034063345423, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-06-03 09:15:09.152731+00:00", "value": 48.707029843916246, "dbms": "al_smoke_test", "table": "fic13_fb_factualvalue"}
+{"timestamp": "2021-08-14 20:51:27.794695+00:00", "value": 105.98817479208431, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:51:29.200415+00:00", "value": 104.15576324902283, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:51:30.602353+00:00", "value": 104.15576324902283, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:51:32.206043+00:00", "value": 106.15852857130066, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:51:33.605552+00:00", "value": 104.26401096267163, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:51:35.214217+00:00", "value": 105.33180088389045, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:51:36.672674+00:00", "value": 105.33180088389045, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:51:39.216365+00:00", "value": 105.89935143512217, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:51:40.464922+00:00", "value": 105.89935143512217, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:51:41.868336+00:00", "value": 104.26938839541208, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:51:43.492114+00:00", "value": 105.75266962896333, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:51:44.914223+00:00", "value": 105.75266962896333, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:51:46.329953+00:00", "value": 103.97975542939274, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:51:47.758631+00:00", "value": 104.99460508179195, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:51:49.228760+00:00", "value": 104.74058433861083, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:51:50.622761+00:00", "value": 104.74058433861083, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:51:51.972161+00:00", "value": 106.27260088115098, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:51:53.425108+00:00", "value": 104.30855131637827, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:51:54.947825+00:00", "value": 104.30855131637827, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:51:56.491802+00:00", "value": 105.71297367679493, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:51:57.895265+00:00", "value": 104.37870477100849, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:51:59.306805+00:00", "value": 105.61055100818255, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:52:00.786962+00:00", "value": 105.61055100818255, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:52:02.183922+00:00", "value": 104.38981411916814, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:52:03.629134+00:00", "value": 105.8326483663413, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:52:05.038451+00:00", "value": 105.8326483663413, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:52:06.623492+00:00", "value": 104.04874113173518, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:52:08.057844+00:00", "value": 105.73396474081234, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:52:09.471621+00:00", "value": 103.82837436052748, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:52:10.880986+00:00", "value": 103.82837436052748, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:52:12.292233+00:00", "value": 105.51002277890055, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:52:13.703302+00:00", "value": 104.04532227470929, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:52:15.271323+00:00", "value": 105.13633114263055, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:52:16.596086+00:00", "value": 105.13633114263055, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:52:18.075400+00:00", "value": 104.8920212818586, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:52:19.585546+00:00", "value": 105.94163969863229, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:52:21.174962+00:00", "value": 104.75730554314427, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:52:22.444557+00:00", "value": 104.75730554314427, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:52:23.803795+00:00", "value": 106.27349719650478, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:52:25.210730+00:00", "value": 103.96902518631416, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:52:26.750268+00:00", "value": 103.96902518631416, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-14 20:52:28.022897+00:00", "value": 106.16352837948884, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-10 16:58:30.946517+00:00", "value": 103.80990632627976, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-10 16:58:32.414092+00:00", "value": 103.80990632627976, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-10 16:58:33.849183+00:00", "value": 105.45403914217694, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-10 16:58:35.260643+00:00", "value": 104.7983133005125, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-10 16:58:36.708533+00:00", "value": 104.7983133005125, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-10 16:58:38.136039+00:00", "value": 105.66266371266548, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-10 16:58:39.453081+00:00", "value": 104.6419463296676, "dbms": "al_smoke_test", "table": "fic13_pv"}
+{"timestamp": "2021-08-10 16:58:40.844036+00:00", "value": 105.22093628590414, "dbms": "al_smoke_test", "table": "fic13_pv"}

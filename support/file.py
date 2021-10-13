@@ -35,18 +35,17 @@ def read_config(config_file:str)->dict:
     try: 
         for section in configs.sections():
             for key in configs[section]:
-                print(key)
                 re_add = False
                 if key == 'nodes' or key == 'anylog_api_info':
                     try:
                         data[key] = json.loads(configs[section][key])
                     except:
                         re_add = True
-                if key == 'add_data' and configs[section][key].lower() == 'false':
+                if (key == 'add_data' or key == 'enable_anylog_api') and configs[section][key].lower() == 'false':
                     data[key] = False
-                elif key == 'add_data' and configs[section][key].lower() == 'true':
+                elif (key == 'add_data' or key == 'enable_anylog_api') and configs[section][key].lower() == 'true':
                     data[key] = True
-                if key == 'anylog_api':
+                if key == 'anylog_api' or key == 'data_set':
                     data[key] = os.path.expandvars(os.path.expanduser(configs[section][key]))
                 if re_add is True:
                     try:
