@@ -23,7 +23,7 @@ def __get_command(conn:str, headers:dict, auth:tuple=None, timeout:int=30)->requ
         response = None
     else:
         if int(response.status_code) != 200:
-            pytest.fail('Failed to execute GET against %s (Network Error: %s)' % (conn, result.status_code))
+            pytest.fail('Failed to execute GET against %s (Network Error: %s)' % (conn, response.status_code))
             response = None
 
     return response
@@ -67,3 +67,42 @@ def get_status(conn:str, username:str='', password='', timeout:int=30)->bool:
                 status = True
 
     return status
+
+
+def get_basic(conn:str, dbms:str, query:str, username:str='', password='', timeout:int=30)->list:
+    """
+    Execute GET based on query
+    :args:
+        conn:str - REST IP + Port
+        dbms:str - logical database to query
+        query:str - query to execute
+        username:str - REST authentication user
+        password:str - REST authentication password
+        timeout:int - REST timeout
+    :params:
+        headers:dict - REST header information
+        auth:tuple - username + password authentication
+        response:requests.models.Response - results form GET command
+        result:str - raw content
+    :return:
+
+    """
+    headers = {
+        'command': 'sql %s format=json and stat=false "%s"' % (dbms, query),
+        'User-Agent': 'AnyLog/1.23',
+        'destination': 'network'
+    }
+    auth = None
+    if username != '' and password != '':
+        auth = (username, password)
+
+    response = __get_command(conn=conn, headers=headers, auth=auth, timeout=timeout)
+    try:
+        result = response.json()
+    except Exception as e:
+        try:
+            result = response.text
+        except Exception as e:
+            pytest.fail('Failed to extract results (Error: %s)' % e)
+            result = None
+    return result

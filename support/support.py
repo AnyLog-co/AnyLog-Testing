@@ -33,4 +33,18 @@ def json_loads(data:str)->dict:
         return data
 
 
-
+def extract_values(payloads:list, values_column:str='value')->list:
+    """
+    Extract value(s) form payalods
+    :args:
+        payloads:list - content sent to be stored
+        values_column:str - json key to extract data from
+    :params:
+        values:list - list of values
+    :return:
+        values
+    """
+    values = []
+    for payloads in payloads:
+        values.append(payloads[values_column])
+    return values

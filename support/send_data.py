@@ -227,4 +227,5 @@ def store_payloads(payloads:list, configs:dict)->bool:
         if mqtt_conn is not None:
             status = mqtt_send_data(mqtt_client=mqtt_conn, topic=configs['topic'], data=payloads, dbms=configs['dbms'],
                                     table=configs['table'], exception=True)
+    time.sleep(60)
     return status
