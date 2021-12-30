@@ -1,4 +1,3 @@
-import collections
 import datetime
 import os
 import pytest
@@ -25,8 +24,6 @@ class TestBasicQueries:
         * timestamp
         * string
         * UUID
-    :table used:
-        ping / ping_sensor
     """
     def setup(self):
         """
@@ -77,7 +74,7 @@ class TestBasicQueries:
                 try:
                     result = output['Query'][0]['count(*)']
                 except Exception as e:
-                    pytest.fail("Failed to extract results from 'COUNT(*) (Error: %s)" % e)
+                    pytest.fail("Failed to extract results from 'COUNT(*)' (Error: %s)" % e)
                 else:
                     assert int(result) == len(self.payloads)
             else:
