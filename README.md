@@ -1,6 +1,20 @@
 # AnyLog Testing Suite
 
-## Test Cases
-* [pytest_base_queries](pytest_base_queries.py)  - Based a on a data set of 25,862 rows on a single table, validate SQL funcitons and timezone. Note, data is inserted using rest `PUT` function. As such, the node should already have an empty anylog database
+The following provides tests for AnyLog.
+
+## Requirements 
+* [pytest](https://pypi.org/project/pytest/)
+* [pytest-xdist](https://pypi.org/project/pytest-xdist/) - to execute tests concurrently
 
 
+## Test cases 
+* [test_basic_query.py](tests/test_basic_query.py) - Using data of type of _ping_sensor_ execute simple aggregate functions:
+  * COUNT(*)
+  * COUNT(DISTINCT(value))
+  * DISTINCT(value)
+  * MIN(value)
+  * MAX(value)
+  * AVG(value)
+  * SUM(value)
+  * MIN(timestamp)
+  * MAX(timestamp)

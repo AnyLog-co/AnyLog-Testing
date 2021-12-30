@@ -47,7 +47,7 @@ class TestBasicQueries:
             send_data.store_payloads(payloads=self.payloads, configs=self.configs)
 
         self.values = support.extract_values(payloads=self.payloads, values_column='value')
-
+        self.timestamps = support.external_values(payloads=self.payloads, values_column='timestamp')
         self.status = rest_get.get_status(conn=self.configs['conn'], username=self.configs['rest_user'],
                                           password=self.configs['rest_password'])
 
@@ -190,4 +190,44 @@ class TestBasicQueries:
                     pytest.fail("Failed to extract results for 'AVG(value)' (Error: %s)" % e)
             else:
                 assert result == sum(self.values)/len(self.values)
+
+    def test_min_timestamp(self):
+        """
+        Validate min value
+        :query:
+            SELECT min(value) FROM ping_sensor
+        :assert:
+            query returns the correct min value
+        """
+        if self.status is True and len(self.timestamps) == len(self.values):
+            result = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'],
+                                        query='SELECT MIN(timestamp) FROM ping_sensor', username=self.configs['rest_user'],
+                                        password=self.configs['rest_password'])
+            if isinstance(result, dict):
+                try:
+                    result = result["Query"][0]['min(timestamp)']
+                except Exception as e:
+                    pytest.fail("Failed to extract results for 'MIN(*)' (Error: %s)" % e)
+            else:
+                assert result == min(self.timestamps)
+
+    def test_max_timestamp(self):
+        """
+        Validate max value
+        :query:
+            SELECT max(value) FROM ping_sensor
+        :assert:
+            query returns the correct min value
+        """
+        if self.status is True and len(self.timestamps) == len(self.values):
+            result = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'],
+                                        query='SELECT MAX(timestamp) FROM ping_sensor', username=self.configs['rest_user'],
+                                        password=self.configs['rest_password'])
+            if isinstance(result, dict):
+                try:
+                    result = result["Query"][0]['max(timestamp)']
+                except Exception as e:
+                    pytest.fail("Failed to extract results for 'max(timestamp)' (Error: %s)" % e)
+            else:
+                assert result == max(self.values)
 
