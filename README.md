@@ -2,6 +2,10 @@
 
 The following provides tests for AnyLog.
 
+```bash
+python3 -m pytest tests/${TEST_NAME} -vn #
+```
+
 ## Requirements 
 * [pytest](https://pypi.org/project/pytest/)
 * [pytest-xdist](https://pypi.org/project/pytest-xdist/) - to execute tests concurrently

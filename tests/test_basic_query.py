@@ -47,9 +47,10 @@ class TestBasicQueries:
             send_data.store_payloads(payloads=self.payloads, configs=self.configs)
 
         self.values = support.extract_values(payloads=self.payloads, values_column='value')
-        self.timestamps = support.external_values(payloads=self.payloads, values_column='timestamp')
+        self.timestamps = support.extract_values(payloads=self.payloads, values_column='timestamp')
         self.status = rest_get.get_status(conn=self.configs['conn'], username=self.configs['rest_user'],
                                           password=self.configs['rest_password'])
+        print(self.status)
 
     def test_row_count(self):
         """
