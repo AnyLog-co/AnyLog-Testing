@@ -48,7 +48,7 @@ def extract_values(payloads:list, values_column:str='value')->list:
     if values_column == 'timestamp':
         for payload in payloads:
             try:
-                values.append(datetime.datetime.strftime(payload['timestamp'], '%Y-%m-%d %H:%M:%S.%f'))
+                values.append(datetime.datetime.strptime(payload['timestamp'], '%Y-%m-%dT%H:%M:%S.%fZ'))
             except:
                 pass
     else:
