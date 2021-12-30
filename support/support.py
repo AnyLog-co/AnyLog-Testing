@@ -15,7 +15,7 @@ def json_dumps(data:dict)->str:
     """
     try:
         return json.dumps(data)
-    except Exception as e:
+    except:
         return data
 
 
@@ -29,7 +29,7 @@ def json_loads(data:str)->dict:
         """
     try:
         return json.loads(data)
-    except Exceptiion as e:
+    except:
         return data
 
 
@@ -45,6 +45,14 @@ def extract_values(payloads:list, values_column:str='value')->list:
         values
     """
     values = []
-    for payloads in payloads:
-        values.append(payloads[values_column])
+    if values_column == 'timestamp':
+        for payload in payloads:
+            try:
+                values.append(datetime.datetime.strftime(payload['timestamp'], '%Y-%m-%d %H:%M:%S.%f'))
+            except:
+                pass
+    else:
+        for payloads in payloads:
+            values.append(payloads[values_column])
+
     return values
