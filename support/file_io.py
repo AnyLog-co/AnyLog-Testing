@@ -3,24 +3,30 @@ import os
 import pytest
 import support
 
-def read_file(file_name:str)->list:
+def read_file(file_name:str, dbms:str)->list:
     """
     Given a (JSON) file, read its contents and writen them as a list
     :args:
         file_name:str - file to reead
+        dbms:str - logical database name
     :params:
         payloads:dict - content from file
     :return:
         payloads
     """
     payloads = []
+    table_name = file_name.split('.')[1]
+
     if os.path.isfile(file_name):
         try:
             with open(file_name, 'r') as f:
                 try:
                     for line in f.read().split("\n"):
                         if line != '':
-                            payloads.append(support.json_loads(line))
+                            line = support.json_loads(line)
+                            line['dbms'] = dbms
+                            line['table'] = table_name
+                            payloads.append(line)
                 except Exception as e:
                     pytest.fail('Failed to read line(s) (Error: %s)' % e)
         except Exception as e:

@@ -43,7 +43,7 @@ class TestBasicQueries:
         for fn in os.listdir(DATA_DIR):
             if 'ping_sensor' in fn:
                 file_name = os.path.join(DATA_DIR, fn)
-                self.payloads += file_io.read_file(file_name=file_name)
+                self.payloads += file_io.read_file(file_name=file_name, dbms=self.configs['dbms'])
 
         if self.configs['insert'] == 'true':
             send_data.store_payloads(payloads=self.payloads, configs=self.configs)

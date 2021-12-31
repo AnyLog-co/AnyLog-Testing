@@ -16,6 +16,7 @@ import rest_get
 import send_data
 import support
 
+
 class TestBasicQueries2:
     """
     The following tests basic functions using WHERE / GROUP BY / ORDER BYagainst the following data types:
@@ -129,3 +130,62 @@ class TestBasicQueries2:
                                       {'parentelement': 'f0bd0832-a81e-11ea-b46d-d4856454f4ba', 'min(timestamp)': '2021-12-30 20:44:23.894585', 'max(timestamp)': '2021-12-30 20:45:55.130598', 'min(value)': '2.09', 'avg(value)': '17.849545454545453', 'max(value)': '36.46'}]
             else:
                 pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_data_summary_by_string_desc(self):
+        """
+        Get summary of the data based on string column
+        :query:
+            SELECT device_name, min(timestamp), max(timestamp), min(value), avg(value), max(value) FROM ping_sensor GROUP BY device_name ORDER BY device_name DESC;
+        :assert:
+            correct results
+        """
+        query = "SELECT device_name, min(timestamp), max(timestamp), min(value), avg(value), max(value) FROM ping_sensor GROUP BY device_name ORDER BY device_name DESC;"
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+
+            if isinstance(output, dict):
+                try:
+                    result = output['Query']
+                except Exception as e:
+                    pytest.fail("Failed to extract results from '%s' (Error: %s)" % (query, e))
+                else:
+                    assert result == [{'device_name': 'VM Lit SL NMS', 'min(timestamp)': '2021-12-30 20:44:19.882427', 'max(timestamp)': '2021-12-30 20:45:58.142131', 'min(value)': '0.32', 'avg(value)': '5.581818181818182', 'max(value)': '10.31'},
+                                      {'device_name': 'Ubiquiti OLT', 'min(timestamp)': '2021-12-30 20:44:18.878658', 'max(timestamp)': '2021-12-30 20:45:57.138328', 'min(value)': '0.78', 'avg(value)': '25.590833333333332', 'max(value)': '48.14'},
+                                      {'device_name': 'GOOGLE_PING', 'min(timestamp)': '2021-12-30 20:44:23.894585', 'max(timestamp)': '2021-12-30 20:45:55.130598', 'min(value)': '2.09', 'avg(value)': '17.849545454545453', 'max(value)': '36.46'},
+                                      {'device_name': 'Catalyst 3500XL', 'min(timestamp)': '2021-12-30 20:44:20.885200', 'max(timestamp)': '2021-12-30 20:45:44.101509', 'min(value)': '15.13', 'avg(value)': '34.972142857142856', 'max(value)': '47.72'},
+                                      {'device_name': 'ADVA FSP3000R7', 'min(timestamp)': '2021-12-30 20:44:24.897399', 'max(timestamp)': '2021-12-30 20:45:56.133286', 'min(value)': '0.22', 'avg(value)': '2.1544444444444446', 'max(value)': '3.95'}]
+            else:
+                pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_data_summary_by_string_asc(self):
+        """
+        Get summary of the data based on string column
+        :query:
+            SELECT device_name, min(timestamp), max(timestamp), min(value), avg(value), max(value) FROM ping_sensor GROUP BY device_name ORDER BY device_name ASC;
+        :assert:
+            correct results
+        """
+        query = "SELECT device_name, min(timestamp), max(timestamp), min(value), avg(value), max(value) FROM ping_sensor GROUP BY device_name ORDER BY device_name ASC;"
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+
+            if isinstance(output, dict):
+                try:
+                    result = output['Query']
+                except Exception as e:
+                    pytest.fail("Failed to extract results from '%s' (Error: %s)" % (query, e))
+                else:
+                    assert result == [{'device_name': 'ADVA FSP3000R7', 'min(timestamp)': '2021-12-30 20:44:24.897399', 'max(timestamp)': '2021-12-30 20:45:56.133286', 'min(value)': '0.22', 'avg(value)': '2.1544444444444446', 'max(value)': '3.95'},
+                                       {'device_name': 'Catalyst 3500XL', 'min(timestamp)': '2021-12-30 20:44:20.885200', 'max(timestamp)': '2021-12-30 20:45:44.101509', 'min(value)': '15.13', 'avg(value)': '34.972142857142856', 'max(value)': '47.72'},
+                                       {'device_name': 'GOOGLE_PING', 'min(timestamp)': '2021-12-30 20:44:23.894585', 'max(timestamp)': '2021-12-30 20:45:55.130598', 'min(value)': '2.09', 'avg(value)': '17.849545454545453', 'max(value)': '36.46'},
+                                       {'device_name': 'Ubiquiti OLT', 'min(timestamp)': '2021-12-30 20:44:18.878658', 'max(timestamp)': '2021-12-30 20:45:57.138328', 'min(value)': '0.78', 'avg(value)': '25.590833333333332', 'max(value)': '48.14'},
+                                       {'device_name': 'VM Lit SL NMS', 'min(timestamp)': '2021-12-30 20:44:19.882427', 'max(timestamp)': '2021-12-30 20:45:58.142131', 'min(value)': '0.32', 'avg(value)': '5.581818181818182', 'max(value)': '10.31'}]
+            else:
+                pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_timestamp_less_then(self):
+        """
+
+        """

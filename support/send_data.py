@@ -1,4 +1,5 @@
 from paho.mqtt import client
+import pytest
 import random
 import requests
 import support
@@ -53,7 +54,7 @@ def post_data(conn:str, data:list, dbms:str, table:str=None, rest_topic:str='new
     return status
 
 
-def put_data(conn:str, data:list, dbms:str, table:str=None, auth:tuple=None, timeout:int=30, exception:bool=False)->bool:
+def put_data(conn:str, data:list, auth:tuple=None, timeout:int=30, exception:bool=False)->bool:
     """
     Send data via REST using PUT command
     :url:
@@ -76,13 +77,17 @@ def put_data(conn:str, data:list, dbms:str, table:str=None, auth:tuple=None, tim
     status = True
     headers = {
         'type': 'json',
-        'dbms': dbms,
+        'dbms': None,
+        'table': None,
         'mode': 'streaming',
         'Content-Type': 'text/plain'
     }
     if isinstance(data, list):
-        headers['table'] = table
         for row in data:
+            headers['dbms'] = row['dbms']
+            headers['table'] = row['table']
+            del row['dbms']
+            del row['table']
             try:
                 r = requests.put(url='http://%s' % conn, headers=headers, data=support.json_dumps(row), auth=auth, timeout=timeout)
             except Exception as e:
@@ -216,8 +221,7 @@ def store_payloads(payloads:list, configs:dict)->bool:
         auth = None
 
     if configs['send'] == 'put':
-        status = put_data(conn=configs['conn'], data=payloads, dbms=configs['dbms'], table=configs['table'],
-                          auth=auth, timeout=30, exception=True)
+        status = put_data(conn=configs['conn'], data=payloads, auth=auth, timeout=30, exception=True)
     elif configs['send'] == 'post':
         status = post_data(conn=configs['conn'], data=payloads, dbms=configs['dbms'], table=configs['table'],
                            rest_topic=configs['topic'], auth=auth, timeout=30, exception=True)
@@ -227,5 +231,5 @@ def store_payloads(payloads:list, configs:dict)->bool:
         if mqtt_conn is not None:
             status = mqtt_send_data(mqtt_client=mqtt_conn, topic=configs['topic'], data=payloads, dbms=configs['dbms'],
                                     table=configs['table'], exception=True)
-    time.sleep(60)
+    time.sleep(70)
     return status
