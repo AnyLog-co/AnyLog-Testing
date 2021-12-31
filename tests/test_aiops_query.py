@@ -51,7 +51,16 @@ class TestBasicQueries:
         self.status = rest_get.get_status(conn=self.configs['conn'], username=self.configs['rest_user'],
                                           password=self.configs['rest_password'])
 
-    def test_case1(self):
+    def test_row_count(self):
         """
         Assert total rows inserted
+        :query:
+            SELECT COUNT(*) FROM %s
+        :assert:
+            number of row inserted
         """
+        query = 'sql %s format=json and stat=false and include=(fic11_mv, fic11_pv, fic12_pv, fic13_pv, lic1_mv, lic1_pv) "SELECT COUNT(*) FROM lic1_sv;"' % self.configs['dbms']
+        result = rest_get.get_complex(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                      username=self.configs['rest_user'], password=self.configs['rest_password'])
+
+        print(result)

@@ -106,3 +106,41 @@ def get_basic(conn:str, dbms:str, query:str, username:str='', password='', timeo
             pytest.fail('Failed to extract results (Error: %s)' % e)
             result = None
     return result
+
+def get_complex(conn:str, dbms:str, query:str, username:str='', password='', timeout:int=30)->list:
+    """
+    Execute GET based on query
+    :args:
+        conn:str - REST IP + Port
+        dbms:str - logical database to query
+        query:str - full query (including sql params) 
+        username:str - REST authentication user
+        password:str - REST authentication password
+        timeout:int - REST timeout
+    :params:
+        headers:dict - REST header information
+        auth:tuple - username + password authentication
+        response:requests.models.Response - results form GET command
+        result:str - raw content
+    :return:
+
+    """
+    headers = {
+        'command': query,
+        'User-Agent': 'AnyLog/1.23',
+        'destination': 'network'
+    }
+    auth = None
+    if username != '' and password != '':
+        auth = (username, password)
+
+    response = __get_command(conn=conn, headers=headers, auth=auth, timeout=timeout)
+    try:
+        result = response.json()
+    except Exception as e:
+        try:
+            result = response.text
+        except Exception as e:
+            pytest.fail('Failed to extract results (Error: %s)' % e)
+            result = None
+    return result
