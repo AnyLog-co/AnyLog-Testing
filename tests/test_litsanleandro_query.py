@@ -17,9 +17,20 @@ import send_data
 import support
 
 
-class TestBasicQueries:
+class TestLitSanLeandroQueries:
     """
-    The following tests basic aggregate functions without any conditions against the following data types:
+    Using Lit San Leandro execute tests such as:
+        * count
+        * distinct
+        * count(distinct)
+        * min
+        * max
+        * avg
+        * sum
+        * raw
+        * increments
+        * WHERE + period
+    against datatypes:
         * float
         * timestamp
         * string
@@ -41,7 +52,7 @@ class TestBasicQueries:
         self.configs = file_io.read_configs(config_file=CONFIG_FILE)
         self.configs['table'] = 'ping_sensor'
         for fn in os.listdir(DATA_DIR):
-            if 'litsanleandro' in fn:
+            if 'ping_sensor' in fn:
                 file_name = os.path.join(DATA_DIR, fn)
                 self.payloads += file_io.read_file(file_name=file_name, dbms=self.configs['dbms'])
 
@@ -53,11 +64,11 @@ class TestBasicQueries:
 
     def test_row_count(self):
         """
-        Execute COUNT(*)
+        Check basic count(*)
         :query:
             SELECT COUNT(*) FROM ping_sensor
         :assert:
-            COUNT(*) == len(self.payloads)
+            all rows inserted
         """
         if self.status is True:
             output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'],
@@ -75,13 +86,15 @@ class TestBasicQueries:
         else:
             pytest.fail('Failed to validate connection to AnyLog')
 
-    def test_distinct_value_asc(self):
+    def test_distinct_value(self):
         """
-        Execute DISTINCT(%s)
+        Execute DISTINCT against float column
         :query:
-            SELECT DISTINCT(%s) FROM ping_sensor
+            SELECT DISTINCT(value) FROM ping_sensor
         :assert:
-            DISTINCT(%s) == set(self.data_sets[%s])
+            Distinct vales returned
+        :note:
+            There's currently an issue where the values returned are of type string rather than float
         """
         results = []
         if self.status is True:
@@ -93,7 +106,7 @@ class TestBasicQueries:
                     for row in output['Query']:
                         results.append(row['distinct(value)'])
                 except Exception as e:
-                    pytest.fail("Failed to extract from data set DISTINCT(%s) (Error: %s)" % (column, e))
+                    pytest.fail("Failed to extract from data set DISTINCT(value) (Error: %s)" % e)
                 else:
                     assert sorted(results) == ['0.02', '0.29', '0.31', '0.5', '0.63', '0.69', '0.71', '0.8', '0.83',
                                                 '0.85', '0.88', '0.89', '0.94', '0.97', '1.14', '1.2', '1.27', '1.32',
@@ -112,157 +125,258 @@ class TestBasicQueries:
         else:
             pytest.fail('Failed to validate connection to AnyLog')
 
-    def test_count_distinct(self):
+    def test_distinct_uuid(self):
         """
-        Execute COUNT(DISTINCT(%s))
-        :data types:
-            - float
-            - UUID
-            - string
+        Execute DISTINCT against an UUID column type
         :query:
-            SELECT COUNT(DISTINCT(%s)) FROM ping_sensor
+            SELECT DISTINCT(parentelement) FROM ping_sensor
         :assert:
-            COUNT(DISTINCT(%s)) == len(set(self.data_sets[%s]))
+            unique UUID vales
         """
+        results = []
         if self.status is True:
-            for column in ['value', 'parentelement', 'device_name']:
-                output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'],
-                                            query='SELECT COUNT(DISTINCT(%s)) FROM ping_sensor' % column,
-                                            username=self.configs['rest_user'],
-                                            password=self.configs['rest_password'])
-                if isinstance(output, dict):
-                    try:
-                        result = int(output['Query'][0]['count(distinct(%s))' % column])
-                    except Exception as e:
-                        pytest.fail("Failed to extract from data set COUNT(DISTINCT(%s)) (Error: %s)" % (column, e))
-                    else:
-                        assert  result == len(set(self.data_sets[column]))
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'],
+                                        query='SELECT DISTINCT(parentelement) FROM ping_sensor',
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    for row in output['Query']:
+                        results.append(row['distinct(parentelement)'])
+                except Exception as e:
+                    pytest.fail("Failed to extract from data set DISTINCT(parentelement) (Error: %s)" % (column, e))
                 else:
-                    pytest.fail(output.text)
+                    assert results == ['d515dccb-58be-11ea-b46d-d4856454f4ba', '62e71893-92e0-11e9-b465-d4856454f4ba',
+                                       '68ae8bef-92e1-11e9-b465-d4856454f4ba', 'f0bd0832-a81e-11ea-b46d-d4856454f4ba',
+                                       '1ab3b14e-93b1-11e9-b465-d4856454f4ba']
+            else:
+                pytest.fail(output)
         else:
             pytest.fail('Failed to validate connection to AnyLog')
 
-    def test_min(self):
+    def test_distinct_string(self):
         """
-        Execute MIN(%s)
-        :data types:
-            - float
-            - timestamp
+        Execute DISTINCT against a string column
         :query:
-            SELECT MIN(%s) FROM ping_sensor
+            SELECT DISTINCT(device_name) FROM ping_sensor
         :assert:
-            MIN(%s) == min(self.data_sets[%s])
+            unique string values
         """
+        results = []
         if self.status is True:
-            for column in ['value', 'timestamp']:
-                output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'],
-                                            query='SELECT MIN(%s) FROM ping_sensor' % column,
-                                            username=self.configs['rest_user'],
-                                            password=self.configs['rest_password'])
-                if isinstance(output, dict):
-                    try:
-                        if column == 'value':
-                            result = float(output['Query'][0]['min(%s)' % column])
-                        else:
-                            result = output['Query'][0]['min(%s)' % column]
-                    except Exception as e:
-                        pytest.fail("Failed to extract from data set MIN(%s) (Error: %s)" % (column, e))
-                    else:
-                        if column == 'timestamp':
-                            assert result == datetime.datetime.strftime(min(self.data_sets[column]), '%Y-%m-%d %H:%M:%S.%f')
-                        else:
-                            assert result == min(self.data_sets[column])
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'],
+                                        query='SELECT DISTINCT(device_name) FROM ping_sensor',
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    for row in output['Query']:
+                        results.append(row['distinct(device_name)'])
+                except Exception as e:
+                    pytest.fail("Failed to extract from data set DISTINCT(device_name) (Error: %s)" % e)
                 else:
-                    pytest.fail(output.text)
+                    assert results ==  ['VM Lit SL NMS', 'Catalyst 3500XL', 'ADVA FSP3000R7', 'Ubiquiti OLT',
+                                        'GOOGLE_PING']
+            else:
+                pytest.fail(output)
         else:
             pytest.fail('Failed to validate connection to AnyLog')
 
-    def test_max(self):
+    def test_count_distinct_value(self):
         """
-        Execute MAX(%s)
-        :data types:
-            - float
-            - timestamp
+        Execute COUNT(COUNT) against float column
         :query:
-            SELECT MAX(%s) FROM ping_sensor
+            SELECT COUNT(DISTINCT(value)) FROM ping_sensor
         :assert:
-            MAX(%s) == max(self.data_sets[%s])
+            COUNT(DISTINCT) against a float column
         """
         if self.status is True:
-            for column in ['value', 'timestamp']:
-                output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'],
-                                            query='SELECT MAX(%s) FROM ping_sensor' % column,
-                                            username=self.configs['rest_user'],
-                                            password=self.configs['rest_password'])
-                if isinstance(output, dict):
-                    try:
-                        if column == 'value':
-                            result = float(output['Query'][0]['max(%s)' % column])
-                        else:
-                            result = output['Query'][0]['max(%s)' % column]
-                    except Exception as e:
-                        pytest.fail("Failed to extract from data set MAX(%s) (Error: %s)" % (column, e))
-                    else:
-                        if column == 'timestamp':
-                            assert result == datetime.datetime.strftime(max(self.data_sets[column]), '%Y-%m-%d %H:%M:%S.%f')
-                        else:
-                            assert result == max(self.data_sets[column])
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'],
+                                        query='SELECT COUNT(DISTINCT(value)) FROM ping_sensor',
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    for row in output['Query']:
+                        results = int(row['count(distinct(value))'])
+                except Exception as e:
+                    pytest.fail("Failed to extract from data set COUNT(DISTINCT(value)) (Error: %s)" % e)
                 else:
-                    pytest.fail(output.text)
+                    assert results == 98
+            else:
+                pytest.fail(output)
         else:
             pytest.fail('Failed to validate connection to AnyLog')
 
-    def test_sum(self):
+    def test_count_distinct_uuid(self):
         """
-        Execute SUM(value)
-        :data types:
-            - float
+        Execute COUNT(DISTINCT) against UUID
         :query:
+            SELECT COUNT(DISTINCT(parentelement)) FROM ping_sensor
+        :assert:
+            COUNT(DISTINCT) of UUID vales
+        """
+        results = []
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'],
+                                        query='SELECT COUNT(DISTINCT(parentelement)) FROM ping_sensor',
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    for row in output['Query']:
+                        results=int(row['count(distinct(parentelement))'])
+                except Exception as e:
+                    pytest.fail("Failed to extract from data set COUNT(DISTINCT(parentelement)) (Error: %s)" % e)
+                else:
+                    assert results == 5
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_count_distinct_string(self):
+        """
+        Execute COUNT(DISTINCT) against string
+        :query:
+            SELECT DISTINCT(device_name) FROM ping_sensor
+        :assert:
+            unique count distinct of  string vales
+        """
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'],
+                                        query='SELECT COUNT(DISTINCT(device_name)) FROM ping_sensor',
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    for row in output['Query']:
+                        results = int(row['count(distinct(device_name))'])
+                except Exception as e:
+                    pytest.fail("Failed to extract from data set COUNT(DISTINCT(device_name) (Error: %s)" % e)
+                else:
+                    assert results == 5
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_aggregate_values(self):
+        """
+        Validate min value
+        :query:
+            SELECT MIN(value) FROM ping_sensor
+            SELECT MAX(value) FROM ping_sensor
+            SELECT AVG(value) FROM ping_sensor
             SELECT SUM(value) FROM ping_sensor
         :assert:
-            SUM(value) == sum(self.data_sets[value])
+            correct results per qury
         """
+        expected = {
+            'min(value)': 0.02,
+            'max(value)': 45.98,
+            'avg(value)': 12.0945,
+            'sum(value)': 1209.45
+        }
         if self.status is True:
-            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'],
-                                        query='SELECT SUM(value) FROM ping_sensor',
-                                        username=self.configs['rest_user'],
-                                        password=self.configs['rest_password'])
-            if isinstance(output, dict):
+            for query in expected:
+                output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'],
+                                            query='SELECT %s FROM ping_sensor' % query,
+                                            username=self.configs['rest_user'], password=self.configs['rest_password'])
                 try:
-                    result = float(output['Query'][0]['sum(value)'])
+                    result = float(output['Query'][0][query])
                 except Exception as e:
-                    pytest.fail("Failed to extract from data set SUM(value) (Error: %s)" % e)
+                    pytest.fail('Failed to extract results from MIN(value) (Error: %s)' % e)
                 else:
-                    assert result == round(sum(self.data_sets['value']), 2)
-            else:
-                pytest.fail(output.text)
-        else:
-            pytest.fail('Failed to validate connection to AnyLog')
+                    assert result == expected[query]
 
-    def test_avg(self):
+    def test_summary_group_by_string(self):
         """
-        Execute AVG(value)
-        :data types:
-            - float
+        Validate summary of data against string value
         :query:
-            SELECT AVG(value) FROM ping_sensor
-        :assert:
-            AVG(value) == sum(self.data_sets[value])/len(self.data_sets[value])
+             SELECT
+                device_name, min(timestamp), max(timestamp), min(value), max(value), avg(value)
+            FROM
+                ping_sensor
+            GROUP BY
+                device_name
+            ORDER BY
+                device_name
+        :aseert:
+            summary of data based on device_name
         """
+        query = "SELECT device_name, min(timestamp), max(timestamp), min(value), max(value), avg(value) FROM ping_sensor GROUP BY device_name ORDER BY device_name"
         if self.status is True:
-            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'],
-                                        query='SELECT AVG(value) FROM ping_sensor',
-                                        username=self.configs['rest_user'],
-                                        password=self.configs['rest_password'])
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
             if isinstance(output, dict):
                 try:
-                    result = float(output['Query'][0]['avg(value)'])
+                    results = output['Query']
                 except Exception as e:
-                    pytest.fail("Failed to extract from data set AVG(value) (Error: %s)" % e)
+                    pytest.fail("Failed to extract data from query: '%s' (Error: %s)" % (query, e))
                 else:
-                    assert result == round(sum(self.data_sets['value'])/len(self.data_sets['value']), 4)
+                    assert results == [{'device_name': 'ADVA FSP3000R7', 'min(timestamp)': '2021-12-09 01:36:25.319467',
+                                        'max(timestamp)': '2022-01-28 09:08:20.155750', 'min(value)': '0.29',
+                                        'max(value)': '3.97', 'avg(value)': '1.9552'},
+                                       {'device_name': 'Catalyst 3500XL', 'min(timestamp)': '2021-12-04 10:00:36.357454',
+                                        'max(timestamp)': '2022-01-26 19:13:51.238877', 'min(value)': '0.85',
+                                        'max(value)': '43.54', 'avg(value)': '18.131052631578946'},
+                                       {'device_name': 'GOOGLE_PING', 'min(timestamp)': '2021-12-06 00:40:40.206160',
+                                        'max(timestamp)': '2022-01-23 01:40:45.378731', 'min(value)': '2.12',
+                                        'max(value)': '35.73', 'avg(value)': '18.000526315789475'},
+                                       {'device_name': 'Ubiquiti OLT', 'min(timestamp)': '2021-12-04 18:10:07.271804',
+                                        'max(timestamp)': '2022-01-26 18:54:48.389162', 'min(value)': '0.8',
+                                        'max(value)': '45.98', 'avg(value)': '24.01625'},
+                                       {'device_name': 'VM Lit SL NMS', 'min(timestamp)': '2021-12-07 04:52:55.247622',
+                                        'max(timestamp)': '2022-01-29 11:51:14.136243', 'min(value)': '0.02',
+                                        'max(value)': '10.34', 'avg(value)': '4.276666666666666'}]
             else:
-                pytest.fail(output.text)
+                pytest.fail(output)
         else:
             pytest.fail('Failed to validate connection to AnyLog')
 
+    def test_summary_group_by_uuid(self):
+        """
+        Validate summary of data against UUID value
+        :query:
+             SELECT
+                parentelement, min(timestamp), max(timestamp), min(value), max(value), avg(value)
+            FROM
+                ping_sensor
+            GROUP BY
+                parentelement
+            ORDER BY
+                parentelement
+        :aseert:
+            summary of data based on parentelement
+        """
+        query = "SELECT parentelement, min(timestamp), max(timestamp), min(value), max(value), avg(value) FROM ping_sensor GROUP BY parentelement ORDER BY parentelement"
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    results = output['Query']
+                except Exception as e:
+                    pytest.fail("Failed to extract data from query: '%s' (Error: %s)" % (query, e))
+                else:
+                    assert results ==  [{'parentelement': '1ab3b14e-93b1-11e9-b465-d4856454f4ba',
+                                         'min(timestamp)': '2021-12-07 04:52:55.247622',
+                                         'max(timestamp)': '2022-01-29 11:51:14.136243',
+                                         'min(value)': '0.02', 'max(value)': '10.34', 'avg(value)': '4.276666666666666'},
+                                        {'parentelement': '62e71893-92e0-11e9-b465-d4856454f4ba',
+                                         'min(timestamp)': '2021-12-09 01:36:25.319467',
+                                         'max(timestamp)': '2022-01-28 09:08:20.155750',
+                                         'min(value)': '0.29', 'max(value)': '3.97', 'avg(value)': '1.9552'},
+                                        {'parentelement': '68ae8bef-92e1-11e9-b465-d4856454f4ba',
+                                         'min(timestamp)': '2021-12-04 10:00:36.357454',
+                                         'max(timestamp)': '2022-01-26 19:13:51.238877',
+                                         'min(value)': '0.85', 'max(value)': '43.54', 'avg(value)': '18.131052631578946'},
+                                        {'parentelement': 'd515dccb-58be-11ea-b46d-d4856454f4ba',
+                                         'min(timestamp)': '2021-12-04 18:10:07.271804',
+                                         'max(timestamp)': '2022-01-26 18:54:48.389162',
+                                         'min(value)': '0.8', 'max(value)': '45.98', 'avg(value)': '24.01625'},
+                                        {'parentelement': 'f0bd0832-a81e-11ea-b46d-d4856454f4ba',
+                                         'min(timestamp)': '2021-12-06 00:40:40.206160',
+                                         'max(timestamp)': '2022-01-23 01:40:45.378731',
+                                         'min(value)': '2.12', 'max(value)': '35.73', 'avg(value)': '18.000526315789475'}
+                                        ]
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
