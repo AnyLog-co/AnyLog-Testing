@@ -41,19 +41,12 @@ class TestBasicQueries:
         self.configs = file_io.read_configs(config_file=CONFIG_FILE)
         self.configs['table'] = 'ping_sensor'
         for fn in os.listdir(DATA_DIR):
-            if 'ping_sensor' in fn:
+            if 'litsanleandro' in fn:
                 file_name = os.path.join(DATA_DIR, fn)
                 self.payloads += file_io.read_file(file_name=file_name, dbms=self.configs['dbms'])
 
         if self.configs['insert'] == 'true':
             send_data.store_payloads(payloads=self.payloads, configs=self.configs)
-
-        self.data_sets = {
-            'value': support.extract_values(payloads=self.payloads, values_column='value'), # float
-            'timestamp': support.extract_values(payloads=self.payloads, values_column='timestamp'), # timestamp
-            'parentelement': support.extract_values(payloads=self.payloads, values_column='parentelement'), # UUID
-            'device_name': support.extract_values(payloads=self.payloads, values_column='device_name') # string
-        }
 
         self.status = rest_get.get_status(conn=self.configs['conn'], username=self.configs['rest_user'],
                                           password=self.configs['rest_password'])
@@ -76,45 +69,46 @@ class TestBasicQueries:
                 except Exception as e:
                     pytest.fail("Failed to extract results from 'COUNT(*)' (Error: %s)" % e)
                 else:
-                    assert int(result) == len(self.payloads)
+                    assert int(result) == 100
             else:
                 pytest.fail(output.text)
         else:
             pytest.fail('Failed to validate connection to AnyLog')
 
-    def test_distinct(self):
+    def test_distinct_value_asc(self):
         """
         Execute DISTINCT(%s)
-        :data types:
-            - float
-            - UUID
-            - string
         :query:
             SELECT DISTINCT(%s) FROM ping_sensor
         :assert:
             DISTINCT(%s) == set(self.data_sets[%s])
         """
+        results = []
         if self.status is True:
-            for column in ['value', 'parentelement', 'device_name']:
-                data_sets = []
-                output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'],
-                                            query='SELECT DISTINCT(%s) FROM ping_sensor' % column,
-                                            username=self.configs['rest_user'],
-                                            password=self.configs['rest_password'])
-                if isinstance(output, dict):
-                    try:
-                        for row in output["Query"]:
-                            value = row['distinct(%s)' % column]
-                            if column == 'value':
-                                value = float(value)
-                            if value not in data_sets:
-                                data_sets.append(value)
-                    except Exception as e:
-                        pytest.fail("Failed to extract from data set DISTINCT(%s) (Error: %s)" % (column, e))
-                    else:
-                        assert sorted(set(data_sets)) == sorted(set(self.data_sets[column]))
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'],
+                                        query='SELECT DISTINCT(value) FROM ping_sensor',
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    for row in output['Query']:
+                        results.append(row['distinct(value)'])
+                except Exception as e:
+                    pytest.fail("Failed to extract from data set DISTINCT(%s) (Error: %s)" % (column, e))
                 else:
-                    pytest.fail(output.text)
+                    assert sorted(results) == ['0.02', '0.29', '0.31', '0.5', '0.63', '0.69', '0.71', '0.8', '0.83',
+                                                '0.85', '0.88', '0.89', '0.94', '0.97', '1.14', '1.2', '1.27', '1.32',
+                                                '1.33', '1.4', '1.64', '1.67', '1.68', '1.79', '1.81', '1.84', '1.87',
+                                                '10.34', '10.81', '10.98', '11.1', '11.7', '12.29', '12.79', '13.58',
+                                                '13.81', '14.11', '16.02', '19.2', '19.59', '19.96', '2.12', '2.13',
+                                                '2.16', '2.29', '2.34', '2.45', '2.81', '2.91', '20.1', '20.3', '20.49',
+                                                '22.12', '22.52', '23.64', '24.6', '25.92', '27.14', '28.62', '29.13',
+                                                '3.38', '3.54', '3.64', '3.95', '3.96', '3.97', '31.14', '32.5',
+                                                '33.31', '34.94', '34.98', '35.73', '38.59', '39.08', '39.86', '4.17',
+                                                '4.25', '41.25', '43.54', '44.9', '44.92', '45.98', '5.28', '5.33',
+                                                '6.01', '6.39', '6.45', '7.95', '8.11', '8.33', '8.42', '8.74', '8.79',
+                                                '8.82', '9.17', '9.18', '9.3', '9.81']
+            else:
+                pytest.fail(output)
         else:
             pytest.fail('Failed to validate connection to AnyLog')
 
