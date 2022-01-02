@@ -1,14 +1,26 @@
 import datetime
+import filecmp
 import os
 import pytest
 import sys
 
 ROOT_DIR=os.path.expandvars(os.path.expanduser(__file__)).split('tests')[0]
-print(ROOT_DIR)
 DATA_DIR = os.path.join(ROOT_DIR, 'data')
 SUPPORT_DIR = os.path.join(ROOT_DIR, 'support')
 
 CONFIG_FILE = os.path.join(ROOT_DIR, 'configs', 'sample_config.ini') # will be replaced by user param
+EXPECTED_DIR = os.path.join(ROOT_DIR, 'expect')
+ACTUAL_DIR = os.path.join(ROOT_DIR, 'actual')
+if not os.path.isdir(EXPECTED_DIR):
+    try:
+        os.makedirs(EXPECTED_DIR)
+    except Expection as e:
+        pytes.fail('Failed to created directory: %s (Error: %s)' % (EXPECTED_DIR, e))
+if not os.path.isdir(ACTUAL_DIR):
+    try:
+        os.makedirs(ACTUAL_DIR)
+    except Expection as e:
+        pytes.fail('Failed to created directory: %s (Error: %s)' % (ACTUAL_DIR, e))
 
 sys.path.insert(0, SUPPORT_DIR)
 import file_io
@@ -17,7 +29,7 @@ import send_data
 import support
 
 
-class TestLitSanLeandroQueries:
+class TestLitSanLeandroSingleTableQueries:
     """
     Using Lit San Leandro execute tests such as:
         * count
@@ -30,11 +42,13 @@ class TestLitSanLeandroQueries:
         * raw
         * increments
         * WHERE + period
-    against datatypes:
+    against data-types:
         * float
         * timestamp
         * string
         * UUID
+    :tables:
+        ping_sensor
     """
     def setup(self):
         """
@@ -380,3 +394,139 @@ class TestLitSanLeandroQueries:
                 pytest.fail(output)
         else:
             pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_basic_where_timestamp_order_desc(self):
+        """
+        Validate basic WHERE condition
+        :query:
+            SELECT
+                timestamp, value
+            FROM
+                ping_sensor
+            WHERE
+                timestamp >= '2021-12-30 00:00:00' AND timestamp <= '2022-01-02 00:00:00'
+            ORDER BY timestamp DESC
+        :assert:
+            validate rows returned order by
+        """
+        query = "SELECT timestamp, value FROM ping_sensor WHERE timestamp >= '2021-12-30 00:00:00' AND timestamp <= '2022-01-02 00:00:00' ORDER BY timestamp DESC"
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    results = output['Query']
+                except Exception as e:
+                    pytest.fail("Failed to extract data from query: '%s' (Error: %s)" % (query, e))
+                else:
+                    assert results == [{'timestamp': '2021-12-31 06:57:33.344011', 'value': '2.16'},
+                                       {'timestamp': '2021-12-31 02:46:59.258990', 'value': '0.29'},
+                                       {'timestamp': '2021-12-30 08:07:28.173834', 'value': '2.16'}]
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_basic_where_timestamp_order_asc(self):
+        """
+        Validate basic WHERE condition
+        :query:
+            SELECT
+                timestamp, value
+            FROM
+                ping_sensor
+            WHERE
+                timestamp >= '2021-12-30 00:00:00' AND timestamp <= '2022-01-02 00:00:00'
+            ORDER BY timestamp ASC
+        :assert:
+            validate rows returned order by
+        """
+        query = "SELECT timestamp, value FROM ping_sensor WHERE timestamp >= '2021-12-30 00:00:00' AND timestamp <= '2022-01-02 00:00:00' ORDER BY timestamp ASC"
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    results = output['Query']
+                except Exception as e:
+                    pytest.fail("Failed to extract data from query: '%s' (Error: %s)" % (query, e))
+                else:
+                    assert results == [{'timestamp': '2021-12-30 08:07:28.173834', 'value': '2.16'},
+                                       {'timestamp': '2021-12-31 02:46:59.258990', 'value': '0.29'},
+                                       {'timestamp': '2021-12-31 06:57:33.344011', 'value': '2.16'}]
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_basic_where_timestamp_order_desc2(self):
+        """
+        Validate basic WHERE condition
+        :query:
+            SELECT
+                timestamp, value
+            FROM
+                ping_sensor
+            WHERE
+                timestamp > '2021-12-20 00:00:00' AND timestamp < '2022-01-10 00:00:00'
+            ORDER BY timestamp DESC
+        :assert:
+            1. validate content has been written to file
+            2. validate content is consisent
+        """
+        query = "SELECT timestamp, value FROM ping_sensor WHERE timestamp > '2021-12-20 00:00:00' AND timestamp < '2022-01-10 00:00:00' ORDER BY timestamp DESC"
+        excepted_file = os.path.join(EXPECTED_DIR, 'test_basic_where_timestamp_order_desc2.json')
+        actual_file = os.path.join(ACTUAL_DIR, 'test_basic_where_timestamp_order_desc2.json')
+
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    results = output['Query']
+                except Exception as e:
+                    pytest.fail("Failed to extract data from query: '%s' (Error: %s)" % (query, e))
+                else:
+                    assert file_io.write_file(file_name=actual_file, results=results) is True
+                    assert filecmp.cmp(actual_file, excepted_file)
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+
+
+    def test_basic_where_timestamp_order_asc2(self):
+        """
+        Validate basic WHERE condition
+        :query:
+            SELECT
+                timestamp, value
+            FROM
+                ping_sensor
+            WHERE
+                timestamp > '2021-12-20 00:00:00' AND timestamp < '2022-01-10 00:00:00'
+            ORDER BY timestamp ASC
+        :assert:
+            1. validate content has been written to file
+            2. validate content is consistent
+        """
+        query = "SELECT timestamp, value FROM ping_sensor WHERE timestamp > '2021-12-20 00:00:00' AND timestamp < '2022-01-10 00:00:00' ORDER BY timestamp ASC"
+        excepted_file = os.path.join(EXPECTED_DIR, 'test_basic_where_timestamp_order_asc2.json')
+        actual_file = os.path.join(ACTUAL_DIR, 'test_basic_where_timestamp_order_asc2.json')
+
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    results = output['Query']
+                except Exception as e:
+                    pytest.fail("Failed to extract data from query: '%s' (Error: %s)" % (query, e))
+                else:
+                    assert file_io.write_file(file_name=actual_file, results=results) is True
+                    assert filecmp.cmp(actual_file, excepted_file)
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+

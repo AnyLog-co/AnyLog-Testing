@@ -34,6 +34,33 @@ def read_file(file_name:str, dbms:str)->list:
     return payloads
 
 
+def write_file(file_name:str, results:list)->bool:
+    """
+    Write results to file
+    :args:
+        file_name:str - file to write content into
+        results:list - content to write into files
+    :params:
+        status:bool
+    :return:
+        status
+    """
+    status = True
+    try:
+        with open(file_name, 'w') as f:
+            for result in results:
+                try:
+                    f.write(support.json_dumps(result) + '\n')
+                except Exception as e:
+                    pytest.fail('Failed to write to file: %s (Error: %s)' % (file_name, e))
+                    status = False
+    except Exception as e:
+        pytest.fail('Failed to open file %s (Error: %s)' % (file_name, e))
+        status = False
+
+    return status
+
+
 def read_configs(config_file:str)->dict:
     """
     Read INI configuration & store in dict 
