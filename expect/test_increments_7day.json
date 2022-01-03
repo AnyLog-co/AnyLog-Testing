@@ -1,0 +1,9 @@
+{"min(timestamp)": "2021-12-04 10:00:36.357454", "max(timestamp)": "2021-12-06 10:29:38.360712", "min(value)": "1.68", "max(value)": "38.59", "avg(value)": 20.135}
+{"min(timestamp)": "2021-12-08 19:55:26.320264", "max(timestamp)": "2021-12-11 02:06:01.261474", "min(value)": "20.49", "max(value)": "41.25", "avg(value)": 30.87}
+{"min(timestamp)": "2021-12-16 05:47:32.341322", "max(timestamp)": "2021-12-20 04:03:14.288487", "min(value)": "1.33", "max(value)": "31.14", "avg(value)": 13.883333333333333}
+{"min(timestamp)": "2021-12-21 05:54:16.298493", "max(timestamp)": "2021-12-21 20:36:42.369278", "min(value)": "8.11", "max(value)": "9.3", "avg(value)": 8.705}
+{"min(timestamp)": "2021-12-28 01:52:31.182712", "max(timestamp)": "2021-12-28 01:52:31.182712", "min(value)": "8.33", "max(value)": "8.33", "avg(value)": 8.33}
+{"min(timestamp)": "2022-01-03 13:32:24.314947", "max(timestamp)": "2022-01-06 16:00:05.269405", "min(value)": "2.81", "max(value)": "39.86", "avg(value)": 21.335}
+{"min(timestamp)": "2022-01-07 11:42:34.349181", "max(timestamp)": "2022-01-13 09:00:11.279760", "min(value)": "6.01", "max(value)": "10.98", "avg(value)": 8.495}
+{"min(timestamp)": "2022-01-17 17:11:45.222210", "max(timestamp)": "2022-01-18 16:16:38.199445", "min(value)": "20.3", "max(value)": "43.54", "avg(value)": 28.653333333333332}
+{"min(timestamp)": "2022-01-24 11:20:08.272811", "max(timestamp)": "2022-01-26 19:13:51.238877", "min(value)": "0.85", "max(value)": "28.62", "avg(value)": 14.735}

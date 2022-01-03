@@ -534,3 +534,369 @@ class TestLitSanLeandroSingleTableQueries:
         else:
             pytest.fail('Failed to validate connection to AnyLog')
 
+    def test_increments_1minute(self):
+        """
+        Test increments by minute
+        :query:
+            SELECT
+                increments(minute, 1, timestamp), MIN(timestamp), MAX(timestamp), MIN(value), MAX(value), AVG(value)
+            FROM
+                ping_sensor
+            WHERE
+                timestamp <= NOW() + 1 month
+            ORDER BY
+                min(timestamp) DESC
+        :assert:
+            1. content is writen to file
+            2. validate results are consistent
+        :note:
+            once the date surpasses '2021-01-31' WHERE condition could just be "timestamp <= NOW()"
+        """
+        query = ("SELECT increments(minute, 1, timestamp), MIN(timestamp), MAX(timestamp), MIN(value), MAX(value), "
+                 +"AVG(value) FROM ping_sensor WHERE timestamp <= NOW() + 1 month ORDER BY MIN(timestamp) DESC")
+
+        excepted_file = os.path.join(EXPECTED_DIR, 'test_increments_1minute.json')
+        actual_file = os.path.join(ACTUAL_DIR, 'test_increments_1minute.json')
+
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    results = output['Query']
+                except Exception as e:
+                    pytest.fail("Failed to extract data from query: '%s' (Error: %s)" % (query, e))
+                else:
+                    assert file_io.write_file(file_name=actual_file, results=results) is True
+                    assert filecmp.cmp(actual_file, excepted_file)
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_increments_30minute(self):
+        """
+        Test increments by 30 minutes
+        :query:
+            SELECT
+                increments(minute, 30, timestamp), MIN(timestamp), MAX(timestamp), MIN(value), MAX(value), AVG(value)
+            FROM
+                ping_sensor
+            WHERE
+                timestamp <= NOW() + 1 month
+            ORDER BY
+                min(timestamp) ASC
+        :assert:
+            1. content is writen to file
+            2. validate results are consistent
+        :note:
+            once the date surpasses '2021-01-31' WHERE condition could just be "timestamp <= NOW()"
+        """
+        query = ("SELECT increments(minute, 30, timestamp), MIN(timestamp), MAX(timestamp), MIN(value), MAX(value), "
+                 +"AVG(value) FROM ping_sensor WHERE timestamp <= NOW() + 1 month ORDER BY min(timestamp) ASC")
+
+        excepted_file = os.path.join(EXPECTED_DIR, 'test_increments_30minute.json')
+        actual_file = os.path.join(ACTUAL_DIR, 'test_increments_30minute.json')
+
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    results = output['Query']
+                except Exception as e:
+                    pytest.fail("Failed to extract data from query: '%s' (Error: %s)" % (query, e))
+                else:
+                    assert file_io.write_file(file_name=actual_file, results=results) is True
+                    assert filecmp.cmp(actual_file, excepted_file)
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_increments_1hour(self):
+        """
+        Test increments by hour
+        :query:
+            SELECT
+                increments(hour, 1, timestamp), MIN(timestamp), MAX(timestamp), MIN(value), MAX(value), AVG(value)
+            FROM
+                ping_sensor
+            WHERE
+                timestamp >= '2021-12-01 00:00:00' AND timestamp <= '2021-12-31 23:59:59'
+            ORDER BY
+                max(timestamp) DESC
+        :assert:
+            1. content is writen to file
+            2. validate results are consistent
+        :note:
+            once the date surpasses '2021-01-31' WHERE condition could just be "timestamp <= NOW()"
+        """
+        query = ("SELECT increments(hour, 1, timestamp), MIN(timestamp), MAX(timestamp), MIN(value), MAX(value), "
+                 +"AVG(value) FROM ping_sensor WHERE timestamp >= '2021-12-01 00:00:00' AND "
+                 +"timestamp <= '2021-12-31 23:59:59' ORDER BY max(timestamp) DESC")
+
+        excepted_file = os.path.join(EXPECTED_DIR, 'test_increments_1hour.json')
+        actual_file = os.path.join(ACTUAL_DIR, 'test_increments_1hour.json')
+
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    results = output['Query']
+                except Exception as e:
+                    pytest.fail("Failed to extract data from query: '%s' (Error: %s)" % (query, e))
+                else:
+                    assert file_io.write_file(file_name=actual_file, results=results) is True
+                    assert filecmp.cmp(actual_file, excepted_file)
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_increments_12hour(self):
+        """
+        Test increments by hour
+        :query:
+            SELECT
+                increments(hour, 12, timestamp), MIN(timestamp), MAX(timestamp), MIN(value), MAX(value), AVG(value)
+            FROM
+                ping_sensor
+            WHERE
+                timestamp <= '2022-12-15 00:00:00' OR timestamp >= '2022-01-15 23:59:59'
+            ORDER BY
+                max(timestamp) ASC
+        :assert:
+            1. content is writen to file
+            2. validate results are consistent
+        :note:
+            once the date surpasses '2021-01-31' WHERE condition could just be "timestamp <= NOW()"
+        """
+        query = ("SELECT increments(hour, 12, timestamp), MIN(timestamp), MAX(timestamp), MIN(value), MAX(value), "
+                 +"AVG(value) FROM ping_sensor WHERE timestamp <= '2022-12-15 00:00:00' OR "
+                  "timestamp >= '2022-01-15 23:59:59' ORDER BY max(timestamp) ASC")
+
+        excepted_file = os.path.join(EXPECTED_DIR, 'test_increments_12hour.json')
+        actual_file = os.path.join(ACTUAL_DIR, 'test_increments_12hour.json')
+
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    results = output['Query']
+                except Exception as e:
+                    pytest.fail("Failed to extract data from query: '%s' (Error: %s)" % (query, e))
+                else:
+                    assert file_io.write_file(file_name=actual_file, results=results) is True
+                    assert filecmp.cmp(actual_file, excepted_file)
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+
+    @pytest.mark.skip('inconsistent results due to ORDER BY')
+    def test_increments_day(self):
+        """
+        Test increments by day
+        :query:
+            SELECT
+                increments(day, 1, timestamp), parentelement, MIN(timestamp), MAX(timestamp), MIN(value), MAX(value), AVG(value)
+            FROM
+                ping_sensor
+            GROUP BY
+                parentelement
+            ORDER BY
+                parentelement, MIN(timestamp) DESC
+
+        :assert:
+            1. content is writen to file
+            2. validate results are consistent
+        :note:
+            once the date surpasses '2021-01-31' WHERE condition could just be "timestamp <= NOW()"
+        """
+        query = ("SELECT increments(day, 1, timestamp), parentelement, MIN(timestamp), MAX(timestamp), MIN(value), "
+                 +"MAX(value), AVG(value) FROM ping_sensor GROUP BY parentelement "
+                 +"ORDER BY parentelement, MIN(timestamp) DESC")
+
+        excepted_file = os.path.join(EXPECTED_DIR, 'test_increments_day.json')
+        actual_file = os.path.join(ACTUAL_DIR, 'test_increments_day.json')
+
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    results = output['Query']
+                except Exception as e:
+                    pytest.fail("Failed to extract data from query: '%s' (Error: %s)" % (query, e))
+                else:
+                    assert file_io.write_file(file_name=actual_file, results=results) is True
+                    assert filecmp.cmp(actual_file, excepted_file)
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+
+    @pytest.mark.skip('inconsistent results due to ORDER BY')
+    def test_increments_5day(self):
+        """
+        Test increments by  5 day
+        :query:
+            SELECT
+                increments(day, 5, timestamp), device_name, MIN(timestamp), MAX(timestamp), MIN(value), MAX(value), AVG(value)
+            FROM
+                ping_sensor
+            GROUP BY
+                device_name
+            ORDER BY
+                device_name, MIN(timestamp) ASC
+        :assert:
+            1. content is writen to file
+            2. validate results are consistent
+        :note:
+            once the date surpasses '2021-01-31' WHERE condition could just be "timestamp <= NOW()"
+        """
+        query = ("SELECT increments(day, 5, timestamp), device_name, MIN(timestamp), MAX(timestamp), MIN(value), "
+                 +"MAX(value), AVG(value) FROM ping_sensor GROUP BY device_name "
+                 +"ORDER BY device_name, MIN(timestamp) ASC")
+
+        excepted_file = os.path.join(EXPECTED_DIR, 'test_increments_5day.json')
+        actual_file = os.path.join(ACTUAL_DIR, 'test_increments_5day.json')
+
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    results = output['Query']
+                except Exception as e:
+                    pytest.fail("Failed to extract data from query: '%s' (Error: %s)" % (query, e))
+                else:
+                    assert file_io.write_file(file_name=actual_file, results=results) is True
+                    assert filecmp.cmp(actual_file, excepted_file)
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_increments_7day(self):
+        """
+        Test increments by 7 day
+        :query:
+            SELECT
+                increments(day, 7, timestamp), MIN(timestamp), MAX(timestamp), MIN(value), MAX(value), AVG(value)
+            FROM
+                ping_sensor
+            WHERE
+                device_name = 'Catalyst 3500XL'
+            ORDER BY
+                MIN(timestamp) ASC
+        :assert:
+            1. content is writen to file
+            2. validate results are consistent
+        :note:
+            once the date surpasses '2021-01-31' WHERE condition could just be "timestamp <= NOW()"
+        """
+        query = ("SELECT increments(day, 7, timestamp), MIN(timestamp), MAX(timestamp), MIN(value), "
+                 +"MAX(value), AVG(value) FROM ping_sensor WHERE device_name='Catalyst 3500XL' "
+                 +"ORDER BY MAX(timestamp) ASC")
+
+        excepted_file = os.path.join(EXPECTED_DIR, 'test_increments_7day.json')
+        actual_file = os.path.join(ACTUAL_DIR, 'test_increments_7day.json')
+
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    results = output['Query']
+                except Exception as e:
+                    pytest.fail("Failed to extract data from query: '%s' (Error: %s)" % (query, e))
+                else:
+                    assert file_io.write_file(file_name=actual_file, results=results) is True
+                    assert filecmp.cmp(actual_file, excepted_file)
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_increments_15day(self):
+        """
+        Test increments by 15 day
+        :query:
+            SELECT
+                increments(day, 15, timestamp), MIN(timestamp), MAX(timestamp), MIN(value), MAX(value), AVG(value)
+            FROM
+                ping_sensor
+            WHERE
+                device_name = 'Catalyst 3500XL'
+            ORDER BY
+                MAX(timestamp) DESC
+        :assert:
+            1. content is writen to file
+            2. validate results are consistent
+        :note:
+            once the date surpasses '2021-01-31' WHERE condition could just be "timestamp <= NOW()"
+        """
+        query = ("SELECT increments(day, 7, timestamp), MIN(timestamp), MAX(timestamp), MIN(value), "
+                 +"MAX(value), AVG(value) FROM ping_sensor WHERE parentelement='62e71893-92e0-11e9-b465-d4856454f4ba' "
+                 +"ORDER BY MAX(timestamp) DESC")
+
+        excepted_file = os.path.join(EXPECTED_DIR, 'test_increments_15day.json')
+        actual_file = os.path.join(ACTUAL_DIR, 'test_increments_15day.json')
+
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    results = output['Query']
+                except Exception as e:
+                    pytest.fail("Failed to extract data from query: '%s' (Error: %s)" % (query, e))
+                else:
+                    assert file_io.write_file(file_name=actual_file, results=results) is True
+                    assert filecmp.cmp(actual_file, excepted_file)
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_increments_1month(self):
+        """
+        Test increments by month
+        :query:
+            SELECT
+                increments(month, 1, timestamp), MIN(timestamp), MAX(timestamp), MIN(value), MAX(value), AVG(value)
+            FROM
+                ping_sensor
+            ORDER BY
+                MAX(timestamp) DESC
+        :assert:
+            1. content is writen to file
+            2. validate results are consistent
+        :note:
+            once the date surpasses '2021-01-31' WHERE condition could just be "timestamp <= NOW()"
+        """
+        query = ("SELECT increments(month, 21, timestamp), MIN(timestamp), MAX(timestamp), MIN(value), "
+                 +"MAX(value), AVG(value) FROM ping_sensor ORDER BY MAX(timestamp) DESC")
+
+        excepted_file = os.path.join(EXPECTED_DIR, 'test_increments_1month.json')
+        actual_file = os.path.join(ACTUAL_DIR, 'test_increments_1month.json')
+
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    results = output['Query']
+                except Exception as e:
+                    pytest.fail("Failed to extract data from query: '%s' (Error: %s)" % (query, e))
+                else:
+                    assert file_io.write_file(file_name=actual_file, results=results) is True
+                    assert filecmp.cmp(actual_file, excepted_file)
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
