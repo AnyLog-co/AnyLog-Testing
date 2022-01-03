@@ -3,6 +3,7 @@ import textwrap
 import pytest
 import requests
 
+
 def __get_command(conn:str, headers:dict, auth:tuple=None, timeout:int=30)->requests.models.Response:
     """
     Generic GET request
@@ -21,10 +22,10 @@ def __get_command(conn:str, headers:dict, auth:tuple=None, timeout:int=30)->requ
     except Exception as e:
         pytest.fail('Failed to execute GET against %s (Error: %s)' % (conn ,e))
         response = None
-    else:
-        if int(response.status_code) != 200:
-            pytest.fail('Failed to execute GET against %s (Network Error: %s)' % (conn, response.status_code))
-            response = None
+
+    assert response is not None
+    if response is not None:
+        assert int(response.status_code) == 200
 
     return response
 
@@ -106,6 +107,7 @@ def get_basic(conn:str, dbms:str, query:str, username:str='', password='', timeo
             pytest.fail('Failed to extract results (Error: %s)' % e)
             result = None
     return result
+
 
 def get_complex(conn:str, dbms:str, query:str, username:str='', password='', timeout:int=30)->list:
     """
