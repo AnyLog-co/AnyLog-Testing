@@ -3,6 +3,7 @@ import filecmp
 import os
 import pytest
 import sys
+import tests.pytest_setup_teardown as pytest_setup_teardown
 
 ROOT_DIR=os.path.expandvars(os.path.expanduser(__file__)).split('tests')[0]
 DATA_DIR = os.path.join(ROOT_DIR, 'data')
@@ -17,7 +18,7 @@ import file_io
 import rest_get
 import send_data
 import support
-import pytest_prep
+
 
 
 class TestLitSanLeandroSingleTableQueries:
@@ -58,14 +59,14 @@ class TestLitSanLeandroSingleTableQueries:
             4. extract data to store
             5.
         """
-        self.status, self.configs = pytest_prep.setup_code(table_name=['ping_sensor'], config_file=CONFIG_FILE,
+        self.status, self.configs = pytest_setup_teardown.setup_code(table_name=['ping_sensor'], config_file=CONFIG_FILE,
                                                            data_dir=DATA_DIR, expected_dir=EXPECTED_DIR,
                                                            actual_dir=ACTUAL_DIR)
         if self.status is False:
             pytest.fail('Failed to get status against AnyLog node %s' % self.configs['conn'])
 
     def teardown_class(self):
-        pytest_prep.teardown_code(actual_dir=ACTUAL_DIR)
+        pytest_setup_teardown.teardown_code(actual_dir=ACTUAL_DIR)
 
     def test_row_count(self):
         """
@@ -83,9 +84,12 @@ class TestLitSanLeandroSingleTableQueries:
                 try:
                     result = output['Query'][0]['count(*)']
                 except Exception as e:
-                    pytest.fail("Failed to extract results from 'COUNT(*)' (Error: %s)" % e)
+                    if 'err_code' in output and 'err_text' in output:
+                        pytest.fail("Failed to extract results from 'COUNT(*)' (Error Code: %s | Error: %s)" % (output['err_code'], output['err_text']))
+                    else:
+                        pytest.fail("Failed to extract results from 'COUNT(*)' (Error: %s)" % e)
                 else:
-                    assert int(result) == 100
+                    assert result == 100
             else:
                 pytest.fail(output.text)
         else:
@@ -111,7 +115,11 @@ class TestLitSanLeandroSingleTableQueries:
                     for row in output['Query']:
                         results.append(row['distinct(value)'])
                 except Exception as e:
-                    pytest.fail("Failed to extract from data set DISTINCT(value) (Error: %s)" % e)
+                    if 'err_code' in output and 'err_text' in output:
+                        pytest.fail("Failed to extract results from 'COUNT(*)' (Error Code: %s | Error: %s)" % (
+                        output['err_code'], output['err_text']))
+                    else:
+                        pytest.fail("Failed to extract results from 'COUNT(*)' (Error: %s)" % e)
                 else:
                     assert sorted(results) == ['0.02', '0.29', '0.31', '0.5', '0.63', '0.69', '0.71', '0.8', '0.83',
                                                 '0.85', '0.88', '0.89', '0.94', '0.97', '1.14', '1.2', '1.27', '1.32',
@@ -148,7 +156,10 @@ class TestLitSanLeandroSingleTableQueries:
                     for row in output['Query']:
                         results.append(row['distinct(parentelement)'])
                 except Exception as e:
-                    pytest.fail("Failed to extract from data set DISTINCT(parentelement) (Error: %s)" % (column, e))
+                    if 'err_code' in output and 'err_text' in output:
+                        pytest.fail("Failed to extract results from 'COUNT(*)' (Error Code: %s | Error: %s)" % (output['err_code'], output['err_text']))
+                    else:
+                        pytest.fail("Failed to extract results from 'COUNT(*)' (Error: %s)" % e)
                 else:
                     assert results == ['d515dccb-58be-11ea-b46d-d4856454f4ba', '62e71893-92e0-11e9-b465-d4856454f4ba',
                                        '68ae8bef-92e1-11e9-b465-d4856454f4ba', 'f0bd0832-a81e-11ea-b46d-d4856454f4ba',
@@ -176,7 +187,10 @@ class TestLitSanLeandroSingleTableQueries:
                     for row in output['Query']:
                         results.append(row['distinct(device_name)'])
                 except Exception as e:
-                    pytest.fail("Failed to extract from data set DISTINCT(device_name) (Error: %s)" % e)
+                    if 'err_code' in output and 'err_text' in output:
+                        pytest.fail("Failed to extract results from 'COUNT(*)' (Error Code: %s | Error: %s)" % (output['err_code'], output['err_text']))
+                    else:
+                        pytest.fail("Failed to extract results from 'COUNT(*)' (Error: %s)" % e)
                 else:
                     assert results ==  ['VM Lit SL NMS', 'Catalyst 3500XL', 'ADVA FSP3000R7', 'Ubiquiti OLT',
                                         'GOOGLE_PING']
@@ -203,7 +217,10 @@ class TestLitSanLeandroSingleTableQueries:
                     for row in output['Query']:
                         results=int(row['count(distinct(parentelement))'])
                 except Exception as e:
-                    pytest.fail("Failed to extract from data set COUNT(DISTINCT(parentelement)) (Error: %s)" % e)
+                    if 'err_code' in output and 'err_text' in output:
+                        pytest.fail("Failed to extract results from 'COUNT(*)' (Error Code: %s | Error: %s)" % (output['err_code'], output['err_text']))
+                    else:
+                        pytest.fail("Failed to extract results from 'COUNT(*)' (Error: %s)" % e)
                 else:
                     assert results == 5
             else:
@@ -228,7 +245,10 @@ class TestLitSanLeandroSingleTableQueries:
                     for row in output['Query']:
                         results = int(row['count(distinct(device_name))'])
                 except Exception as e:
-                    pytest.fail("Failed to extract from data set COUNT(DISTINCT(device_name) (Error: %s)" % e)
+                    if 'err_code' in output and 'err_text' in output:
+                        pytest.fail("Failed to extract results from 'COUNT(*)' (Error Code: %s | Error: %s)" % (output['err_code'], output['err_text']))
+                    else:
+                        pytest.fail("Failed to extract results from 'COUNT(*)' (Error: %s)" % e)
                 else:
                     assert results == 5
             else:
@@ -263,7 +283,10 @@ class TestLitSanLeandroSingleTableQueries:
                 try:
                     result = float(output['Query'][0][query])
                 except Exception as e:
-                    pytest.fail('Failed to extract results from MIN(value) (Error: %s)' % e)
+                    if 'err_code' in output and 'err_text' in output:
+                        pytest.fail("Failed to extract results from 'COUNT(*)' (Error Code: %s | Error: %s)" % (output['err_code'], output['err_text']))
+                    else:
+                        pytest.fail("Failed to extract results from 'COUNT(*)' (Error: %s)" % e)
                 else:
                     assert result == expected[query]
 
@@ -290,23 +313,28 @@ class TestLitSanLeandroSingleTableQueries:
                 try:
                     results = output['Query']
                 except Exception as e:
-                    pytest.fail("Failed to extract data from query: '%s' (Error: %s)" % (query, e))
+                    if 'err_code' in output and 'err_text' in output:
+                        pytest.fail("Failed to extract results from 'COUNT(*)' (Error Code: %s | Error: %s)" % (output['err_code'], output['err_text']))
+                    else:
+                        pytest.fail("Failed to extract results from 'COUNT(*)' (Error: %s)" % e)
                 else:
-                    assert results == [{'device_name': 'ADVA FSP3000R7', 'min(timestamp)': '2021-12-09 01:36:25.319467',
-                                        'max(timestamp)': '2022-01-28 09:08:20.155750', 'min(value)': '0.29',
-                                        'max(value)': '3.97', 'avg(value)': '1.9552'},
-                                       {'device_name': 'Catalyst 3500XL', 'min(timestamp)': '2021-12-04 10:00:36.357454',
-                                        'max(timestamp)': '2022-01-26 19:13:51.238877', 'min(value)': '0.85',
-                                        'max(value)': '43.54', 'avg(value)': '18.131052631578946'},
-                                       {'device_name': 'GOOGLE_PING', 'min(timestamp)': '2021-12-06 00:40:40.206160',
-                                        'max(timestamp)': '2022-01-23 01:40:45.378731', 'min(value)': '2.12',
-                                        'max(value)': '35.73', 'avg(value)': '18.000526315789475'},
-                                       {'device_name': 'Ubiquiti OLT', 'min(timestamp)': '2021-12-04 18:10:07.271804',
-                                        'max(timestamp)': '2022-01-26 18:54:48.389162', 'min(value)': '0.8',
-                                        'max(value)': '45.98', 'avg(value)': '24.01625'},
-                                       {'device_name': 'VM Lit SL NMS', 'min(timestamp)': '2021-12-07 04:52:55.247622',
-                                        'max(timestamp)': '2022-01-29 11:51:14.136243', 'min(value)': '0.02',
-                                        'max(value)': '10.34', 'avg(value)': '4.276666666666666'}]
+                    assert results ==  [{'device_name': 'ADVA FSP3000R7',
+                                         'min(timestamp)': '2021-12-09 01:36:25.319467',
+                                         'max(timestamp)': '2022-01-28 09:08:20.155750', 'min(value)': '0.29',
+                                         'max(value)': '3.97', 'avg(value)': 1.9552},
+                                        {'device_name': 'Catalyst 3500XL',
+                                         'min(timestamp)': '2021-12-04 10:00:36.357454',
+                                         'max(timestamp)': '2022-01-26 19:13:51.238877', 'min(value)': '0.85',
+                                         'max(value)': '43.54', 'avg(value)': 18.131052631578946},
+                                        {'device_name': 'GOOGLE_PING', 'min(timestamp)': '2021-12-06 00:40:40.206160',
+                                         'max(timestamp)': '2022-01-23 01:40:45.378731', 'min(value)': '2.12',
+                                         'max(value)': '35.73', 'avg(value)': 18.000526315789475},
+                                        {'device_name': 'Ubiquiti OLT', 'min(timestamp)': '2021-12-04 18:10:07.271804',
+                                         'max(timestamp)': '2022-01-26 18:54:48.389162', 'min(value)': '0.8',
+                                         'max(value)': '45.98', 'avg(value)': 24.01625},
+                                        {'device_name': 'VM Lit SL NMS', 'min(timestamp)': '2021-12-07 04:52:55.247622',
+                                         'max(timestamp)': '2022-01-29 11:51:14.136243', 'min(value)': '0.02',
+                                         'max(value)': '10.34', 'avg(value)': 4.276666666666666}]
             else:
                 pytest.fail(output)
         else:
@@ -335,29 +363,31 @@ class TestLitSanLeandroSingleTableQueries:
                 try:
                     results = output['Query']
                 except Exception as e:
-                    pytest.fail("Failed to extract data from query: '%s' (Error: %s)" % (query, e))
+                    if 'err_code' in output and 'err_text' in output:
+                        pytest.fail("Failed to extract results from 'COUNT(*)' (Error Code: %s | Error: %s)" % (output['err_code'], output['err_text']))
+                    else:
+                        pytest.fail("Failed to extract results from 'COUNT(*)' (Error: %s)" % e)
                 else:
                     assert results == [{'parentelement': '1ab3b14e-93b1-11e9-b465-d4856454f4ba',
                                         'min(timestamp)': '2021-12-07 04:52:55.247622',
                                         'max(timestamp)': '2022-01-29 11:51:14.136243',
-                                        'min(value)': '0.02', 'max(value)': '10.34', 'avg(value)': '4.276666666666666'},
+                                        'min(value)': '0.02', 'max(value)': '10.34', 'avg(value)': 4.276666666666666},
                                        {'parentelement': '62e71893-92e0-11e9-b465-d4856454f4ba',
                                         'min(timestamp)': '2021-12-09 01:36:25.319467',
                                         'max(timestamp)': '2022-01-28 09:08:20.155750',
-                                        'min(value)': '0.29', 'max(value)': '3.97', 'avg(value)': '1.9552'},
+                                        'min(value)': '0.29', 'max(value)': '3.97', 'avg(value)': 1.9552},
                                        {'parentelement': '68ae8bef-92e1-11e9-b465-d4856454f4ba',
                                         'min(timestamp)': '2021-12-04 10:00:36.357454',
                                         'max(timestamp)': '2022-01-26 19:13:51.238877',
-                                        'min(value)': '0.85', 'max(value)': '43.54', 'avg(value)': '18.131052631578946'},
+                                        'min(value)': '0.85', 'max(value)': '43.54', 'avg(value)': 18.131052631578946},
                                        {'parentelement': 'd515dccb-58be-11ea-b46d-d4856454f4ba',
                                         'min(timestamp)': '2021-12-04 18:10:07.271804',
                                         'max(timestamp)': '2022-01-26 18:54:48.389162',
-                                        'min(value)': '0.8', 'max(value)': '45.98', 'avg(value)': '24.01625'},
+                                        'min(value)': '0.8', 'max(value)': '45.98', 'avg(value)': 24.01625},
                                        {'parentelement': 'f0bd0832-a81e-11ea-b46d-d4856454f4ba',
                                         'min(timestamp)': '2021-12-06 00:40:40.206160',
                                         'max(timestamp)': '2022-01-23 01:40:45.378731',
-                                        'min(value)': '2.12', 'max(value)': '35.73', 'avg(value)': '18.000526315789475'}
-                                       ]
+                                        'min(value)': '2.12', 'max(value)': '35.73', 'avg(value)': 18.000526315789475}]
             else:
                 pytest.fail(output)
         else:
@@ -385,7 +415,10 @@ class TestLitSanLeandroSingleTableQueries:
                 try:
                     results = output['Query']
                 except Exception as e:
-                    pytest.fail("Failed to extract data from query: '%s' (Error: %s)" % (query, e))
+                    if 'err_code' in output and 'err_text' in output:
+                        pytest.fail("Failed to extract results from 'COUNT(*)' (Error Code: %s | Error: %s)" % (output['err_code'], output['err_text']))
+                    else:
+                        pytest.fail("Failed to extract results from 'COUNT(*)' (Error: %s)" % e)
                 else:
                     assert results == [{'timestamp': '2021-12-31 06:57:33.344011', 'value': '2.16'},
                                        {'timestamp': '2021-12-31 02:46:59.258990', 'value': '0.29'},
