@@ -11,22 +11,13 @@ SUPPORT_DIR = os.path.join(ROOT_DIR, 'support')
 CONFIG_FILE = os.path.join(ROOT_DIR, 'configs', 'sample_config.ini') # will be replaced by user param
 EXPECTED_DIR = os.path.join(ROOT_DIR, 'expect')
 ACTUAL_DIR = os.path.join(ROOT_DIR, 'actual')
-if not os.path.isdir(EXPECTED_DIR):
-    try:
-        os.makedirs(EXPECTED_DIR)
-    except Expection as e:
-        pytes.fail('Failed to created directory: %s (Error: %s)' % (EXPECTED_DIR, e))
-if not os.path.isdir(ACTUAL_DIR):
-    try:
-        os.makedirs(ACTUAL_DIR)
-    except Expection as e:
-        pytes.fail('Failed to created directory: %s (Error: %s)' % (ACTUAL_DIR, e))
 
 sys.path.insert(0, SUPPORT_DIR)
 import file_io
 import rest_get
 import send_data
 import support
+import pytest_prep
 
 
 class TestLitSanLeandroSingleTableQueries:
@@ -50,7 +41,7 @@ class TestLitSanLeandroSingleTableQueries:
     :tables:
         ping_sensor
     """
-    def setup(self):
+    def setup_class(self):
         """
         Read configs and generate list of content to store
         :data sets:
@@ -59,22 +50,22 @@ class TestLitSanLeandroSingleTableQueries:
         :params:
             self.status - whether or not able to access AnyLog
             self.configs:dict - configurations
-            self.payloads:list - content to save on AnyLog
+            payloads:list - content to save on AnyLog
+        :steps:
+            1. Validate EXPECTED_DIR exists
+            2. create ACTUAL_DIR
+            3. extract configs
+            4. extract data to store
+            5.
         """
+        self.status, self.configs = pytest_prep.setup_code(table_name=['ping_sensor'], config_file=CONFIG_FILE,
+                                                           data_dir=DATA_DIR, expected_dir=EXPECTED_DIR,
+                                                           actual_dir=ACTUAL_DIR)
+        if self.status is False:
+            pytest.fail('Failed to get status against AnyLog node %s' % self.configs['conn'])
 
-        self.payloads = []
-        self.configs = file_io.read_configs(config_file=CONFIG_FILE)
-        self.configs['table'] = 'ping_sensor'
-        for fn in os.listdir(DATA_DIR):
-            if 'ping_sensor' in fn:
-                file_name = os.path.join(DATA_DIR, fn)
-                self.payloads += file_io.read_file(file_name=file_name, dbms=self.configs['dbms'])
-
-        if self.configs['insert'] == 'true':
-            send_data.store_payloads(payloads=self.payloads, configs=self.configs)
-
-        self.status = rest_get.get_status(conn=self.configs['conn'], username=self.configs['rest_user'],
-                                          password=self.configs['rest_password'])
+    def teardown_class(self):
+        pytest_prep.teardown_code(actual_dir=ACTUAL_DIR)
 
     def test_row_count(self):
         """
@@ -194,31 +185,6 @@ class TestLitSanLeandroSingleTableQueries:
         else:
             pytest.fail('Failed to validate connection to AnyLog')
 
-    def test_count_distinct_value(self):
-        """
-        Execute COUNT(COUNT) against float column
-        :query:
-            SELECT COUNT(DISTINCT(value)) FROM ping_sensor
-        :assert:
-            COUNT(DISTINCT) against a float column
-        """
-        if self.status is True:
-            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'],
-                                        query='SELECT COUNT(DISTINCT(value)) FROM ping_sensor',
-                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
-            if isinstance(output, dict):
-                try:
-                    for row in output['Query']:
-                        results = int(row['count(distinct(value))'])
-                except Exception as e:
-                    pytest.fail("Failed to extract from data set COUNT(DISTINCT(value)) (Error: %s)" % e)
-                else:
-                    assert results == 98
-            else:
-                pytest.fail(output)
-        else:
-            pytest.fail('Failed to validate connection to AnyLog')
-
     def test_count_distinct_uuid(self):
         """
         Execute COUNT(DISTINCT) against UUID
@@ -274,6 +240,7 @@ class TestLitSanLeandroSingleTableQueries:
         """
         Validate min value
         :query:
+            SELECT COUNT(DISTINCT(value)) FROM ping_sensor
             SELECT MIN(value) FROM ping_sensor
             SELECT MAX(value) FROM ping_sensor
             SELECT AVG(value) FROM ping_sensor
@@ -282,6 +249,7 @@ class TestLitSanLeandroSingleTableQueries:
             correct results per qury
         """
         expected = {
+            'count(distinct(value))': 98,
             'min(value)': 0.02,
             'max(value)': 45.98,
             'avg(value)': 12.0945,
@@ -369,27 +337,27 @@ class TestLitSanLeandroSingleTableQueries:
                 except Exception as e:
                     pytest.fail("Failed to extract data from query: '%s' (Error: %s)" % (query, e))
                 else:
-                    assert results ==  [{'parentelement': '1ab3b14e-93b1-11e9-b465-d4856454f4ba',
-                                         'min(timestamp)': '2021-12-07 04:52:55.247622',
-                                         'max(timestamp)': '2022-01-29 11:51:14.136243',
-                                         'min(value)': '0.02', 'max(value)': '10.34', 'avg(value)': '4.276666666666666'},
-                                        {'parentelement': '62e71893-92e0-11e9-b465-d4856454f4ba',
-                                         'min(timestamp)': '2021-12-09 01:36:25.319467',
-                                         'max(timestamp)': '2022-01-28 09:08:20.155750',
-                                         'min(value)': '0.29', 'max(value)': '3.97', 'avg(value)': '1.9552'},
-                                        {'parentelement': '68ae8bef-92e1-11e9-b465-d4856454f4ba',
-                                         'min(timestamp)': '2021-12-04 10:00:36.357454',
-                                         'max(timestamp)': '2022-01-26 19:13:51.238877',
-                                         'min(value)': '0.85', 'max(value)': '43.54', 'avg(value)': '18.131052631578946'},
-                                        {'parentelement': 'd515dccb-58be-11ea-b46d-d4856454f4ba',
-                                         'min(timestamp)': '2021-12-04 18:10:07.271804',
-                                         'max(timestamp)': '2022-01-26 18:54:48.389162',
-                                         'min(value)': '0.8', 'max(value)': '45.98', 'avg(value)': '24.01625'},
-                                        {'parentelement': 'f0bd0832-a81e-11ea-b46d-d4856454f4ba',
-                                         'min(timestamp)': '2021-12-06 00:40:40.206160',
-                                         'max(timestamp)': '2022-01-23 01:40:45.378731',
-                                         'min(value)': '2.12', 'max(value)': '35.73', 'avg(value)': '18.000526315789475'}
-                                        ]
+                    assert results == [{'parentelement': '1ab3b14e-93b1-11e9-b465-d4856454f4ba',
+                                        'min(timestamp)': '2021-12-07 04:52:55.247622',
+                                        'max(timestamp)': '2022-01-29 11:51:14.136243',
+                                        'min(value)': '0.02', 'max(value)': '10.34', 'avg(value)': '4.276666666666666'},
+                                       {'parentelement': '62e71893-92e0-11e9-b465-d4856454f4ba',
+                                        'min(timestamp)': '2021-12-09 01:36:25.319467',
+                                        'max(timestamp)': '2022-01-28 09:08:20.155750',
+                                        'min(value)': '0.29', 'max(value)': '3.97', 'avg(value)': '1.9552'},
+                                       {'parentelement': '68ae8bef-92e1-11e9-b465-d4856454f4ba',
+                                        'min(timestamp)': '2021-12-04 10:00:36.357454',
+                                        'max(timestamp)': '2022-01-26 19:13:51.238877',
+                                        'min(value)': '0.85', 'max(value)': '43.54', 'avg(value)': '18.131052631578946'},
+                                       {'parentelement': 'd515dccb-58be-11ea-b46d-d4856454f4ba',
+                                        'min(timestamp)': '2021-12-04 18:10:07.271804',
+                                        'max(timestamp)': '2022-01-26 18:54:48.389162',
+                                        'min(value)': '0.8', 'max(value)': '45.98', 'avg(value)': '24.01625'},
+                                       {'parentelement': 'f0bd0832-a81e-11ea-b46d-d4856454f4ba',
+                                        'min(timestamp)': '2021-12-06 00:40:40.206160',
+                                        'max(timestamp)': '2022-01-23 01:40:45.378731',
+                                        'min(value)': '2.12', 'max(value)': '35.73', 'avg(value)': '18.000526315789475'}
+                                       ]
             else:
                 pytest.fail(output)
         else:
@@ -461,7 +429,7 @@ class TestLitSanLeandroSingleTableQueries:
 
     def test_basic_where_timestamp_order_desc2(self):
         """
-        Validate basic WHERE condition
+        Validate basic WHERE condition against timestamp
         :query:
             SELECT
                 timestamp, value
@@ -474,7 +442,9 @@ class TestLitSanLeandroSingleTableQueries:
             1. validate content has been written to file
             2. validate content is consisent
         """
-        query = "SELECT timestamp, value FROM ping_sensor WHERE timestamp > '2021-12-20 00:00:00' AND timestamp < '2022-01-10 00:00:00' ORDER BY timestamp DESC"
+        query = ("SELECT timestamp, value FROM ping_sensor "
+                +"WHERE timestamp > '2021-12-20 00:00:00' AND timestamp < '2022-01-10 00:00:00' "
+                +"ORDER BY timestamp DESC")
         excepted_file = os.path.join(EXPECTED_DIR, 'test_basic_where_timestamp_order_desc2.json')
         actual_file = os.path.join(ACTUAL_DIR, 'test_basic_where_timestamp_order_desc2.json')
 
@@ -494,10 +464,9 @@ class TestLitSanLeandroSingleTableQueries:
         else:
             pytest.fail('Failed to validate connection to AnyLog')
 
-
     def test_basic_where_timestamp_order_asc2(self):
         """
-        Validate basic WHERE condition
+        Validate basic WHERE condition against timestamp
         :query:
             SELECT
                 timestamp, value
@@ -508,9 +477,11 @@ class TestLitSanLeandroSingleTableQueries:
             ORDER BY timestamp ASC
         :assert:
             1. validate content has been written to file
-            2. validate content is consistent
+            2. validate content is consisent
         """
-        query = "SELECT timestamp, value FROM ping_sensor WHERE timestamp > '2021-12-20 00:00:00' AND timestamp < '2022-01-10 00:00:00' ORDER BY timestamp ASC"
+        query = ("SELECT timestamp, value FROM ping_sensor "
+                +"WHERE timestamp > '2021-12-20 00:00:00' AND timestamp < '2022-01-10 00:00:00' "
+                +"ORDER BY timestamp DESC")
         excepted_file = os.path.join(EXPECTED_DIR, 'test_basic_where_timestamp_order_asc2.json')
         actual_file = os.path.join(ACTUAL_DIR, 'test_basic_where_timestamp_order_asc2.json')
 
