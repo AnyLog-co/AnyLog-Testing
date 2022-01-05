@@ -937,3 +937,390 @@ class TestLitSanLeandroSingleTableQueries:
                 pytest.fail(output)
         else:
             pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_period_1minute(self):
+        """
+        Test period by minute
+        :query:
+            SELECT
+                timestamp, value
+            FROM
+                ping_sensor
+            WHERE
+                period(minute, 1, NOW(), timestamp)
+            ORDER BY
+                timestamp DESC
+        :assert:
+            validate results are consistent
+        """
+        query = "SELECT timestamp, value FROM ping_sensor WHERE period(minute, 1, NOW(), timestamp) ORDER BY timestamp DESC"
+
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    results = output['Query']
+                except Exception as e:
+                    if 'err_code' in output and 'err_text' in output:
+                        pytest.fail("Failed to extract results from '%s' (Error Code: %s | Error: %s)" % (
+                        query, output['err_code'], output['err_text']))
+                    else:
+                        pytest.fail("Failed to extract results from '%s' (Error: %s)" % (query, e))
+                else:
+                    assert results == [{"timestamp": "2022-01-04 21:08:33.187681", "value": 20.1}]
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_period_30minute(self):
+        """
+        Test period by 30 minute
+        :query:
+            SELECT
+                timestamp, value
+            FROM
+                ping_sensor
+            WHERE
+                period(minute, 30, NOW(), timestamp)
+            ORDER BY
+                timestamp DESC
+        :assert:
+            validate results are consistent
+        """
+        query = "SELECT timestamp, value FROM ping_sensor WHERE period(minute, 30, NOW(), timestamp) ORDER BY timestamp ASC"
+
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    results = output['Query']
+                except Exception as e:
+                    if 'err_code' in output and 'err_text' in output:
+                        pytest.fail("Failed to extract results from '%s' (Error Code: %s | Error: %s)" % (
+                        query, output['err_code'], output['err_text']))
+                    else:
+                        pytest.fail("Failed to extract results from '%s' (Error: %s)" % (query, e))
+                else:
+                    assert results == [{"timestamp": "2022-01-04 21:08:33.187681", "value": 20.1}]
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_period_1hour(self):
+        """
+        Test period by hour
+        :query:
+            SELECT
+                timestamp, value
+            FROM
+                ping_sensor
+            WHERE
+                period(hour, 1, '2022-01-01 00:00:00', timestamp)
+        :assert:
+            validate results are consistent
+        """
+        query = "SELECT timestamp, value FROM ping_sensor WHERE period(hour, 1, '2022-01-01 00:00:00', timestamp)"
+
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    results = output['Query']
+                except Exception as e:
+                    if 'err_code' in output and 'err_text' in output:
+                        pytest.fail("Failed to extract results from '%s' (Error Code: %s | Error: %s)" % (
+                        query, output['err_code'], output['err_text']))
+                    else:
+                        pytest.fail("Failed to extract results from '%s' (Error: %s)" % (query, e))
+                else:
+                    assert results == [{'timestamp': '2021-12-31 06:57:33.344011', 'value': 2.16}]
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_period_12hour(self):
+        """
+        Test period by 12 hour
+        :query:
+            SELECT
+                timestamp, value
+            FROM
+                ping_sensor
+            WHERE
+                period(hour, 12, '2022-01-01 00:00:00', timestamp)
+            ORDER BY
+                timestamp DESC
+        :assert:
+            1. content is writen to file
+            2. validate results are consistent
+        """
+        query = "SELECT timestamp, value FROM ping_sensor WHERE period(hour, 12, '2022-01-01 00:00:00', timestamp) ORDER BY timestamp DESC"
+
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    results = output['Query']
+                except Exception as e:
+                    if 'err_code' in output and 'err_text' in output:
+                        pytest.fail("Failed to extract results from '%s' (Error Code: %s | Error: %s)" % (
+                        query, output['err_code'], output['err_text']))
+                    else:
+                        pytest.fail("Failed to extract results from '%s' (Error: %s)" % (query, e))
+                else:
+                    assert results == [{'timestamp': '2021-12-31 06:57:33.344011', 'value': 2.16},
+                                       {'timestamp': '2021-12-31 02:46:59.258990', 'value': 0.29}]
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_period_day(self):
+        """
+        Test period by 1 day
+        :query:
+            SELECT
+                timestamp, value
+            FROM
+                ping_sensor
+            WHERE
+                period(day, 1, '2021-12-31 23:59:59', timestamp)
+            ORDER BY
+                timestamp DESC
+        :assert:
+            1. content is writen to file
+            2. validate results are consistent
+        """
+        query = "SELECT timestamp, value FROM ping_sensor WHERE period(day, 1, '2021-12-31 23:59:59', timestamp) ORDER BY timestamp DESC"
+
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    results = output['Query']
+                except Exception as e:
+                    if 'err_code' in output and 'err_text' in output:
+                        pytest.fail("Failed to extract results from '%s' (Error Code: %s | Error: %s)" % (
+                        query, output['err_code'], output['err_text']))
+                    else:
+                        pytest.fail("Failed to extract results from '%s' (Error: %s)" % (query, e))
+                else:
+                    assert results == [{'timestamp': '2021-12-31 06:57:33.344011', 'value': 2.16},
+                                       {'timestamp': '2021-12-31 02:46:59.258990', 'value': 0.29},
+                                       {'timestamp': '2021-12-30 08:07:28.173834', 'value': 2.16}]
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_period_5day(self):
+        """
+        Test period by 5 day
+        :query:
+            SELECT
+                device_name, min(timestamp), max(timestamp), min(value), max(value), avg(value), count(value)
+            FROM
+                ping_sensor
+            WHERE
+                period(day, 5, '2022-01-31 00:00:00', timestamp)
+            GROUP BY
+                device_name
+            ORDER BY
+                device_name ASC
+        :assert:
+            2. validate results are consistent
+        """
+        query = ("SELECT device_name, min(timestamp), max(timestamp), min(value), max(value), avg(value), count(value) "
+                 +"FROM ping_sensor WHERE period(day, 5, '2022-01-31 00:00:00', timestamp) GROUP BY device_name "
+                 +"ORDER BY device_name ASC")
+
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    results = output['Query']
+                except Exception as e:
+                    if 'err_code' in output and 'err_text' in output:
+                        pytest.fail("Failed to extract results from '%s' (Error Code: %s | Error: %s)" % (
+                        query, output['err_code'], output['err_text']))
+                    else:
+                        pytest.fail("Failed to extract results from '%s' (Error: %s)" % (query, e))
+                else:
+                    assert results == [{'device_name': 'ADVA FSP3000R7', 'min(timestamp)': '2022-01-25 09:15:16.139743',
+                                        'max(timestamp)': '2022-01-28 09:08:20.155750', 'min(value)': 0.29,
+                                        'max(value)': 3.64, 'avg(value)': 1.5675, 'count(value)': 4},
+                                       {'device_name': 'Catalyst 3500XL',
+                                        'min(timestamp)': '2022-01-26 19:13:51.238877',
+                                        'max(timestamp)': '2022-01-26 19:13:51.238877',
+                                        'min(value)': 28.62, 'max(value)': 28.62, 'avg(value)': 28.62,
+                                        'count(value)': 1},
+                                       {'device_name': 'Ubiquiti OLT', 'min(timestamp)': '2022-01-24 15:56:09.273241',
+                                        'max(timestamp)': '2022-01-26 18:54:48.389162', 'min(value)': 8.42,
+                                        'max(value)': 19.2, 'avg(value)': 13.81, 'count(value)': 2},
+                                       {'device_name': 'VM Lit SL NMS', 'min(timestamp)': '2022-01-29 11:51:14.136243',
+                                        'max(timestamp)': '2022-01-29 11:51:14.136243', 'min(value)': 4.17,
+                                        'max(value)': 4.17, 'avg(value)': 4.17, 'count(value)': 1}]
+
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_period_7day(self):
+        """
+        Test period by 7 day
+        :query:
+            SELECT
+                parentelement, min(timestamp), max(timestamp), min(value), max(value), avg(value), count(value)
+            FROM
+                ping_sensor
+            WHERE
+                period(day, 7, '2022-01-31 00:00:00', timestamp)
+            GROUP BY
+                parentelement
+            ORDER BY
+                parentelement DESC
+        :assert:
+            2. validate results are consistent
+        """
+        query = ("SELECT parentelement, min(timestamp), max(timestamp), min(value), max(value), avg(value), count(value) "
+                 +"FROM ping_sensor WHERE period(day, 7, '2022-01-31 00:00:00', timestamp) GROUP BY parentelement "
+                 +"ORDER BY parentelement DESC")
+
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    results = output['Query']
+                except Exception as e:
+                    if 'err_code' in output and 'err_text' in output:
+                        pytest.fail("Failed to extract results from '%s' (Error Code: %s | Error: %s)" % (
+                        query, output['err_code'], output['err_text']))
+                    else:
+                        pytest.fail("Failed to extract results from '%s' (Error: %s)" % (query, e))
+                else:
+                    assert results == [{'parentelement': 'f0bd0832-a81e-11ea-b46d-d4856454f4ba',
+                                        'min(timestamp)': '2022-01-23 01:40:45.378731',
+                                        'max(timestamp)': '2022-01-23 01:40:45.378731', 'min(value)': 10.81,
+                                        'max(value)': 10.81, 'avg(value)': 10.81, 'count(value)': 1},
+                                       {'parentelement': 'd515dccb-58be-11ea-b46d-d4856454f4ba',
+                                        'min(timestamp)': '2022-01-24 15:56:09.273241',
+                                        'max(timestamp)': '2022-01-26 18:54:48.389162', 'min(value)': 8.42,
+                                        'max(value)': 19.2, 'avg(value)': 13.81, 'count(value)': 2},
+                                       {'parentelement': '68ae8bef-92e1-11e9-b465-d4856454f4ba',
+                                        'min(timestamp)': '2022-01-24 11:20:08.272811',
+                                        'max(timestamp)': '2022-01-26 19:13:51.238877', 'min(value)': 0.85,
+                                        'max(value)': 28.62, 'avg(value)': 14.735, 'count(value)': 2},
+                                       {'parentelement': '62e71893-92e0-11e9-b465-d4856454f4ba',
+                                        'min(timestamp)': '2022-01-25 09:15:16.139743',
+                                        'max(timestamp)': '2022-01-28 09:08:20.155750', 'min(value)': 0.29,
+                                        'max(value)': 3.64, 'avg(value)': 1.5675, 'count(value)': 4},
+                                       {'parentelement': '1ab3b14e-93b1-11e9-b465-d4856454f4ba',
+                                        'min(timestamp)': '2022-01-23 21:34:15.293604',
+                                        'max(timestamp)': '2022-01-29 11:51:14.136243', 'min(value)': 0.94,
+                                        'max(value)': 4.17, 'avg(value)': 2.555, 'count(value)': 2}]
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_period_15day(self):
+        """
+        Test period by 15 day
+        :query:
+            SELECT
+                timestamp, value
+            FROM
+                ping_sensor
+            WHERE
+                period(day, 15, '2022-01-31 00:00:00', timestamp) and device_name = 'ADVA FSP3000R7'
+            ORDER BY
+                timestamp DESC
+        :assert:
+            2. validate results are consistent
+        """
+        query = ("SELECT timestamp, value "
+                 +"FROM ping_sensor WHERE period(day, 15, '2022-01-31 00:00:00', timestamp) and "
+                 +"device_name = 'ADVA FSP3000R7' ORDER BY timestamp DESC")
+
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    results = output['Query']
+                except Exception as e:
+                    if 'err_code' in output and 'err_text' in output:
+                        pytest.fail("Failed to extract results from '%s' (Error Code: %s | Error: %s)" % (
+                        query, output['err_code'], output['err_text']))
+                    else:
+                        pytest.fail("Failed to extract results from '%s' (Error: %s)" % (query, e))
+                else:
+                    assert results == [{'timestamp': '2022-01-28 09:08:20.155750', 'value': 0.5},
+                                       {'timestamp': '2022-01-27 16:17:02.263903', 'value': 1.84},
+                                       {'timestamp': '2022-01-25 14:18:42.213060', 'value': 0.29},
+                                       {'timestamp': '2022-01-25 09:15:16.139743', 'value': 3.64},
+                                       {'timestamp': '2022-01-18 20:59:36.193183', 'value': 0.69}]
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_period_1month(self):
+        """
+        Test period by month
+        :query:
+            SELECT
+                timestamp, value
+            FROM
+                ping_sensor
+            WHERE
+                period(month, 1, '2022-01-31 00:00:00', timestamp) and
+                parentelement = '62e71893-92e0-11e9-b465-d4856454f4ba'
+            ORDER BY
+                timestamp ASC
+        :assert:
+            2. validate results are consistent
+        """
+        query = ("SELECT timestamp, value "
+                 +"FROM ping_sensor WHERE period(month, 1, '2022-01-31 00:00:00', timestamp) and "
+                 +"parentelement = '62e71893-92e0-11e9-b465-d4856454f4ba' ORDER BY timestamp ASC")
+
+        if self.status is True:
+            output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
+                                        username=self.configs['rest_user'], password=self.configs['rest_password'])
+            if isinstance(output, dict):
+                try:
+                    results = output['Query']
+                except Exception as e:
+                    if 'err_code' in output and 'err_text' in output:
+                        pytest.fail("Failed to extract results from '%s' (Error Code: %s | Error: %s)" % (
+                        query, output['err_code'], output['err_text']))
+                    else:
+                        pytest.fail("Failed to extract results from '%s' (Error: %s)" % (query, e))
+                else:
+                    assert results == [{'timestamp': '2021-12-31 02:46:59.258990', 'value': 0.29},
+                                       {'timestamp': '2021-12-31 06:57:33.344011', 'value': 2.16},
+                                       {'timestamp': '2022-01-03 14:51:39.362594', 'value': 3.97},
+                                       {'timestamp': '2022-01-09 14:29:19.303498', 'value': 1.67},
+                                       {'timestamp': '2022-01-10 23:59:44.373455', 'value': 2.13},
+                                       {'timestamp': '2022-01-11 14:45:12.129379', 'value': 0.83},
+                                       {'timestamp': '2022-01-18 20:59:36.193183', 'value': 0.69},
+                                       {'timestamp': '2022-01-25 09:15:16.139743', 'value': 3.64},
+                                       {'timestamp': '2022-01-25 14:18:42.213060', 'value': 0.29},
+                                       {'timestamp': '2022-01-27 16:17:02.263903', 'value': 1.84},
+                                       {'timestamp': '2022-01-28 09:08:20.155750', 'value': 0.5}]
+            else:
+                pytest.fail(output)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
