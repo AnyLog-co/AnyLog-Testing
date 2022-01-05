@@ -1,7 +1,7 @@
 import requests
 
 for param in ['min(value)', 'max(value)', 'avg(value)', 'sum(value)', 'count(distinct(value))']:
-    r = requests.get('http://10.0.0.73:7349', headers={'command': 'sql aiops format=json and stat=false "select %s from ping_sensor"' % param,
+    r = requests.get('http://10.0.0.78:7849', headers={'command': 'sql lsl_demo format=json and stat=false "select %s from ping_sensor"' % param,
                                                         'User-Agent': 'AnyLog/1.23', 'destination': 'network'})
     if int(r.status_code) != 200:
         print('Failed due to network error: %s' % r.status_code)
