@@ -20,7 +20,6 @@ import send_data
 import support
 
 
-
 class TestLitSanLeandroSingleTableQueries:
     """
     Using Lit San Leandro execute tests such as:
@@ -52,21 +51,23 @@ class TestLitSanLeandroSingleTableQueries:
             self.status - whether or not able to access AnyLog
             self.configs:dict - configurations
             payloads:list - content to save on AnyLog
-        :steps:
-            1. Validate EXPECTED_DIR exists
-            2. create ACTUAL_DIR
-            3. extract configs
-            4. extract data to store
-            5.
         """
-        self.status, self.configs = pytest_setup_teardown.setup_code(table_name=['ping_sensor'], config_file=CONFIG_FILE,
-                                                           data_dir=DATA_DIR, expected_dir=EXPECTED_DIR,
-                                                           actual_dir=ACTUAL_DIR)
+        self.status, self.configs = pytest_setup_teardown.setup_code(config_file=CONFIG_FILE, expected_dir=EXPECTED_DIR,
+                                                                     actual_dir=ACTUAL_DIR)
+        print(self.configs)
         if self.status is False:
             pytest.fail('Failed to get status against AnyLog node %s' % self.configs['conn'])
 
+        # Insert data process
+        if self.configs['insert'] == 'true':
+            if not pytest_setup_teardown.write_data(table_name=['ping_sensor'], configs=self.configs,
+                                                    data_dir=DATA_DIR):
+                pytest.fail('Failed to write one or more rows into AnyLog via %s' % self.configs['send'])
+
+
     def teardown_class(self):
         pytest_setup_teardown.teardown_code(actual_dir=ACTUAL_DIR)
+
 
     def test_row_count(self):
         """
@@ -103,8 +104,6 @@ class TestLitSanLeandroSingleTableQueries:
             SELECT DISTINCT(value) FROM ping_sensor
         :assert:
             Distinct vales returned
-        :note:
-            There's currently an issue where the values returned are of type string rather than float
         """
         results = []
         if self.status is True:
@@ -550,8 +549,6 @@ class TestLitSanLeandroSingleTableQueries:
         :assert:
             1. content is writen to file
             2. validate results are consistent
-        :note:
-            once the date surpasses '2021-01-31' WHERE condition could just be "timestamp <= NOW()"
         """
         query = ("SELECT increments(minute, 1, timestamp), MIN(timestamp), MAX(timestamp), MIN(value), MAX(value), "
                  +"AVG(value) FROM ping_sensor WHERE timestamp <= NOW() + 1 month ORDER BY MIN(timestamp) DESC")
@@ -952,8 +949,11 @@ class TestLitSanLeandroSingleTableQueries:
                 timestamp DESC
         :assert:
             validate results are consistent
+        :note:
+            once the date surpasses '2021-01-31' WHERE condition could just be "timestamp <= NOW()"
         """
-        query = "SELECT timestamp, value FROM ping_sensor WHERE period(minute, 1, NOW(), timestamp) ORDER BY timestamp DESC"
+        # when the date reaches
+        query = "SELECT timestamp, value FROM ping_sensor WHERE period(minute, 1, '2022-02-05 18:27:43.748009', timestamp) ORDER BY timestamp DESC"
 
         if self.status is True:
             output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
@@ -968,7 +968,7 @@ class TestLitSanLeandroSingleTableQueries:
                     else:
                         pytest.fail("Failed to extract results from '%s' (Error: %s)" % (query, e))
                 else:
-                    assert results == [{"timestamp": "2022-01-04 21:08:33.187681", "value": 20.1}]
+                    assert results == [{"timestamp": "2022-01-29 11:51:14.136243", "value": 4.17}]
             else:
                 pytest.fail(output)
         else:
@@ -988,8 +988,10 @@ class TestLitSanLeandroSingleTableQueries:
                 timestamp DESC
         :assert:
             validate results are consistent
+        :note:
+            once the date surpasses '2021-01-31' WHERE condition could just be "timestamp <= NOW()"
         """
-        query = "SELECT timestamp, value FROM ping_sensor WHERE period(minute, 30, NOW(), timestamp) ORDER BY timestamp ASC"
+        query = "SELECT timestamp, value FROM ping_sensor WHERE period(minute, 30, '2022-02-05 18:27:43.748009', timestamp) ORDER BY timestamp ASC"
 
         if self.status is True:
             output = rest_get.get_basic(conn=self.configs['conn'], dbms=self.configs['dbms'], query=query,
@@ -1004,7 +1006,7 @@ class TestLitSanLeandroSingleTableQueries:
                     else:
                         pytest.fail("Failed to extract results from '%s' (Error: %s)" % (query, e))
                 else:
-                    assert results == [{"timestamp": "2022-01-04 21:08:33.187681", "value": 20.1}]
+                    assert results == [{"timestamp": "2022-01-29 11:51:14.136243", "value": 4.17}]
             else:
                 pytest.fail(output)
         else:

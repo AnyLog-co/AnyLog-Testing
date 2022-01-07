@@ -11,7 +11,7 @@ import rest_get
 import send_data
 
 
-def setup_code(table_name:list, config_file:str, data_dir:str, expected_dir:str, actual_dir:str)->(bool, dict):
+def setup_code(config_file:str, expected_dir:str, actual_dir:str)->(bool, dict):
     """
     Setup code for pytest(s)
     :process:
@@ -43,17 +43,31 @@ def setup_code(table_name:list, config_file:str, data_dir:str, expected_dir:str,
     configs = file_io.read_configs(config_file=config_file)
     status = rest_get.get_status(conn=configs['conn'], username=configs['rest_user'],
                                       password=configs['rest_password'])
-    if status is True:
-        for fn in os.listdir(data_dir):
-            for table in table_name:
-                if table in fn:
-                    file_name = os.path.join(data_dir, fn)
-                    payloads = file_io.read_file(file_name=file_name, dbms=configs['dbms'])
-        if configs['insert'] == 'true':
-            send_data.store_payloads(payloads=payloads, configs=configs)
 
     return status, configs
 
+
+def write_data(table_name:list, data_dir:str, configs:dict)->bool:
+    """
+    Write content into AnyLog
+    :args:
+        table_name:list - list of tables to store data for
+        configs:str - configurations from config_file
+        data_dir:str - directory containing data sets used for testing
+    :params:
+        status:bool
+        payloads:list - data extracted to be stored in AnyLog
+    :return:
+        status
+    """
+    for fn in os.listdir(data_dir):
+        for table in table_name:
+            if table in fn:
+                file_name = os.path.join(data_dir, fn)
+                payloads = file_io.read_file(file_name=file_name, dbms=configs['dbms'])
+
+    status = send_data.store_payloads(payloads=payloads, configs=configs)
+    return status
 
 def teardown_code(actual_dir:str):
     if os.path.isdir(actual_dir):
