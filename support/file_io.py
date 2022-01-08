@@ -3,7 +3,7 @@ import os
 import pytest
 import support
 
-def read_file(file_name:str, dbms:str)->list:
+def read_file(file_name:str)->list:
     """
     Given a (JSON) file, read its contents and writen them as a list
     :args:
@@ -24,13 +24,12 @@ def read_file(file_name:str, dbms:str)->list:
                     for line in f.read().split("\n"):
                         if line != '':
                             line = support.json_loads(line)
-                            line['dbms'] = dbms
-                            line['table'] = table_name
                             payloads.append(line)
                 except Exception as e:
                     pytest.fail('Failed to read line(s) (Error: %s)' % e)
         except Exception as e:
             pytest.fail("Failed to open file '%s' (Error: %s)" % (file_name, e))
+
     return payloads
 
 
@@ -91,6 +90,8 @@ def read_configs(config_file:str)->dict:
             for section in config.sections():
                 for key in config[section]:
                     data[key] = config[section][key].replace('"', '')
+                    if key == 'timeout':
+                        data[key] = int(data[key])
         except Exception as e:
             pytest.fail('Failed to extract variables from config file (Error: %s)' % e)
 

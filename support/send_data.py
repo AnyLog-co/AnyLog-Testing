@@ -1,126 +1,18 @@
+import os
 from paho.mqtt import client
 import pytest
 import random
 import requests
 import support
+import sys
 import time
 
-def post_data(conn:str, data:list, dbms:str, table:str=None, rest_topic:str='new-topic', auth:tuple=None,
-              timeout:int=30, exception:bool=False)->bool:
-    """
-    Send data via REST using POST command
-    :notes:
-        URL: https://github.com/AnyLog-co/documentation/blob/master/adding%20data.md#using-a-post-command
-        Comment: requires MQTT client call on the accepting AnyLog side
-    :args:
-        conn:str - REST connection information
-        data - either a list or dict of data sets
-        rest_topic:str - MQTT topic
-        dbms:str - logical database name
-        table:str - table name, if data is dict use keys as table name(s)
-        auth:tuple - Authentication username + password
-        timeout:nt - wait time
-        exception:bool - whether or not to pytest.fail error messages
-    :params:
-        status:bool
-        headers:dict - REST header info
-        payloads:list - content to POST
-    :return:
-        status
-    """
-    status = True
-    headers = {
-        'command': 'data',
-        'topic': rest_topic,
-        'User-Agent': 'AnyLog/1.23',
-        'Content-Type': 'text/plain'
-    }
+ROOT_DIR = os.path.expandvars(os.path.expanduser(__file__)).split('tests')[0]
+SUPPORT_DIR = os.path.join(ROOT_DIR, 'support')
+sys.path.insert(0, SUPPORT_DIR)
+import rest
 
-    payloads = support.payload_conversions(payloads=data, dbms=dbms, table=table)
-    for row in payloads:
-        try:
-            r = requests.post(url='http://%s' % conn, headers=headers, data=payload, auth=auth, timeout=timeout)
-        except Exception as e:
-            if exception is True:
-                pytest.fail('Failed to POST content into %s (Error: %s)' % (conn, e))
-            status = False
-        else:
-            if int(r.status_code) != 200 and exception is True:
-                pytest.fail('Failed to POST content into %s (Network Error: %s)' % (conn, r.status_code))
-                status = Fasle
-            elif int(r.status_code) != 200:
-                status = False
-
-    return status
-
-
-def put_data(conn:str, data:list, auth:tuple=None, timeout:int=30, exception:bool=False)->bool:
-    """
-    Send data via REST using PUT command
-    :url:
-        https://github.com/AnyLog-co/documentation/blob/master/adding%20data.md#using-a-put-command
-    :args:
-        conn:str - REST connection information
-        data - either a list or dict of data sets
-        dbms:str - logical database name
-        table:str - table name, if data is dict use keys as table name(s)
-        auth:tuple - Authentication username + password
-        timeout:nt - wait time
-        exception:bool - whether or not to pytest.fail error messages
-    :params:
-        status:bool
-        headers:dict - REST header info
-        payloads:list - content to POST
-    :return:
-        status
-    """
-    status = True
-    headers = {
-        'type': 'json',
-        'dbms': None,
-        'table': None,
-        'mode': 'streaming',
-        'Content-Type': 'text/plain'
-    }
-    if isinstance(data, list):
-        for row in data:
-            headers['dbms'] = row['dbms']
-            headers['table'] = row['table']
-            del row['dbms']
-            del row['table']
-            try:
-                r = requests.put(url='http://%s' % conn, headers=headers, data=support.json_dumps(row), auth=auth, timeout=timeout)
-            except Exception as e:
-                if exception is True:
-                    pytest.fail('Failed to PUT data into %s (Error: %s)' % (conn, e))
-                status = False
-            else:
-                if int(r.status_code) != 200 and exception is True:
-                    pytest.fail('Failed to PUST data into %s (Network Error: %s)' % r.status_code)
-                    status = False
-                elif int(r.status_code) != 200:
-                    status = False
-
-    elif isinstance(data, dict):
-        for table in data:
-            headers['table'] = table
-            for row in data[table]:
-                try:
-                    r = requests.put(url='http://%s' % conn, headers=headers, data=support.json_dumps(row), auth=auth, timeout=timeout)
-                except Exception as e:
-                    if exception is True:
-                        pytest.fail('Failed to PUT data into %s (Error: %s)' % (conn, e))
-                    status = False
-                else:
-                    if int(r.status_code) != 200 and exception is True:
-                        pytest.fail('Failed to PUST data into %s (Network Error: %s)' % r.status_code)
-                        status = False
-                    elif int(r.status_code) != 200:
-                        status = False
-    return status
-
-
-def connect_mqtt_broker(broker:str, port:int, username:str=None, password:str=None, exception:bool=True):
+def connect_mqtt_broker(broker:str, port:int, username:str=None, password:str=None)->client.Client:
     """
     Connect to an MQTT broker
     :args:
@@ -141,95 +33,72 @@ def connect_mqtt_broker(broker:str, port:int, username:str=None, password:str=No
     try:
         mqtt_client = client.Client(mqtt_client_id)
     except Exception as e:
-        if exception is True:
-            pytest.fail('Failed to set MQTT client ID (Error: %s)' % e)
-        mqtt_client = None
+        pytest.fail('Failed to set MQTT client ID (Error: %s)' % e)
 
     # set username and password
     if mqtt_client is not None and username is not False and password is not None:
         try:
             mqtt_client.username_pw_set(username, password)
         except Exception as e:
-            if exception is True:
-                pytest.fail('Failed to set MQTT username & password (Error: %s)' % e)
-            mqtt_client = None
+            pytest.fail('Failed to set MQTT username & password (Error: %s)' % e)
 
     # connect to broker
-    if mqtt_client is not None:
-        try:
-            mqtt_client.connect(broker, int(port))
-        except Exception as e:
-            if exception is True:
-                pytest.fail('failed to connect to MQTT broker %s against port %s (Error: %s)' % (broker, port, e))
-            mqtt_client = None
+    try:
+        mqtt_client.connect(broker, int(port))
+    except Exception as e:
+        pytest.fail('failed to connect to MQTT broker %s against port %s (Error: %s)' % (broker, port, e))
 
     return mqtt_client
 
 
-def mqtt_send_data(mqtt_client:client.Client, topic:str, data:dict, dbms:str, table:str, exception:bool=False)->bool:
+def mqtt_send_data(mqtt_client:client.Client, topic:str, payloads:dict, dbms:str, table:str)->bool:
     """
     Send data into an MQTT broker
     :args:
         mqtt_client:paho.mqtt.client.Client - MQTT broker client
         topic:str - topic to send data into
-        data:dict - either list or dict of data to send into MQTT broker
+        payloads:dict - list of data to send into MQTT broker
         dbms:str - logical database
         table:str - logical table name
         exception:bool - whether or not to pytest.fail exceptions
     :params:
         status:bool
-        payloads:list - converted data
-        r:paho.mqtt.client.MQTTMessageInfo - result from publish process
-    :return:
-        status
+        response:paho.mqtt.client.MQTTMessageInfo - result from publish process
     """
-    status = True
-    payloads = support.payload_conversions(payloads=data, dbms=dbms, table=table)
-    for message in payloads:
+    for payload in payloads:
+        payload['dbms'] = dbms
+        payload['table'] = table
         try:
-            r = mqtt_client.publish(topic, message, qos=1, retain=False)
+            response = mqtt_client.publish(topic, payload, qos=1, retain=False)
         except Exception as e:
-            if exception is True:
-                pytest.fail('Failed to publish results in %s (Error: %s)' % (mqtt_client.conn, e))
-            status = False
+            pytest.fail('Failed to publish results in %s (Error: %s)' % (mqtt_client.conn, e))
         else:
             time.sleep(5)
-            if r[0] != 0 and exception is True:
+            if response[0] != 0:
                 pytest.fail('There was a network error when publishing content')
-                status = False
-            elif r[0] != 0:
-                status = False
-
-    return status
 
 
-def store_payloads(payloads:list, configs:dict)->bool:
+def store_payloads(send_type:str, payloads:list, dbms:str, table:str, anylog_conn:rest.RestCode=None,
+                   topic:str=None, broker:str=None, port:int=None, username:str=None, password:str=None):
     """
     Send payloads into either AnyLog or MQTT broker based on configs
     :args:
+        send_type:str - format to send data (PUT, POST, MQTT)
         payloads:list - content to store
-        configs:dict - configurations
-    :params:
-        status:bool
-        auth:tuple - REST authentication params
-    :return:
-        status
+        dbms:str - logical database name
+        table:str - tale to store data in
+        anylog_conn:rest.RestClass - connection to REST class (used by PUT / POST)
+        topic:str - topic for either POST or MQTT
+        broker:str - MQTT broker
+        port:int - MQTT port
+        username:str - MQTT user
+        password:MQTT password
     """
-    status = True
-    auth = (configs['rest_user'], configs['rest_password'])
-    if configs['rest_user'] == '' or configs['rest_password']:
-        auth = None
-
-    if configs['send'] == 'put':
-        status = put_data(conn=configs['conn'], data=payloads, auth=auth, timeout=30, exception=True)
-    elif configs['send'] == 'post':
-        status = post_data(conn=configs['conn'], data=payloads, dbms=configs['dbms'], table=configs['table'],
-                           rest_topic=configs['topic'], auth=auth, timeout=30, exception=True)
-    elif configs['send'] == 'mqtt':
-        mqtt_conn = connect_mqtt_broker(broker=configs['broker'], port=configs['port'],
-                                             username=configs['mqtt_user'], password=configs['password'])
-        if mqtt_conn is not None:
-            status = mqtt_send_data(mqtt_client=mqtt_conn, topic=configs['topic'], data=payloads, dbms=configs['dbms'],
-                                    table=configs['table'], exception=True)
+    if send_type == 'put':
+        anylog_conn.put(payloads=payloads, dbms=dbms, table=table)
+    elif send_type == 'post':
+        anylog_conn.post(payloads=payloads, dbms=dbms, table=table, topic=topic)
+    elif send_type == 'mqtt':
+        mqtt_client = connect_mqtt_broker(broker=broker, port=port, username=username, password=password)
+        mqtt_send_data(mqtt_client=mqtt_client, topic=topic, payloads=payloads, dbms=dbms, table=table)
     time.sleep(70)
-    return status

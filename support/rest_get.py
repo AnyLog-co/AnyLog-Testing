@@ -64,9 +64,9 @@ def get_status(conn:str, username:str='', password='', timeout:int=30)->bool:
         except Exception as e:
             pytest.fail('Failed to extract results from response (Error: %s)' % e)
         else:
+            assert 'running' in result and 'not' not in result
             if 'running' in result and 'not' not in result:
                 status = True
-
     return status
 
 
