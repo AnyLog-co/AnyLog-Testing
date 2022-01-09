@@ -8,7 +8,6 @@ SUPPORT_DIR = os.path.join(ROOT_DIR, 'support')
 sys.path.insert(0, SUPPORT_DIR)
 import file_io
 import rest
-import rest_get
 import send_data
 
 

@@ -1,0 +1,6 @@
+sql %s format=json and stat=false "SELECT DISTINCT(parentelement) FROM ping_sensor ORDER BY parentelement ASC"
+{"distinct(parentelement)": "1ab3b14e-93b1-11e9-b465-d4856454f4ba"}
+{"distinct(parentelement)": "62e71893-92e0-11e9-b465-d4856454f4ba"}
+{"distinct(parentelement)": "68ae8bef-92e1-11e9-b465-d4856454f4ba"}
+{"distinct(parentelement)": "d515dccb-58be-11ea-b46d-d4856454f4ba"}
+{"distinct(parentelement)": "f0bd0832-a81e-11ea-b46d-d4856454f4ba"}

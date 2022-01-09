@@ -33,10 +33,11 @@ def read_file(file_name:str)->list:
     return payloads
 
 
-def write_file(file_name:str, results:list)->bool:
+def write_file(query:str, file_name:str, results:list)->bool:
     """
     Write results to file
     :args:
+        query:str - query being executed
         file_name:str - file to write content into
         results:list - content to write into files
     :params:
@@ -47,6 +48,16 @@ def write_file(file_name:str, results:list)->bool:
     status = True
     try:
         with open(file_name, 'w') as f:
+            try:
+                f.write('%s\n' % query)
+            except Exception as e:
+                pytest.fail('Failed to write query to file (Error: %s)' % e)
+                status = False
+    except Exception as e:
+        pytest.fail('Failed to open file %s (Error: %s)' % (file_name, e))
+        status = False        
+    try:
+        with open(file_name, 'a') as f:
             for result in results:
                 try:
                     f.write(support.json_dumps(result) + '\n')

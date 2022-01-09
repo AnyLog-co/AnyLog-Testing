@@ -1,0 +1,2 @@
+sql %s format=json and stat=false "SELECT COUNT(*) FROM ping_sensor"
+{"count(*)": 100}
