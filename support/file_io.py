@@ -2,6 +2,31 @@ import configparser
 import os
 import pytest
 import support
+import time
+
+last_timestamp = 0
+
+def generate_file_name(results_dir:str)->str:
+    """
+    Generate a timestamp based file name
+    :args:
+        results_dir:str - directory that'll contain results
+    :params:
+        global last_timestamp:int - last timestamp
+        current_timestamp:int - timestamp as integer
+        full_path:str - full file path
+    :return:
+        full_path
+    """
+    global last_timestamp
+
+    current_time = int(time.time())
+    if current_time <= last_timestamp:
+        last_timestamp += 1
+    else:
+        last_timestamp = current_time
+
+    return os.path.join(results_dir, 'output_%s.rslts' % str(last_timestamp))
 
 def read_file(file_name:str)->list:
     """
@@ -31,6 +56,7 @@ def read_file(file_name:str)->list:
             pytest.fail("Failed to open file '%s' (Error: %s)" % (file_name, e))
 
     return payloads
+
 
 
 def write_file(query:str, file_name:str, results:list)->bool:
