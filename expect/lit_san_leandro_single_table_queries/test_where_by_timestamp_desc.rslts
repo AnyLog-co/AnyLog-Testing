@@ -1,0 +1,4 @@
+sql %s format=json and stat=false "SELECT timestamp, value FROM ping_sensor WHERE timestamp >= '2021-12-30 00:00:00' AND timestamp <= '2022-01-02 00:00:00' ORDER BY timestamp DESC"
+{"timestamp": "2021-12-31 06:57:33.344011", "value": 2.16}
+{"timestamp": "2021-12-31 02:46:59.258990", "value": 0.29}
+{"timestamp": "2021-12-30 08:07:28.173834", "value": 2.16}

@@ -725,6 +725,102 @@ class TestLitSanLeandroSingleTableQueries:
         else:
             pytest.fail('Failed to validate connection to AnyLog')
 
+    def test_where_by_timestamp_desc(self):
+        """
+        Validate basic WHERE condition
+        :params:
+            headers:dict - REST headers
+            results:list - results from query
+            expected_file:str - file containing expected results
+            actual_file:str - file updated with results
+        :query:
+            SELECT
+                timestamp, value
+            FROM
+                ping_sensor
+            WHERE
+                timestamp >= '2021-12-30 00:00:00' AND timestamp <= '2022-01-02 00:00:00'
+            ORDER BY
+                timestamp DESC
+        """
+        sql = ("SELECT timestamp, value FROM ping_sensor WHERE "
+               +"timestamp >= '2021-12-30 00:00:00' AND timestamp <= '2022-01-02 00:00:00' ORDER BY timestamp DESC")
+        query = 'sql %s format=json and stat=false "' + sql + '"'
+        headers = {
+            'command': query % self.configs['dbms'],
+            'User-Agent': 'AnyLog/1.23',
+            'destination': 'network'
+        }
+        expected_file = os.path.join(EXPECTED_DIR, 'test_where_by_timestamp_desc.rslts')
+        actual_file = os.path.join(ACTUAL_DIR, 'test_where_by_timestamp_desc.rslts')
 
+        if self.status is True:
+            response = self.anylog_conn.get(headers=headers)
+            if isinstance(response, dict):
+                try:
+                    results = response['Query']
+                except Exception as e:
+                    if 'err_code' in response and 'err_text' in response:
+                        pytest.fail("Failed to extract results from '%s' (Error Code: %s | Error: %s)" % (
+                            query, response['err_code'], response['err_text']))
+                    else:
+                        pytest.fail("Failed to extract results from '%s' (Error: %s)" % (query, e))
+                else:
+                    assert file_io.write_file(query=query, file_name=actual_file, results=results) is True
+                    assert filecmp.cmp(actual_file, expected_file)
+            else:
+                pytest.fail(response)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+
+    def test_where_by_timestamp_asc(self):
+        """
+        Validate basic WHERE condition
+        :params:
+            headers:dict - REST headers
+            results:list - results from query
+            expected_file:str - file containing expected results
+            actual_file:str - file updated with results
+        :query:
+            SELECT
+                timestamp, value
+            FROM
+                ping_sensor
+            WHERE
+                timestamp >= '2021-12-30 00:00:00' AND timestamp <= '2022-01-02 00:00:00'
+            ORDER BY
+                timestamp ASC
+        """
+        sql = ("SELECT timestamp, value FROM ping_sensor WHERE "
+               +"timestamp <= '2021-12-30 00:00:00' OR timestamp >= '2022-01-02 00:00:00' ORDER BY timestamp ASC")
+        query = 'sql %s format=json and stat=false "' + sql + '"'
+        headers = {
+            'command': query % self.configs['dbms'],
+            'User-Agent': 'AnyLog/1.23',
+            'destination': 'network'
+        }
+        expected_file = os.path.join(EXPECTED_DIR, 'test_where_by_timestamp_asc.rslts')
+        actual_file = os.path.join(ACTUAL_DIR, 'test_where_by_timestamp_asc.rslts')
+
+        if self.status is True:
+            response = self.anylog_conn.get(headers=headers)
+            if isinstance(response, dict):
+                try:
+                    results = response['Query']
+                except Exception as e:
+                    if 'err_code' in response and 'err_text' in response:
+                        pytest.fail("Failed to extract results from '%s' (Error Code: %s | Error: %s)" % (
+                            query, response['err_code'], response['err_text']))
+                    else:
+                        pytest.fail("Failed to extract results from '%s' (Error: %s)" % (query, e))
+                else:
+                    assert file_io.write_file(query=query, file_name=actual_file, results=results) is True
+                    assert filecmp.cmp(actual_file, expected_file)
+            else:
+                pytest.fail(response)
+        else:
+            pytest.fail('Failed to validate connection to AnyLog')
+
+    
 
 
