@@ -2,7 +2,10 @@ import argparse
 import filecmp
 import os
 import pytest_setup_teardown
-import termcolor
+try:
+    import termcolor
+except:
+    pass
 import sys
 
 ROOT_DIR=os.path.expandvars(os.path.expanduser(__file__)).split('tests')[0]
@@ -63,7 +66,7 @@ def execute_query(anylog_conn:rest.RestCode, dbms:str, query:str, expected_resul
 
 def main():
     """
-    The following tool is intended to help
+    The following tool is intended to allow for executing AnyLog
     :positional arguments:
         configs     configs file
         tests_dir   directory containing files with results
@@ -79,7 +82,7 @@ def main():
         summary:dict - counter for success / fail
     :output:
         Query: %s | Status: %s [| Expected File: %s | Actual File: %s]
-        Summary 
+        Summary
     """
     parser = argparse.ArgumentParser()
     parser.add_argument('configs', type=str, default='$HOME/AnyLog-Testing/configs/sample_config.ini', help='configs file')
@@ -119,13 +122,19 @@ def main():
 
         summary['total'] += 1
         if status is True:
-            stmt = 'Query: %s | Status: %s' % (query, termcolor.colored('SUCCESS', attrs=['bold']))
+            try:
+                stmt = 'Query: %s | Status: %s' % (query, termcolor.colored('Success', attrs=['bold']))
+            except Exception:
+                stmt = 'Query: %s | Status: %s' % (query, 'Success')
             summary['success'] += 1
         elif status is False:
-            stmt = 'Query: %s | Status: %S | Expect file: %s | Actual file: %s' % (query,
-                                                                                   termcolor.colored('FAILED', 'red',
-                                                                                                     attrs=['bold']),
-                                                                                   full_fn, actual_file)
+            try:
+                stmt = 'Query: %s | Status: %s | Expect file: %s | Actual file: %s' % (query,
+                                                                                       termcolor.colored('FAILED', 'red',
+                                                                                                         attrs=['bold']),
+                                                                                       full_fn, actual_file)
+            except Exception:
+                stmt = 'Query: %s | Status: %s | Expect file: %s | Actual file: %s' % (query,'FAILED', full_fn, actual_file)
             summary['failed'] += 1
 
         print(stmt)
@@ -134,6 +143,7 @@ def main():
     success = str(round(summary['success'] / summary['total'] * 100, 2)) + '%'
     failed = str(round(summary['failed'] / summary['total'] * 100, 2)) + '%'
     print("\nTotal: %s | Success: %s | Failed: %s" % (summary['total'], success, failed))
+
 
 if __name__ == '__main__': 
     main() 

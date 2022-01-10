@@ -1,0 +1,2 @@
+sql %s format=json and stat=false "SELECT MIN(timestamp) FROM ping_sensor"
+{"min(timestamp)": "2021-12-04 10:00:36.357454"}

@@ -1,0 +1,2 @@
+sql %s format=json and stat=false "SELECT SUM(value) FROM ping_sensor"
+{"sum(value)": 1209.45}

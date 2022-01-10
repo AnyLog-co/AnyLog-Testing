@@ -1,0 +1,2 @@
+sql %s format=json and stat=false "SELECT MIN(value) FROM ping_sensor"
+{"min(value)": 0.02}

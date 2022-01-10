@@ -1,0 +1,2 @@
+sql %s format=json and stat=false "SELECT MAX(timestamp) FROM ping_sensor"
+{"max(timestamp)": "2022-01-29 11:51:14.136243"}

@@ -1,0 +1,2 @@
+sql %s format=json and stat=false "SELECT MAX(value) FROM ping_sensor"
+{"max(value)": 45.98}

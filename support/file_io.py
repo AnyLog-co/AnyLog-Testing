@@ -75,7 +75,7 @@ def write_file(query:str, file_name:str, results:list)->bool:
     try:
         with open(file_name, 'w') as f:
             try:
-                f.write('%s\n' % query)
+                f.write(query)
             except Exception as e:
                 pytest.fail('Failed to write query to file (Error: %s)' % e)
                 status = False
@@ -86,7 +86,7 @@ def write_file(query:str, file_name:str, results:list)->bool:
         with open(file_name, 'a') as f:
             for result in results:
                 try:
-                    f.write(support.json_dumps(result) + '\n')
+                    f.write('\n' + support.json_dumps(result))
                 except Exception as e:
                     pytest.fail('Failed to write to file: %s (Error: %s)' % (file_name, e))
                     status = False

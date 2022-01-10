@@ -1,0 +1,2 @@
+sql %s format=json and stat=false "SELECT COUNT(DISTINCT(value)) FROM ping_sensor"
+{"count(distinct(value))": 98}
