@@ -1,0 +1,3 @@
+sql %s include=(percentagecpu_sensor) and extend=(@table_name as table) and format=json and stat=false "SELECT AVG(value) FROM ping_sensor"
+{"table": "ping_sensor", "avg(value)": 12.0945}
+{"table": "percentagecpu_sensor", "avg(value)": 51.9834}

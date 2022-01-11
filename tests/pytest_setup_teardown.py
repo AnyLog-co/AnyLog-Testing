@@ -101,8 +101,8 @@ def execute_test(anylog_conn:rest.RestCode, headers:dict, query:str, expected_fi
         else:
             pytest.fail("Failed to extract results from '%s' (Error: %s)" % (query, e))
 
-        assert file_io.write_file(query=query, file_name=expected_file, results=results) is True
-        # assert filecmp.cmp(actual_file, expected_file)
+        assert file_io.write_file(query=query, file_name=actual_file, results=results) is True
+        assert filecmp.cmp(actual_file, expected_file)
     else:
         pytest.fail(response)
 

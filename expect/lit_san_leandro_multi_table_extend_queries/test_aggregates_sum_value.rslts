@@ -1,0 +1,3 @@
+sql %s include=(percentagecpu_sensor) and extend=(@table_name as table) and format=json and stat=false "SELECT SUM(value) FROM ping_sensor"
+{"table": "ping_sensor", "sum(value)": 1209.45}
+{"table": "percentagecpu_sensor", "sum(value)": 5198.34}

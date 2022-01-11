@@ -1,0 +1,10 @@
+sql %s include=(percentagecpu_sensor) and extend=(@table_name as table) and format=json and stat=false "SELECT timestamp, value FROM ping_sensor WHERE period(day, 15, '2022-01-28 23:59:59', timestamp) AND device_name = 'ADVA FSP3000R7' ORDER BY timestamp ASC"
+{"table": "percentagecpu_sensor", "timestamp": "2022-01-14 16:48:37.785900", "value": 43.67}
+{"table": "percentagecpu_sensor", "timestamp": "2022-01-14 17:32:23.741417", "value": 62.91}
+{"table": "percentagecpu_sensor", "timestamp": "2022-01-17 16:32:28.755489", "value": 86.58}
+{"table": "ping_sensor", "timestamp": "2022-01-18 20:59:36.193183", "value": 0.69}
+{"table": "percentagecpu_sensor", "timestamp": "2022-01-22 13:16:35.782762", "value": 14.91}
+{"table": "ping_sensor", "timestamp": "2022-01-25 09:15:16.139743", "value": 3.64}
+{"table": "ping_sensor", "timestamp": "2022-01-25 14:18:42.213060", "value": 0.29}
+{"table": "ping_sensor", "timestamp": "2022-01-27 16:17:02.263903", "value": 1.84}
+{"table": "ping_sensor", "timestamp": "2022-01-28 09:08:20.155750", "value": 0.5}

@@ -1,0 +1,11 @@
+sql %s include=(percentagecpu_sensor) and extend=(@table_name as table) and format=json and stat=false "SELECT timestamp, value FROM ping_sensor WHERE timestamp >= '2021-12-30 00:00:00' AND timestamp <= '2022-01-02 00:00:00' ORDER BY timestamp DESC"
+{"table": "percentagecpu_sensor", "timestamp": "2022-01-01 11:47:39.792186", "value": 7.98}
+{"table": "percentagecpu_sensor", "timestamp": "2022-01-01 05:43:45.811630", "value": 69.84}
+{"table": "percentagecpu_sensor", "timestamp": "2021-12-31 23:01:14.887974", "value": 85.15}
+{"table": "percentagecpu_sensor", "timestamp": "2021-12-31 20:05:22.737541", "value": 80.54}
+{"table": "percentagecpu_sensor", "timestamp": "2021-12-31 16:47:53.834064", "value": 18.35}
+{"table": "ping_sensor", "timestamp": "2021-12-31 06:57:33.344011", "value": 2.16}
+{"table": "percentagecpu_sensor", "timestamp": "2021-12-31 04:11:16.715846", "value": 94.31}
+{"table": "ping_sensor", "timestamp": "2021-12-31 02:46:59.258990", "value": 0.29}
+{"table": "percentagecpu_sensor", "timestamp": "2021-12-30 17:55:00.851750", "value": 83.22}
+{"table": "ping_sensor", "timestamp": "2021-12-30 08:07:28.173834", "value": 2.16}

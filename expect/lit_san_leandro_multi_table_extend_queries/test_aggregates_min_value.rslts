@@ -1,0 +1,3 @@
+sql %s include=(percentagecpu_sensor) and extend=(@table_name as table) and format=json and stat=false "SELECT MIN(value) FROM ping_sensor"
+{"table": "ping_sensor", "min(value)": 0.02}
+{"table": "percentagecpu_sensor", "min(value)": 1.7}

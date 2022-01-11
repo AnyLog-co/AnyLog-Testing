@@ -1,0 +1,3 @@
+sql %s include=(percentagecpu_sensor) and extend=(@table_name as table) and format=json and stat=false "SELECT COUNT(DISTINCT(value)) FROM ping_sensor"
+{"table": "percentagecpu_sensor", "count(distinct(value))": 100}
+{"table": "ping_sensor", "count(distinct(value))": 98}

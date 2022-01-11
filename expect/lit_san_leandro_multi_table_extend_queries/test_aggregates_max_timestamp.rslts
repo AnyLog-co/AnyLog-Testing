@@ -1,0 +1,3 @@
+sql %s include=(percentagecpu_sensor) and extend=(@table_name as table) and format=json and stat=false "SELECT MAX(timestamp) FROM ping_sensor"
+{"table": "ping_sensor", "max(timestamp)": "2022-01-29 11:51:14.136243"}
+{"table": "percentagecpu_sensor", "max(timestamp)": "2022-01-31 05:28:24.742204"}
