@@ -1,0 +1,53 @@
+sql %s format=json and stat=false "SELECT increments(day, 5, timestamp), device_name, MIN(timestamp), MAX(timestamp), MIN(value), MAX(value), AVG(value) FROM ping_sensor GROUP BY device_name ORDER BY device_name, MAX(timestamp) ASC"
+{"device_name": "Catalyst 3500XL", "min(timestamp)": "2021-12-04 10:00:36.357454", "max(timestamp)": "2021-12-04 10:00:36.357454", "min(value)": 1.68, "max(value)": 1.68, "avg(value)": 1.68}
+{"device_name": "Ubiquiti OLT", "min(timestamp)": "2021-12-04 18:10:07.271804", "max(timestamp)": "2021-12-04 18:10:07.271804", "min(value)": 1.14, "max(value)": 1.14, "avg(value)": 1.14}
+{"device_name": "Catalyst 3500XL", "min(timestamp)": "2021-12-06 10:29:38.360712", "max(timestamp)": "2021-12-08 19:55:26.320264", "min(value)": 20.49, "max(value)": 38.59, "avg(value)": 29.54}
+{"device_name": "ADVA FSP3000R7", "min(timestamp)": "2021-12-09 01:36:25.319467", "max(timestamp)": "2021-12-09 01:36:25.319467", "min(value)": 0.71, "max(value)": 0.71, "avg(value)": 0.71}
+{"device_name": "Ubiquiti OLT", "min(timestamp)": "2021-12-05 19:41:35.191028", "max(timestamp)": "2021-12-07 21:41:26.171081", "min(value)": 32.5, "max(value)": 34.98, "avg(value)": 33.74}
+{"device_name": "GOOGLE_PING", "min(timestamp)": "2021-12-06 00:40:40.206160", "max(timestamp)": "2021-12-09 06:32:37.197258", "min(value)": 13.58, "max(value)": 23.64, "avg(value)": 19.913333333333334}
+{"device_name": "VM Lit SL NMS", "min(timestamp)": "2021-12-07 04:52:55.247622", "max(timestamp)": "2021-12-09 16:02:54.243349", "min(value)": 0.02, "max(value)": 1.87, "avg(value)": 0.945}
+{"device_name": "GOOGLE_PING", "min(timestamp)": "2021-12-10 20:35:48.232312", "max(timestamp)": "2021-12-11 21:01:23.312174", "min(value)": 16.02, "max(value)": 27.14, "avg(value)": 21.58}
+{"device_name": "Ubiquiti OLT", "min(timestamp)": "2021-12-11 18:13:41.209609", "max(timestamp)": "2021-12-11 18:13:41.209609", "min(value)": 0.8, "max(value)": 0.8, "avg(value)": 0.8}
+{"device_name": "ADVA FSP3000R7", "min(timestamp)": "2021-12-12 13:09:39.203727", "max(timestamp)": "2021-12-13 11:10:22.160047", "min(value)": 1.81, "max(value)": 2.45, "avg(value)": 2.13}
+{"device_name": "VM Lit SL NMS", "min(timestamp)": "2021-12-11 17:37:24.164876", "max(timestamp)": "2021-12-14 10:09:15.139393", "min(value)": 0.63, "max(value)": 5.33, "avg(value)": 2.41}
+{"device_name": "Catalyst 3500XL", "min(timestamp)": "2021-12-11 02:06:01.261474", "max(timestamp)": "2021-12-11 02:06:01.261474", "min(value)": 41.25, "max(value)": 41.25, "avg(value)": 41.25}
+{"device_name": "VM Lit SL NMS", "min(timestamp)": "2021-12-19 05:13:21.305199", "max(timestamp)": "2021-12-19 05:13:21.305199", "min(value)": 4.25, "max(value)": 4.25, "avg(value)": 4.25}
+{"device_name": "Catalyst 3500XL", "min(timestamp)": "2021-12-16 05:47:32.341322", "max(timestamp)": "2021-12-19 17:57:28.326163", "min(value)": 1.33, "max(value)": 31.14, "avg(value)": 16.235}
+{"device_name": "GOOGLE_PING", "min(timestamp)": "2021-12-15 13:25:34.188702", "max(timestamp)": "2021-12-15 13:25:34.188702", "min(value)": 34.94, "max(value)": 34.94, "avg(value)": 34.94}
+{"device_name": "Ubiquiti OLT", "min(timestamp)": "2021-12-15 19:50:13.133283", "max(timestamp)": "2021-12-19 23:50:10.120303", "min(value)": 11.7, "max(value)": 44.9, "avg(value)": 28.3}
+{"device_name": "ADVA FSP3000R7", "min(timestamp)": "2021-12-15 19:02:11.125234", "max(timestamp)": "2021-12-18 16:55:04.266223", "min(value)": 0.31, "max(value)": 1.79, "avg(value)": 1.2466666666666666}
+{"device_name": "GOOGLE_PING", "min(timestamp)": "2021-12-24 06:56:27.172149", "max(timestamp)": "2021-12-24 06:56:27.172149", "min(value)": 2.12, "max(value)": 2.12, "avg(value)": 2.12}
+{"device_name": "Catalyst 3500XL", "min(timestamp)": "2021-12-20 04:03:14.288487", "max(timestamp)": "2021-12-21 20:36:42.369278", "min(value)": 8.11, "max(value)": 9.3, "avg(value)": 8.863333333333333}
+{"device_name": "ADVA FSP3000R7", "min(timestamp)": "2021-12-21 07:27:40.363489", "max(timestamp)": "2021-12-24 16:56:43.218217", "min(value)": 2.91, "max(value)": 3.96, "avg(value)": 3.606666666666667}
+{"device_name": "VM Lit SL NMS", "min(timestamp)": "2021-12-21 00:38:58.255891", "max(timestamp)": "2021-12-23 15:49:00.261087", "min(value)": 1.32, "max(value)": 7.95, "avg(value)": 4.265}
+{"device_name": "GOOGLE_PING", "min(timestamp)": "2021-12-25 09:39:17.302482", "max(timestamp)": "2021-12-28 01:15:03.265423", "min(value)": 12.79, "max(value)": 14.11, "avg(value)": 13.45}
+{"device_name": "ADVA FSP3000R7", "min(timestamp)": "2021-12-26 05:41:35.352506", "max(timestamp)": "2021-12-28 18:00:50.236529", "min(value)": 0.88, "max(value)": 3.54, "avg(value)": 2.268}
+{"device_name": "VM Lit SL NMS", "min(timestamp)": "2021-12-26 22:14:43.370917", "max(timestamp)": "2021-12-28 02:43:25.169551", "min(value)": 5.28, "max(value)": 8.79, "avg(value)": 7.035}
+{"device_name": "Catalyst 3500XL", "min(timestamp)": "2021-12-28 01:52:31.182712", "max(timestamp)": "2021-12-28 01:52:31.182712", "min(value)": 8.33, "max(value)": 8.33, "avg(value)": 8.33}
+{"device_name": "VM Lit SL NMS", "min(timestamp)": "2021-12-30 08:07:28.173834", "max(timestamp)": "2021-12-30 08:07:28.173834", "min(value)": 2.16, "max(value)": 2.16, "avg(value)": 2.16}
+{"device_name": "ADVA FSP3000R7", "min(timestamp)": "2021-12-31 02:46:59.258990", "max(timestamp)": "2021-12-31 06:57:33.344011", "min(value)": 0.29, "max(value)": 2.16, "avg(value)": 1.225}
+{"device_name": "Ubiquiti OLT", "min(timestamp)": "2022-01-04 21:08:33.187681", "max(timestamp)": "2022-01-04 21:08:33.187681", "min(value)": 20.1, "max(value)": 20.1, "avg(value)": 20.1}
+{"device_name": "ADVA FSP3000R7", "min(timestamp)": "2022-01-03 14:51:39.362594", "max(timestamp)": "2022-01-03 14:51:39.362594", "min(value)": 3.97, "max(value)": 3.97, "avg(value)": 3.97}
+{"device_name": "GOOGLE_PING", "min(timestamp)": "2022-01-04 16:08:31.338107", "max(timestamp)": "2022-01-04 16:08:31.338107", "min(value)": 12.29, "max(value)": 12.29, "avg(value)": 12.29}
+{"device_name": "Catalyst 3500XL", "min(timestamp)": "2022-01-03 13:32:24.314947", "max(timestamp)": "2022-01-03 13:32:24.314947", "min(value)": 2.81, "max(value)": 2.81, "avg(value)": 2.81}
+{"device_name": "GOOGLE_PING", "min(timestamp)": "2022-01-05 05:16:06.271248", "max(timestamp)": "2022-01-09 18:17:41.366012", "min(value)": 8.74, "max(value)": 35.73, "avg(value)": 17.61}
+{"device_name": "ADVA FSP3000R7", "min(timestamp)": "2022-01-09 14:29:19.303498", "max(timestamp)": "2022-01-09 14:29:19.303498", "min(value)": 1.67, "max(value)": 1.67, "avg(value)": 1.67}
+{"device_name": "VM Lit SL NMS", "min(timestamp)": "2022-01-05 11:39:29.178744", "max(timestamp)": "2022-01-08 04:11:22.309363", "min(value)": 2.29, "max(value)": 10.34, "avg(value)": 6.975}
+{"device_name": "Ubiquiti OLT", "min(timestamp)": "2022-01-08 05:11:32.183369", "max(timestamp)": "2022-01-09 17:40:13.284642", "min(value)": 24.6, "max(value)": 45.98, "avg(value)": 36.553333333333335}
+{"device_name": "Catalyst 3500XL", "min(timestamp)": "2022-01-06 16:00:05.269405", "max(timestamp)": "2022-01-07 11:42:34.349181", "min(value)": 10.98, "max(value)": 39.86, "avg(value)": 25.42}
+{"device_name": "GOOGLE_PING", "min(timestamp)": "2022-01-14 18:22:47.229229", "max(timestamp)": "2022-01-14 18:22:47.229229", "min(value)": 33.31, "max(value)": 33.31, "avg(value)": 33.31}
+{"device_name": "ADVA FSP3000R7", "min(timestamp)": "2022-01-10 23:59:44.373455", "max(timestamp)": "2022-01-11 14:45:12.129379", "min(value)": 0.83, "max(value)": 2.13, "avg(value)": 1.48}
+{"device_name": "Catalyst 3500XL", "min(timestamp)": "2022-01-13 09:00:11.279760", "max(timestamp)": "2022-01-13 09:00:11.279760", "min(value)": 6.01, "max(value)": 6.01, "avg(value)": 6.01}
+{"device_name": "VM Lit SL NMS", "min(timestamp)": "2022-01-14 14:29:23.163898", "max(timestamp)": "2022-01-14 14:41:18.303264", "min(value)": 0.97, "max(value)": 9.17, "avg(value)": 5.07}
+{"device_name": "Catalyst 3500XL", "min(timestamp)": "2022-01-17 17:11:45.222210", "max(timestamp)": "2022-01-18 16:16:38.199445", "min(value)": 20.3, "max(value)": 43.54, "avg(value)": 28.653333333333332}
+{"device_name": "ADVA FSP3000R7", "min(timestamp)": "2022-01-18 20:59:36.193183", "max(timestamp)": "2022-01-18 20:59:36.193183", "min(value)": 0.69, "max(value)": 0.69, "avg(value)": 0.69}
+{"device_name": "GOOGLE_PING", "min(timestamp)": "2022-01-16 20:51:20.304986", "max(timestamp)": "2022-01-18 01:09:30.334918", "min(value)": 11.1, "max(value)": 19.59, "avg(value)": 15.345}
+{"device_name": "Ubiquiti OLT", "min(timestamp)": "2022-01-16 12:11:17.144813", "max(timestamp)": "2022-01-18 16:19:19.153768", "min(value)": 0.89, "max(value)": 44.92, "avg(value)": 22.905}
+{"device_name": "Catalyst 3500XL", "min(timestamp)": "2022-01-24 11:20:08.272811", "max(timestamp)": "2022-01-24 11:20:08.272811", "min(value)": 0.85, "max(value)": 0.85, "avg(value)": 0.85}
+{"device_name": "VM Lit SL NMS", "min(timestamp)": "2022-01-23 21:34:15.293604", "max(timestamp)": "2022-01-23 21:34:15.293604", "min(value)": 0.94, "max(value)": 0.94, "avg(value)": 0.94}
+{"device_name": "GOOGLE_PING", "min(timestamp)": "2022-01-23 01:40:45.378731", "max(timestamp)": "2022-01-23 01:40:45.378731", "min(value)": 10.81, "max(value)": 10.81, "avg(value)": 10.81}
+{"device_name": "Ubiquiti OLT", "min(timestamp)": "2022-01-21 00:06:49.232499", "max(timestamp)": "2022-01-24 15:56:09.273241", "min(value)": 19.2, "max(value)": 29.13, "avg(value)": 24.75}
+{"device_name": "VM Lit SL NMS", "min(timestamp)": "2022-01-29 11:51:14.136243", "max(timestamp)": "2022-01-29 11:51:14.136243", "min(value)": 4.17, "max(value)": 4.17, "avg(value)": 4.17}
+{"device_name": "ADVA FSP3000R7", "min(timestamp)": "2022-01-25 09:15:16.139743", "max(timestamp)": "2022-01-28 09:08:20.155750", "min(value)": 0.29, "max(value)": 3.64, "avg(value)": 1.5675}
+{"device_name": "Ubiquiti OLT", "min(timestamp)": "2022-01-26 18:54:48.389162", "max(timestamp)": "2022-01-26 18:54:48.389162", "min(value)": 8.42, "max(value)": 8.42, "avg(value)": 8.42}
+{"device_name": "Catalyst 3500XL", "min(timestamp)": "2022-01-26 19:13:51.238877", "max(timestamp)": "2022-01-26 19:13:51.238877", "min(value)": 28.62, "max(value)": 28.62, "avg(value)": 28.62}

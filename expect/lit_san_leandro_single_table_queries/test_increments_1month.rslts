@@ -1,0 +1,3 @@
+sql %s format=json and stat=false "SELECT increments(month, 1, timestamp), MIN(timestamp), MAX(timestamp), MIN(value), MAX(value), AVG(value), COUNT(value) FROM ping_sensor ORDER BY MIN(timestamp) DESC"
+{"min(timestamp)": "2021-12-04 10:00:36.357454", "max(timestamp)": "2021-12-31 06:57:33.344011", "min(value)": 0.02, "max(value)": 44.9, "avg(value)": 10.041851851851852, "count(value)": 54}
+{"min(timestamp)": "2022-01-03 13:32:24.314947", "max(timestamp)": "2022-01-29 11:51:14.136243", "min(value)": 0.29, "max(value)": 45.98, "avg(value)": 14.504130434782608, "count(value)": 46}

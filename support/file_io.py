@@ -28,7 +28,8 @@ def generate_file_name(results_dir:str)->str:
 
     return os.path.join(results_dir, 'output_%s.rslts' % str(last_timestamp))
 
-def read_file(file_name:str)->list:
+
+def json_read_file(file_name:str)->list:
     """
     Given a (JSON) file, read its contents and writen them as a list
     :args:

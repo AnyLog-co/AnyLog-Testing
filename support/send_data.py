@@ -10,7 +10,68 @@ import time
 ROOT_DIR = os.path.expandvars(os.path.expanduser(__file__)).split('tests')[0]
 SUPPORT_DIR = os.path.join(ROOT_DIR, 'support')
 sys.path.insert(0, SUPPORT_DIR)
+import file_io
 import rest
+import support
+
+
+def put_data(anylog_conn:rest.RestCode, payloads:list, dbms:str, table:str):
+    """
+    Send data via REST using PUT command
+    :url:
+        https://github.com/AnyLog-co/documentation/blob/master/adding%20data.md#using-a-put-command
+    :args:
+        anylog_conn:rest.RestCode - connection to AnyLog
+        payloads:list - list of dicts to store in AnyLog
+        dbms:str - logical database to store data in
+        table:str - table to store data in
+    :params:
+        headers:dict - REST header
+    """
+    headers = {
+        'type': 'json',
+        'dbms': dbms,
+        'table': table,
+        'mode': 'streaming',
+        'Content-Type': 'text/plain'
+    }
+    for payload in payloads:
+        if isinstance(payload, dict):
+            payload = support.json_dumps(payload)
+        if isinstance(payload, str):
+            anylog_conn.put(headers=headers, payload=payload)
+
+
+def post_data(anylog_conn:rest.RestCode, topic:str, payloads:list, dbms:str, table:str):
+    """
+    Send data via REST using POST command
+    :url:
+        https://github.com/AnyLog-co/documentation/blob/master/adding%20data.md#using-a-post-command
+    :comment:
+        requires MQTT client call on the accepting AnyLog side
+    :args:
+        anylog_conn:rest.RestCode - connection to AnyLog
+        payloads:list - list of dicts to store in AnyLog
+        dbms:str - logical database to store data in
+        table:str - table to store data in
+    :params:
+        headers:dict - REST header
+    """
+    headers = {
+        'command': 'data',
+        'topic': topic,
+        'User-Agent': 'AnyLog/1.23',
+        'Content-Type': 'text/plain'
+    }
+
+    for payload in payloads:
+        payload['dbms'] = dbms
+        payload['table'] = table
+        if isinstance(payload, dict):
+            payload = support.json_dumps(payload)
+        if isinstance(payload, str):
+            anylog_conn.post(headers=headers, payload=payload)
+
 
 def connect_mqtt_broker(broker:str, port:int, username:str=None, password:str=None)->client.Client:
     """
@@ -78,27 +139,56 @@ def mqtt_send_data(mqtt_client:client.Client, topic:str, payloads:dict, dbms:str
                 pytest.fail('There was a network error when publishing content')
 
 
-def store_payloads(send_type:str, payloads:list, dbms:str, table:str, anylog_conn:rest.RestCode=None,
-                   topic:str=None, broker:str=None, port:int=None, username:str=None, password:str=None):
+def store_data(data_dir:str, data_set_file:str, send_type:str, dbms:str, anylog_conn:rest.RestCode=None, topic:str=None,
+               broker:str=None, port:int=None, username:str=None, password:str= None):
     """
-    Send payloads into either AnyLog or MQTT broker based on configs
+    Function to store data
     :args:
-        send_type:str - format to send data (PUT, POST, MQTT)
-        payloads:list - content to store
+        data_dir:str - directory containing data
+        data_set_file:str - file containing datasets to use
+        send_type:str - send type [PUT, POST, MQTT]
         dbms:str - logical database name
-        table:str - tale to store data in
-        anylog_conn:rest.RestClass - connection to REST class (used by PUT / POST)
-        topic:str - topic for either POST or MQTT
+        anylog_conn:rest.RestCode - rest connection
+        topic:str - MQTT or POST topic
         broker:str - MQTT broker
         port:int - MQTT port
         username:str - MQTT user
-        password:MQTT password
+        password:Str - MQTT password
+    :params:
+        data_sets:tuple - tuple of data sets to store (also used for table name(s)
+        file_name:str - path of file containing data to be stored
+        payloads:list - content to store in file
+
     """
-    if send_type == 'put':
-        anylog_conn.put(payloads=payloads, dbms=dbms, table=table)
-    elif send_type == 'post':
-        anylog_conn.post(payloads=payloads, dbms=dbms, table=table, topic=topic)
-    elif send_type == 'mqtt':
-        mqtt_client = connect_mqtt_broker(broker=broker, port=port, username=username, password=password)
-        mqtt_send_data(mqtt_client=mqtt_client, topic=topic, payloads=payloads, dbms=dbms, table=table)
-    time.sleep(70)
+    data_sets = ()
+    data_set_file = os.path.expanduser(os.path.expandvars(data_set_file))
+    if os.path.isfile(data_set_file):
+        try:
+            with open(data_set_file, 'r') as f:
+                try:
+                    data_sets = f.readlines()
+                except Exception as e:
+                    pytest.fail('Failed to read content in file %s (Error: %s)' % (data_set_file, e))
+        except Exception as e:
+            pytest.fail('Failed to open file %s (Error: %s)' % (data_set_file, e))
+        else:
+            for i in range(len(data_sets)):
+                data_sets[i] = data_sets[i].split('\n')[0]
+            data_sets = tuple(data_sets)
+    else:
+        pytest.fail('Failed to locate data_set file: "%s"' % data_set_file)
+
+    for data_set in data_sets:
+        for fn in os.listdir(data_dir):
+            if data_set in fn:
+                file_name = os.path.join(data_dir, fn)
+                payloads = file_io.json_read_file(file_name=file_name)
+                if send_type == 'put':
+                    put_data(anylog_conn=anylog_conn, payloads=payloads, dbms=dbms, table=data_set)
+                elif send_type == 'post':
+                    post_data(payloads=payloads, dbms=dbms, table=table, topic=topic)
+                elif send_type == 'mqtt':
+                    mqtt_client = connect_mqtt_broker(broker=broker, port=port, username=username, password=password)
+                    mqtt_send_data(mqtt_client=mqtt_client, topic=topic, payloads=payloads, dbms=dbms, table=table)
+                time.sleep(70)
+

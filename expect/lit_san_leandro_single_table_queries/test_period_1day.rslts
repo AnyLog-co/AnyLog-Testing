@@ -1,0 +1,5 @@
+sql %s format=json and stat=false "SELECT device_name, min(timestamp), max(timestamp), min(value), avg(value), max(value), count(value) FROM ping_sensor WHERE period(day, 1, '2021-12-28 23:59:59', timestamp) GROUP BY device_name ORDER BY device_name, MIN(timestamp) DESC"
+{"device_name": "ADVA FSP3000R7", "min(timestamp)": "2021-12-28 06:04:10.278474", "max(timestamp)": "2021-12-28 18:00:50.236529", "min(value)": 2.34, "avg(value)": 2.94, "max(value)": 3.54, "count(value)": 2}
+{"device_name": "Catalyst 3500XL", "min(timestamp)": "2021-12-28 01:52:31.182712", "max(timestamp)": "2021-12-28 01:52:31.182712", "min(value)": 8.33, "avg(value)": 8.33, "max(value)": 8.33, "count(value)": 1}
+{"device_name": "GOOGLE_PING", "min(timestamp)": "2021-12-28 01:15:03.265423", "max(timestamp)": "2021-12-28 01:15:03.265423", "min(value)": 12.79, "avg(value)": 12.79, "max(value)": 12.79, "count(value)": 1}
+{"device_name": "VM Lit SL NMS", "min(timestamp)": "2021-12-28 02:43:25.169551", "max(timestamp)": "2021-12-28 02:43:25.169551", "min(value)": 5.28, "avg(value)": 5.28, "max(value)": 5.28, "count(value)": 1}

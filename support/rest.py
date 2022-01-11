@@ -49,38 +49,28 @@ class RestCode:
 
         return results
 
-    def put(self, payloads:list, dbms:str, table:str):
+    def put(self, headers:dict, payload:str=None):
         """
         Send data via REST using PUT command
         :url:
             https://github.com/AnyLog-co/documentation/blob/master/adding%20data.md#using-a-put-command
         :args:
-            payloads:list - list of dicts to store in AnyLog
-            dbms:str - logical database to store data in
-            table:str - table to store data in
-        :params:
             headers:dict - REST header
-            response:requests.models.Response - results from REST GET request
+            payload:str - content to put in AnyLog
+        :params:
+            response:requests.models.Response - results from REST PUT request
         """
-        headers = {
-            'type': 'json',
-            'dbms': dbms,
-            'table': table,
-            'mode': 'streaming',
-            'Content-Type': 'text/plain'
-        }
-        for payload in payloads:
-            try:
-                response = requests.put(url='http://%s' % self.conn, headers=headers, data=support.json_dumps(payload),
-                                        auth=self.auth, timeout=self.timeout)
-            except Exception as e:
-                pytest.fail('Failed to execute PUT against %s (Error: %s)' % (self.conn, e))
-            else:
-                if int(response.status_code) != 200:
-                    pytest.fail(
-                        'Failed to execute PUT against %s (Network Error: %s)' % (self.conn, response.status_code))
-    
-    def post(self, payloads:list, dbms:str, table:str, topic:str):
+        try:
+            response = requests.put(url='http://%s' % self.conn, headers=headers, data=payload, auth=self.auth,
+                                    timeout=self.timeout)
+        except Exception as e:
+            pytest.fail('Failed to execute PUT against %s (Error: %s)' % (self.conn, e))
+        else:
+            if int(response.status_code) != 200:
+                pytest.fail(
+                    'Failed to execute PUT against %s (Network Error: %s)' % (self.conn, response.status_code))
+
+    def post(self, headers:dict, payload:str=None):
         """
         Send data via REST using POST command
         :url:
@@ -88,30 +78,20 @@ class RestCode:
         :comment:
             requires MQTT client call on the accepting AnyLog side
         :args:
-            payloads:list - list of dicts to store in AnyLog
-            dbms:str - logical database to store data in
-            table:str - table to store data in
-            topic:str - MQTT topic
+            headers:dict - REST header
+            payload:str - content to put in AnyLog
         :params:
             headers:dict - REST header
-            response:requests.models.Response - results from REST GET request
+            response:requests.models.Response - results from REST POST request
         """
-        headers = {
-            'command': 'data',
-            'topic': topic,
-            'User-Agent': 'AnyLog/1.23',
-            'Content-Type': 'text/plain'
-        }
-        for payload in payloads:
-            payload['dbms'] = dbms
-            payload['table'] = table
-            try:
-                response = requests.post(url='http://%s' % self.conn, headers=headers, data=support.json_dumps(payload),
-                                         auth=self.auth, timeout=self.timeout)
-            except Exception as e:
-                pytest.fail('Failed to execute POST against %s (Error: %s)' % (self.conn, e))
-            else:
-                if int(response.status_code) != 200:
-                    pytest.fail(
-                        'Failed to execute POST against %s (Network Error: %s)' % (self.conn, response.status_code))
+        try:
+            response = requests.post(url='http://%s' % self.conn, headers=headers, data=payload, auth=self.auth,
+                                    timeout=self.timeout)
+        except Exception as e:
+            pytest.fail('Failed to execute POST against %s (Error: %s)' % (self.conn, e))
+        else:
+            if int(response.status_code) != 200:
+                pytest.fail(
+                    'Failed to execute POST against %s (Network Error: %s)' % (self.conn, response.status_code))
+
 

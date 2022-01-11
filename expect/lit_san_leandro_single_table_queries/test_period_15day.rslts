@@ -1,0 +1,6 @@
+sql %s format=json and stat=false "SELECT timestamp, value FROM ping_sensor WHERE period(day, 15, '2022-01-28 23:59:59', timestamp) AND device_name = 'ADVA FSP3000R7' ORDER BY timestamp ASC"
+{"timestamp": "2022-01-18 20:59:36.193183", "value": 0.69}
+{"timestamp": "2022-01-25 09:15:16.139743", "value": 3.64}
+{"timestamp": "2022-01-25 14:18:42.213060", "value": 0.29}
+{"timestamp": "2022-01-27 16:17:02.263903", "value": 1.84}
+{"timestamp": "2022-01-28 09:08:20.155750", "value": 0.5}
