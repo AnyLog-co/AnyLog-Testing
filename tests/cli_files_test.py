@@ -20,7 +20,7 @@ import rest
 
 
 def execute_query(anylog_conn:rest.RestCode, dbms:str, query:str, expected_results:str=None, results_dir:str=ACTUAL_DIR,
-                  network:bool=False)->bool:
+                  network:bool=False, disable_db:bool=False)->bool:
     """
     Execute query & store results
     :args:
@@ -30,6 +30,7 @@ def execute_query(anylog_conn:rest.RestCode, dbms:str, query:str, expected_resul
         expected_results:str - results to compare against
         results:str - results directory
         network:bool - whether or not to execute query over network
+        disable_db:bool - Ignore database when creating REST header
     :params:
         status:bool
         actual_file:str - file that'll store the results
@@ -42,10 +43,16 @@ def execute_query(anylog_conn:rest.RestCode, dbms:str, query:str, expected_resul
     status = False
     actual_file = file_io.generate_file_name(results_dir=results_dir)
 
+
     headers = {
         'command': query % dbms,
         'User-Agent': 'AnyLog/1.23'
     }
+    if disable_db is True:
+        headers = {
+            'command': query,
+            'User-Agent': 'AnyLog/1.23'
+        }
 
     if network is True:
         headers['destination'] = 'network'
@@ -73,9 +80,11 @@ def main():
     :positional arguments:
         configs     configs file
         tests_dir   directory containing files with results
+        data_dir    directory containing JSON data to be used
     :optional arguments:
-        -h, --help           show this help message and exit
-        --network [NETWORK]  Whether or not to execute tests across the network
+        -h, --help                  show this help message and exit
+        --network [NETWORK]         Whether or not to execute tests across the network
+        --disable-db [DISABLE_DB]   Ignore database when creating REST header
     :params:
         status:bool
         config_file:str - configuration file
@@ -92,6 +101,7 @@ def main():
     parser.add_argument('tests_dir', type=str, default='$HOME/AnyLog-Testing/expect', help='directory containing files with results')
     parser.add_argument('data_dir', type=str, default='$HOME/AnyLog-Testing/data', help='directory containing JSON data to be used')
     parser.add_argument('--network', type=bool, nargs='?', const=True, default=False, help='Whether or not to execute tests across the network')
+    parser.add_argument('--disable-db', type=bool, nargs='?', const=True, default=False, help='Ignore database when creating REST header')
     args = parser.parse_args()
 
     config_file = os.path.expandvars(os.path.expanduser(args.configs))
@@ -136,7 +146,8 @@ def main():
             with open(full_fn, 'r') as f:
                 query = f.readlines()[0].split('\n')[0]
             status, actual_file = execute_query(anylog_conn=anylog_conn, dbms = configs['dbms'], query=query,
-                                                expected_results=full_fn, results_dir=ACTUAL_DIR, network=True)
+                                                expected_results=full_fn, results_dir=ACTUAL_DIR, network=True,
+                                                disable_db=args.disable_db)
 
             summary['total'] += 1
             if status is True:
