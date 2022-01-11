@@ -1,0 +1,3 @@
+sql %s include=(percentagecpu_sensor) and format=json and stat=false "SELECT increments(year, 1, timestamp), MIN(timestamp), MAX(timestamp), MIN(value), MAX(value), AVG(value), COUNT(value) FROM ping_sensor ORDER BY MIN(timestamp) DESC"
+{"min(timestamp)": "2021-12-02 14:46:48.644567", "max(timestamp)": "2021-12-31 23:01:14.887974", "min(value)": 0.02, "max(value)": 98.75, "avg(value)": 30.269082568807338, "count(value)": 54}
+{"min(timestamp)": "2022-01-01 05:43:45.811630", "max(timestamp)": "2022-01-31 05:28:24.742204", "min(value)": 0.29, "max(value)": 98.06, "avg(value)": 34.1589010989011, "count(value)": 46}

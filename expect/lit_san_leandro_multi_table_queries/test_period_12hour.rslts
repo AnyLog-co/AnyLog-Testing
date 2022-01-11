@@ -1,0 +1,6 @@
+sql %s include=(percentagecpu_sensor) and format=json and stat=false "SELECT timestamp, value FROM ping_sensor WHERE period(hour, 12, '2022-01-14 18:22:47.229229', timestamp) ORDER BY timestamp ASC"
+{"timestamp": "2022-01-14 14:29:23.163898", "value": 9.17}
+{"timestamp": "2022-01-14 14:41:18.303264", "value": 0.97}
+{"timestamp": "2022-01-14 16:48:37.785900", "value": 43.67}
+{"timestamp": "2022-01-14 17:32:23.741417", "value": 62.91}
+{"timestamp": "2022-01-14 18:22:47.229229", "value": 33.31}

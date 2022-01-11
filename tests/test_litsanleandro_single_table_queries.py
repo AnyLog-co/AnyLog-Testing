@@ -11,7 +11,7 @@ SUPPORT_DIR = os.path.join(ROOT_DIR, 'support')
 
 CONFIG_FILE = os.path.join(ROOT_DIR, 'configs', 'sample_config.ini') # will be replaced by user param
 EXPECTED_DIR = os.path.join(ROOT_DIR, 'expect', 'lit_san_leandro_single_table_queries')
-ACTUAL_DIR = os.path.join(ROOT_DIR, 'actual')
+ACTUAL_DIR = os.path.join(ROOT_DIR, 'actual', 'lit_san_leandro_single_table_queries')
 
 sys.path.insert(0, SUPPORT_DIR)
 import file_io

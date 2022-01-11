@@ -1,0 +1,6 @@
+sql %s include=(percentagecpu_sensor) and format=json and stat=false "SELECT device_name, MIN(timestamp), MAX(timestamp), MIN(value), AVG(value), MAX(value), COUNT(value) FROM ping_sensor GROUP BY device_name ORDER BY device_name ASC"
+{"device_name": "ADVA FSP3000R7", "min(timestamp)": "2021-12-04 22:23:29.760252", "max(timestamp)": "2022-01-28 09:08:20.155750", "min(value)": 0.29, "avg(value)": 23.535641025641027, "max(value)": 98.75, "count(value)": 39}
+{"device_name": "Catalyst 3500XL", "min(timestamp)": "2021-12-02 14:46:48.644567", "max(timestamp)": "2022-01-26 19:13:51.238877", "min(value)": 0.85, "avg(value)": 37.25214285714286, "max(value)": 97.21, "count(value)": 42}
+{"device_name": "GOOGLE_PING", "min(timestamp)": "2021-12-06 00:40:40.206160", "max(timestamp)": "2022-01-30 03:24:48.823237", "min(value)": 2.12, "avg(value)": 31.634864864864866, "max(value)": 98.67, "count(value)": 37}
+{"device_name": "Ubiquiti OLT", "min(timestamp)": "2021-12-02 16:50:08.875265", "max(timestamp)": "2022-01-30 13:06:52.833443", "min(value)": 0.8, "avg(value)": 39.56918918918919, "max(value)": 98.06, "count(value)": 37}
+{"device_name": "VM Lit SL NMS", "min(timestamp)": "2021-12-04 02:20:36.785510", "max(timestamp)": "2022-01-31 05:28:24.742204", "min(value)": 0.02, "avg(value)": 28.683555555555557, "max(value)": 95.89, "count(value)": 45}

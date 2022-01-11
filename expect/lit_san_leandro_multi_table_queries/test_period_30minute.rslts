@@ -1,0 +1,2 @@
+sql %s include=(percentagecpu_sensor) and format=json and stat=false "SELECT timestamp, value FROM ping_sensor WHERE period(minute, 30, '2022-02-05 18:27:43.748009', timestamp)"
+{"timestamp": "2022-01-29 11:51:14.136243", "value": 4.17}

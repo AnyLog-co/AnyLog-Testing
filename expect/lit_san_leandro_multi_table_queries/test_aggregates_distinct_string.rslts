@@ -1,0 +1,6 @@
+sql %s include=(percentagecpu_sensor) and format=json and stat=false "SELECT DISTINCT(device_name) FROM ping_sensor ORDER BY device_name ASC"
+{"distinct(device_name)": "ADVA FSP3000R7"}
+{"distinct(device_name)": "Catalyst 3500XL"}
+{"distinct(device_name)": "GOOGLE_PING"}
+{"distinct(device_name)": "Ubiquiti OLT"}
+{"distinct(device_name)": "VM Lit SL NMS"}

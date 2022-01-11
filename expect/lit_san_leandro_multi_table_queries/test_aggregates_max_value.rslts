@@ -1,0 +1,2 @@
+sql %s include=(percentagecpu_sensor) and format=json and stat=false "SELECT MAX(value) FROM ping_sensor"
+{"max(value)": 98.75}
