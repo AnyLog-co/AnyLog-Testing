@@ -3,6 +3,8 @@ import filecmp
 import os
 import pytest
 import sys
+import time
+
 import tests.pytest_setup_teardown as pytest_setup_teardown
 import tests.execute_tests as execute_tests
 
@@ -37,11 +39,14 @@ class TestBlockchain:
                                                                                        expected_dir=EXPECTED_DIR,
                                                                                        actual_dir=ACTUAL_DIR)
         if self.status is False:
-            pytest.fail('Failed to get status against AnyLog node %s' % self.configs['conn'])
+            pytest.fail(f"Failed to get status against AnyLog node {self.configs['conn']}")
 
         blockchain.declare_policies(anylog_conn=self.anylog_conn, master_node=self.configs['master_node'])
 
     def teardown_class(self):
+        """
+        Remove policies from blockchain
+        """
         blockchain.drop_policies(anylog_conn=self.anylog_conn, master_node=self.configs['master_node'])
 
     def test_validate_manufacturer(self):
@@ -307,4 +312,44 @@ class TestBlockchain:
             else:
                 pytest.fail('Failed to validate connection to AnyLog')
 
+    @pytest.mark.skip('inconsistent behavior')
+    def test_drop_policy(self):
+        """
+        Validate `DROP policy` works
+        :params:
+            headers:dict - REST headers
+            responses:list - list of results from REST request
+        :assert:
+            validate that at the end of the process 'owner' is no longer a policy on the blockchain
+        :note:
+            due to the complexity of the test, there's no correlating results file
+        """
+        # Extract list of owners from blockchain
+        headers = {
+            'command': 'blockchain get owner',
+            'User-Agent': 'AnyLog/1.23'
+        }
+        responses = self.anylog_conn.get(headers)
 
+        # remove policy(s) from blockchain - note wait time is 60 seconds at the end due to blockchain sync
+        if isinstance(responses, list) and len(responses) != 0:
+            headers = {
+                'command': 'blockchain drop policy !rm_policy',
+                'destination': self.configs['master_node'],
+                'User-Agent': 'AnyLog/1.23'
+            }
+            for response in responses:
+                if isinstance(response, dict):
+                    response = support.json_dumps(response)
+                if isinstance(response, str):
+                    raw_policy = '<rm_policy=%s>' % response
+                self.anylog_conn.post(headers=headers, payload=raw_policy)
+            time.sleep(60)
+
+        # validate owner was removed
+        headers = {
+            'command': 'blockchain get owner',
+            'User-Agent': 'AnyLog/1.23'
+        }
+        responses = self.anylog_conn.get(headers)
+        assert responses == '' or len(responses) == 0

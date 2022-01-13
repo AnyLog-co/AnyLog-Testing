@@ -1,3 +1,4 @@
 blockchain get sensor_type
-{"sensor_type": {"name": "fic11", "device": "b6ac22a89865871b3aa63bdb0fa5f5bb", "serial_number": "SFb6HfZz-fSAoEAvt", "id": "8d94dbf32da71ad5c7386287c3280198", "ledger": "global"}}
-{"sensor_type": {"name": "dev11", "device": "75615903b0adc9cc2e2e748097cea59d", "serial_number": "SFb5HfZz-fSAoEAvt", "id": "5780a8101d7604f24cb92d6a6f1ab9c3", "ledger": "global"}}
+{"sensor_type": {"name": "fic11", "device": "b6ac22a89865871b3aa63bdb0fa5f5bb", "serial_number": "SFb6HfZz-fSAoEAvt", "id": "8d94dbf32da71ad5c7386287c3280198"}}
+{"sensor_type": {"name": "dev11", "device": "75615903b0adc9cc2e2e748097cea59d", "serial_number": "SFb5HfZz-fSAoEAvt", "id": "5780a8101d7604f24cb92d6a6f1ab9c3"}}
+{"sensor_type": {"name": "rsl", "device": "098a1730ea791154dcbe92acc17c88ab", "serial_number": "BH534Xyz-rsl", "id": "794e0a1c58dd5ec9cd0db69b3b6c0c9d"}}

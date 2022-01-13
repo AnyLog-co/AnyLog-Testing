@@ -1,2 +1,2 @@
 blockchain get sensor where id=97ac750a8bcd175cdc1bc862df834bd9
-{"sensor": {"name": "fic11_mv", "sensor_type": "8d94dbf32da71ad5c7386287c3280198", "serial_number": "SFb6HfZz-fSAoEAvt-fic11-mv", "id": "97ac750a8bcd175cdc1bc862df834bd9", "ledger": "global"}}
+{"sensor": {"name": "fic11_mv", "sensor_type": "8d94dbf32da71ad5c7386287c3280198", "serial_number": "SFb6HfZz-fSAoEAvt-fic11-mv", "id": "97ac750a8bcd175cdc1bc862df834bd9"}}

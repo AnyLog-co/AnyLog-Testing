@@ -1,3 +1,3 @@
 blockchain get manufacturer
-{"manufacturer": {"name": "Bosch", "Address": "Robert-Bosch-Platz 1 70839 Gerlingen", "url": "https://www.bosch-sensortec.com/", "contact": "https://www.bosch-sensortec.com/about-us/contact/", "phone": "+4971140040990", "id": "bc0a64888602369876ef12e9673106f9", "ledger": "global"}}
-{"manufacturer": {"name": "Schneider", "Address": "P.O. Box 2545 3101 South Packerland Drive Green Bay, Wisconsin 54306-2545", "url": "https://www.se.com/", "contact": "https://www.se.com/us/en/work/support/contacts.jsp", "phone": "920-592-2000", "id": "513088fd3d2ddabb93cbbdd3f8ac498e", "ledger": "global"}}
+{"manufacturer": {"name": "Bosch", "Address": "Robert-Bosch-Platz 1 70839 Gerlingen", "url": "https://www.bosch-sensortec.com/", "contact": "https://www.bosch-sensortec.com/about-us/contact/", "phone": "+4971140040990", "id": "bc0a64888602369876ef12e9673106f9"}}
+{"manufacturer": {"name": "Schneider", "Address": "P.O. Box 2545 3101 South Packerland Drive Green Bay, Wisconsin 54306-2545", "url": "https://www.se.com/", "contact": "https://www.se.com/us/en/work/support/contacts.jsp", "phone": "920-592-2000", "id": "513088fd3d2ddabb93cbbdd3f8ac498e"}}

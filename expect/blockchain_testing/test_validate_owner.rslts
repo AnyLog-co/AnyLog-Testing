@@ -1,2 +1,2 @@
 blockchain get owner
-{"owner": {"name": "New Engineering", "Address": "400 St Louis St, Mobile, Nevada 36602, US", "url": "http://www.new-engineering.com/", "contact": "+12515336844", "id": "886c462a0cec361e3f8aec094ba1a35e", "ledger": "global"}}
+{"owner": {"name": "New Engineering", "Address": "400 St Louis St, Mobile, Nevada 36602, US", "url": "http://www.new-engineering.com/", "contact": "+12515336844", "id": "886c462a0cec361e3f8aec094ba1a35e"}}

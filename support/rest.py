@@ -34,10 +34,10 @@ class RestCode:
         try:
             response = requests.get(url='http://%s' % self.conn, headers=headers, auth=self.auth, timeout=self.timeout)
         except Exception as e:
-            pytest.fail('Failed to execute GET against %s (Error: %s)' % (self.conn, e))
+            pytest.fail(f'Failed to execute GET against {self.conn} (Error: {e})')
         else:
             if int(response.status_code) != 200:
-                pytest.fail('Failed to execute GET against %s (Network Error: %s)' % (self.conn, response.status_code))
+                pytest.fail(f'Failed to execute GET against {self.conn} (Network Error: {response.status_code})')
 
         try:
             results = response.json()
@@ -45,7 +45,7 @@ class RestCode:
             try:
                 results = response.text
             except Exception as e:
-                pytest.fail('Failed to extract results from GET request (Error: %s)' % e)
+                pytest.fail(f'Failed to extract results from GET request (Error: {e})')
 
         return results
 
@@ -64,11 +64,10 @@ class RestCode:
             response = requests.put(url='http://%s' % self.conn, headers=headers, data=payload, auth=self.auth,
                                     timeout=self.timeout)
         except Exception as e:
-            pytest.fail('Failed to execute PUT against %s (Error: %s)' % (self.conn, e))
+            pytest.fail(f'Failed to execute PUT against {self.conn} (Error: {e})')
         else:
             if int(response.status_code) != 200:
-                pytest.fail(
-                    'Failed to execute PUT against %s (Network Error: %s)' % (self.conn, response.status_code))
+                pytest.fail(f'Failed to execute PUT against {self.conn} (Network Error: {response.status_code})')
 
     def post(self, headers:dict, payload:str=None):
         """
@@ -88,10 +87,9 @@ class RestCode:
             response = requests.post(url='http://%s' % self.conn, headers=headers, data=payload, auth=self.auth,
                                     timeout=self.timeout)
         except Exception as e:
-            pytest.fail('Failed to execute POST against %s (Error: %s)' % (self.conn, e))
+            pytest.fail(f'Failed to execute POST against {self.conn} (Error: {e})')
         else:
             if int(response.status_code) != 200:
-                pytest.fail(
-                    'Failed to execute POST against %s (Network Error: %s)' % (self.conn, response.status_code))
+                pytest.fail(f'Failed to execute POST against {self.conn} (Network Error: {response.status_code})')
 
 

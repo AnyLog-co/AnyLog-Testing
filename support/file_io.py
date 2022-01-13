@@ -49,7 +49,7 @@ def json_read_file(file_name:str)->list:
                 try:
                     for line in f.read().split("\n"):
                         if line != '':
-                            line = support.json_loads(line)
+                            line = support.json_loads(line.replace("}},", "}}"))
                             payloads.append(line)
                 except Exception as e:
                     pytest.fail('Failed to read line(s) (Error: %s)' % e)

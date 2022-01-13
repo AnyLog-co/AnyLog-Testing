@@ -1,30 +1,18 @@
 import os
+import pytest
 import rest
-import support
 import time
+
+import file_io
+import support
 
 ROOT_DIR=os.path.expandvars(os.path.expanduser(__file__)).split('support')[0]
 EXPECTED_DIR = os.path.join(ROOT_DIR, 'expect', 'blockchain_testing')
 
-def __read_policies()->list:
-    """
-    read policies from content.json
-    :params:
-        policies_file:str - file containing policies
-        policies:list - extracted policies
-    :return:
-        policies - stored as POLICIES
-    """
-    policies = []
-    policies_file = os.path.join(EXPECTED_DIR, 'content.json')
-    if os.path.isfile(policies_file):
-        with open(policies_file, 'r') as f:
-            for policy in f.read().split('\n'):
-                if policy != '':
-                    policies.append(support.json_loads(policy.replace('}},', '}}')))
-    return policies
+DATA_FILE = os.path.join(EXPECTED_DIR, 'content.json')
+POLICIES = file_io.json_read_file(file_name=DATA_FILE)
 
-# prepare_policy
+
 def prepare_policy(anylog_conn:rest.RestCode, policy:dict):
     """
     POST `prepare policy` command against an AnyLog instance
@@ -163,7 +151,7 @@ def declare_policies(anylog_conn:rest.RestCode, master_node:str):
     """
     policy_id = {}
     i = 0
-    for policy in __read_policies():
+    for policy in POLICIES:
         policy_type = list(policy)[0]
         if policy_type == 'device':
             policy['device']['owner'] = policy_id['owner']
@@ -193,17 +181,20 @@ def drop_policies(anylog_conn:rest.RestCode, master_node:str):
         'destination': master_node,
         'User-Agent': 'AnyLog/1.23'
     }
-    for policy in list(__read_policies()):
+    for policy in POLICIES:
         query = 'blockchain get %s' % list(policy)[0]
         policies = blockchain_get(anylog_conn=anylog_conn, query=query)
 
-        for polcy in policies:
-            if isinstance(polcy, dict):
-                polcy = support.json_dumps(polcy)
-            if isinstance(polcy, str):
-                raw_policy = '<rm_policy=%s>' % polcy
+        if policies is not []:
+            for policy in policies:
+                if isinstance(policy, dict):
+                    policy = support.json_dumps(policy)
+                if isinstance(policy, str):
+                    raw_policy = '<rm_policy=%s>' % policy
+                else:
+                    pytest.fail(f'Failed to convert policy from dict to string (Policy: {policy})')
 
-            anylog_conn.post(headers=headers, payload=raw_policy)
+                anylog_conn.post(headers=headers, payload=raw_policy)
 
 
 

@@ -1,3 +1,3 @@
 blockchain get * where manufacturer=bc0a64888602369876ef12e9673106f9
-{"device": {"name": "fic", "location": "HQ Office", "owner": "886c462a0cec361e3f8aec094ba1a35e", "manufacturer": "bc0a64888602369876ef12e9673106f9", "serial_number": "SFb6HfZz", "id": "b6ac22a89865871b3aa63bdb0fa5f5bb", "ledger": "global"}}
-{"device": {"name": "dev", "location": "Off Site", "owner": "886c462a0cec361e3f8aec094ba1a35e", "manufacturer": "bc0a64888602369876ef12e9673106f9", "serial_number": "SFb5HfZz", "id": "75615903b0adc9cc2e2e748097cea59d", "ledger": "global"}}
+{"device": {"name": "fic", "location": "HQ Office", "owner": "886c462a0cec361e3f8aec094ba1a35e", "manufacturer": "bc0a64888602369876ef12e9673106f9", "serial_number": "SFb6HfZz", "id": "b6ac22a89865871b3aa63bdb0fa5f5bb"}}
+{"device": {"name": "dev", "location": "Off Site", "owner": "886c462a0cec361e3f8aec094ba1a35e", "manufacturer": "bc0a64888602369876ef12e9673106f9", "serial_number": "SFb5HfZz", "id": "75615903b0adc9cc2e2e748097cea59d"}}
