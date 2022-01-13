@@ -10,6 +10,7 @@ sys.path.insert(0, SUPPORT_DIR)
 import file_io
 import rest
 import send_data
+import support
 
 
 def setup_code(config_file:str, expected_dir:str, actual_dir:str) -> (bool, dict, rest.RestCode):
@@ -77,7 +78,8 @@ def write_data(data_dir:str, send_type:str, dbms:str, tables:list, anylog_conn:r
                                          password=password)
 
 
-def execute_test(anylog_conn:rest.RestCode, headers:dict, query:str, expected_file:str, actual_file:str):
+def execute_test(anylog_conn:rest.RestCode, headers:dict, query:str, expected_file:str, actual_file:str,
+                 blockchain_query:bool=False):
     """
     Query to execute & validate
     :args:
@@ -86,6 +88,7 @@ def execute_test(anylog_conn:rest.RestCode, headers:dict, query:str, expected_fi
         query:str - query that was executed
         expected_file:str - file containing expected results
         actual_file:str - file containing results from latest run
+        blockchain_query:bool - whether 
     :params:
         response:dict - raw results from
         results:list - list of results from response
@@ -101,11 +104,14 @@ def execute_test(anylog_conn:rest.RestCode, headers:dict, query:str, expected_fi
         else:
             pytest.fail("Failed to extract results from '%s' (Error: %s)" % (query, e))
 
-        assert file_io.write_file(query=query, file_name=actual_file, results=results) is True
-        assert filecmp.cmp(actual_file, expected_file)
+        assert file_io.write_file(query=query, file_name=expected_file, results=results) is True
+    elif isinstance(response, list):
+        assert file_io.write_file(query=query, file_name=expected_file, results=response) is True
+    elif isinstance(response, str):
+        assert file_io.write_file(query=query, file_name=expected_file, results=response) is True
     else:
-        pytest.fail(response)
-
+        print(response)
+    assert filecmp.cmp(actual_file, expected_file)
 
 def teardown_code(actual_dir:str):
     if os.path.isdir(actual_dir):

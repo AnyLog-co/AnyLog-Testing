@@ -1,0 +1,10 @@
+blockchain get sensor
+{"sensor": {"name": "fic11", "sensor_type": "8d94dbf32da71ad5c7386287c3280198", "serial_number": "SFb6HfZz-fSAoEAvt-fic11", "id": "91525368da2f66ab52956ea7078e5613", "ledger": "global"}}
+{"sensor": {"name": "fic11_pv", "sensor_type": "8d94dbf32da71ad5c7386287c3280198", "serial_number": "SFb6HfZz-fSAoEAvt-fic11-pv", "id": "d3909dec892af132fbe4c69c5ed0bb77", "ledger": "global"}}
+{"sensor": {"name": "fic11_mv", "sensor_type": "8d94dbf32da71ad5c7386287c3280198", "serial_number": "SFb6HfZz-fSAoEAvt-fic11-mv", "id": "97ac750a8bcd175cdc1bc862df834bd9", "ledger": "global"}}
+{"sensor": {"name": "dev11", "sensor_type": "5780a8101d7604f24cb92d6a6f1ab9c3", "serial_number": "SFb5HfZz-fSAoEAvt-dev11", "id": "c2d85d76c5dca2a5b903e1b0e615b2c9", "ledger": "global"}}
+{"sensor": {"name": "dev11_pv", "sensor_type": "5780a8101d7604f24cb92d6a6f1ab9c3", "serial_number": "SFb5HfZz-fSAoEAvt-dev11-pv", "id": "5aa6ea8f4676bb91b4edf227a8d818ad", "ledger": "global"}}
+{"sensor": {"name": "dev11_mv", "sensor_type": "5780a8101d7604f24cb92d6a6f1ab9c3", "serial_number": "SFb5HfZz-fSAoEAvt-dev11-mv", "id": "ffece8b60543d0ae37f9db9c2c0544c3", "ledger": "global"}}
+{"sensor": {"name": "rslUV", "sensor_type": "5780a8101d7604f24cb92d6a6f1ab9c3", "serial_number": "BH534Xyz-rslUV", "id": "6a5276407bd931d2f7c746452ab89708", "ledger": "global"}}
+{"sensor": {"name": "rslUV_pv", "sensor_type": "5780a8101d7604f24cb92d6a6f1ab9c3", "serial_number": "BH534Xyz-rslUV-pv", "id": "9d5c93a3f39be8e5385e147cfbe4a39d", "ledger": "global"}}
+{"sensor": {"name": "rslUV_mv", "sensor_type": "5780a8101d7604f24cb92d6a6f1ab9c3", "serial_number": "BH534Xyz-rslUV-mv", "id": "472fabd4ccf3cd2a63844459b024110b", "ledger": "global"}}
